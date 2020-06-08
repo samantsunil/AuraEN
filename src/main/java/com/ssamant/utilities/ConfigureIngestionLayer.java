@@ -32,12 +32,18 @@ import static com.ssamant.pocresourcemanagement.MainForm.lblStartedInstance;
 import static com.ssamant.pocresourcemanagement.MainForm.lblStopInstance;
 import static com.ssamant.pocresourcemanagement.MainForm.txtAreaClusterInfo;
 import static com.ssamant.pocresourcemanagement.MainForm.txtAreaIngestionDetails;
+import static com.ssamant.utilities.ConfigureStorageLayer.dbInsertInstanceInfo;
+import static com.ssamant.utilities.DatabaseConnection.getConnection;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.Thread.sleep;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -75,6 +81,13 @@ public class ConfigureIngestionLayer {
         RunInstancesResult runResponse = ec2Client.runInstances(runRequest);
         // List<String> instanceIds = new ArrayList<>();
         WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true); //to save cluster info in a text file.
+        if (DatabaseConnection.con == null) {
+            try {
+                DatabaseConnection.con = DatabaseConnection.getConnection();
+            } catch (SQLException ex) {
+                Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         int i = 1;
         for (Instance inst : runResponse.getReservation().getInstances()) {
             System.out.println("EC2 Instance Id: " + inst.getInstanceId());
@@ -86,12 +99,12 @@ public class ConfigureIngestionLayer {
                     .withResources(inst.getInstanceId())
                     .withTags(tag);
             CreateTagsResult tag_response = ec2Client.createTags(createTagsRequest);
-            startEC2Instance(ec2Client, inst, inst.getPlacement(), data);
+            startEC2Instance(ec2Client, inst, inst.getPlacement(), data, i);
             i++;
         }
     }
 
-    public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, WriteFile data) throws InterruptedException {
+    public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, WriteFile data, int brokerId) throws InterruptedException {
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
         Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
@@ -103,6 +116,11 @@ public class ConfigureIngestionLayer {
 
                 data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
                         + ", PublicIP:" + curInstance.getPublicIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
+                try {
+                    dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName(), brokerId);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
                 lblClusterStatus.setText("Error while writing to a file: " + ex.getMessage());
@@ -110,6 +128,21 @@ public class ConfigureIngestionLayer {
         } else {
             System.out.println("Instances are not running.");
         }
+    }
+
+    public static void dbInsertInstanceInfo(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String status, int brokerId) throws SQLException {
+        String query = "INSERT INTO ingestion_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, status, broker_id)"
+                + " VALUES (?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement preparedStmt = DatabaseConnection.con.prepareStatement(query);
+        preparedStmt.setString(1, instanceId);
+        preparedStmt.setString(2, instanceType);
+        preparedStmt.setString(3, az);
+        preparedStmt.setString(4, pubDnsName);
+        preparedStmt.setString(5, publicIp);
+        preparedStmt.setString(6, status);
+        preparedStmt.setString(7, String.valueOf(brokerId));
+        preparedStmt.execute();
+        preparedStmt.close();
     }
 
     public static void stopKafkaBrokerNode(String instanceId) throws InterruptedException {
@@ -143,6 +176,7 @@ public class ConfigureIngestionLayer {
 
                     data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + curInstance.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
                             + ", PublicIP:" + curInstance.getPublicIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
+                    updateInstanceInfoDbKafka(curInstance.getInstanceId(), curInstance.getState().getName());
                 } catch (IOException ex) {
                     System.out.println(ex.getMessage());
                     lblStopInstance.setText("Error while writing to a file: " + ex.getMessage());
@@ -153,6 +187,28 @@ public class ConfigureIngestionLayer {
         } else {
             lblStopInstance.setText("");
             lblStopInstance.setText("Enter the valid instance ID.");
+        }
+    }
+
+    public static void updateInstanceInfoDbKafka(String instanceId, String status) {
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE ingestion_nodes_info SET status = ?, public_dnsname = ?, public_ip = ? WHERE instance_id = ?";
+            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
+            update.setString(1, status);
+            update.setString(2, "");
+            update.setString(3, "");
+            update.setString(4, instanceId);
+            update.executeUpdate();
+            update.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -170,6 +226,7 @@ public class ConfigureIngestionLayer {
 
                 data.writeToFile("InstanceID: " + inst.getInstanceId() + " , InstanceType: " + inst.getInstanceType() + ", AZ: ." + inst.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + inst.getPublicDnsName()
                         + ", PublicIP:" + inst.getPublicIpAddress() + ", Status: " + inst.getState().getName() + ".");
+                updateRestartedInstanceInfoIngestion(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getState().getName());
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
                 lblStartedInstance.setText("Error while writing to a file: " + ex.getMessage());
@@ -177,6 +234,56 @@ public class ConfigureIngestionLayer {
         }
     }
 
+    public static void updateRestartedInstanceInfoIngestion(String instanceId, String pubDns, String pubIp, String status) {
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE ingestion_nodes_info SET status = ?, public_dnsname = ?, public_ip = ? WHERE instance_id = ?";
+            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
+            update.setString(1, status);
+            update.setString(2, pubDns);
+            update.setString(3, pubIp);
+            update.setString(4, instanceId);
+            update.executeUpdate();
+            update.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+public static void loadIngestionClusterInfoFromDatabase() {
+        MainForm.txtAreaClusterInfo.setText("");
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT * FROM ingestion_nodes_info";
+            Statement st = DatabaseConnection.con.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                String instanceId = rs.getString("instance_id");
+                String instanceType = rs.getString("instance_type");
+                String az = rs.getString("availability_zone");
+                String publicDnsName = rs.getString("public_dnsname");
+                String publicIp = rs.getString("public_ip");                
+                String status = rs.getString("status");
+                String brokerId = rs.getString("broker_id");                
+                System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
+                MainForm.txtAreaClusterInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", Status: " + status + ", BrokerId: " + brokerId + ".\n");
+            }
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     public static void loadFromFileKafkaClusterDetails(boolean isDPP) {
 
         String fileName = "C:\\Code\\KafkaClusterDetails.txt";
