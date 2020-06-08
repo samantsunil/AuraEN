@@ -15,6 +15,6 @@ In addition, for testing the resource management on AWS cloud it requires follow
   - Finally, the application requires the sustainable QoS profile for each selected ec2 instance types for running each of the data pipeline components such as ingestion, processing and storage, workload predictor as one-step-ahead data streaming rate prediction and end-to-end data processing delay (as end-to-end latency) requirement.
   
 Data processing pipeline application:
-  - The scripts are provided for running and configuring following service components at each layer of the data processing pipeline: Apache Kafka for data ingestion layer, Apache Spark for stream processing layer and Apache Cassandra for storage layer.
+  - The scripts are provided for running and configuring following service components at each layer of the data processing pipeline: Apache Kafka for data ingestion layer, Apache Spark for stream processing layer and Apache Cassandra for storage layer. In addition, it requires an execuatble jar file for submitting the spark streaming jobs in the processing layer which must be supplied with the connectivity information about ingestion layer and storage layer. \
 Goal:
 The goal is to demonstrate, how the cloud resources can be managed (scaled) autonomically on the selected cloud provider for the multi-service multi-layer data processing pipeline considering the end-to-end QoS requirements at the minimal cost.
