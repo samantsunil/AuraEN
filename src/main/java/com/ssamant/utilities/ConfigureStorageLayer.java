@@ -33,23 +33,23 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.Thread.sleep;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 /**
  *
  * @author sunil
  */
 public class ConfigureStorageLayer {
-
+    
     public ConfigureStorageLayer() {
-
+        
     }
-
+    
     public static void stopInstanceStorageLayer(String instanceId, String dnsName) throws IOException {
         if (instanceId != null) {
             try {
@@ -57,21 +57,21 @@ public class ConfigureStorageLayer {
                         = () -> {
                             StopInstancesRequest request = new StopInstancesRequest()
                                     .withInstanceIds(instanceId);
-
+                            
                             return request.getDryRunRequest();
                         };
                 AmazonEC2 ec2Client = MainForm.getEC2Client();
                 DryRunResult dryResponse = ec2Client.dryRun(dryRequest);
-
+                
                 if (!dryResponse.isSuccessful()) {
                     System.out.printf("Failed dry run to stop instance %s", instanceId);
                     throw dryResponse.getDryRunResponse();
                 }
-
+                
                 stopCassandraNode(dnsName); //call to remove the node as decommission from the cluster and then stop the service on the node.
                 StopInstancesRequest request = new StopInstancesRequest()
                         .withInstanceIds(instanceId);
-
+                
                 ec2Client.stopInstances(request);
                 Instance curInstance = waitForRunningState(ec2Client, instanceId);
                 System.out.printf("Successfully stopped the instance: %s", instanceId);
@@ -95,7 +95,7 @@ public class ConfigureStorageLayer {
             }
         }
     }
-
+    
     public static void updateInstanceInfoDb(String instanceId, String status) {
         try {
             if (DatabaseConnection.con == null) {
@@ -112,12 +112,12 @@ public class ConfigureStorageLayer {
             update.setString(3, "");
             update.setString(4, instanceId);
             update.executeUpdate();
+            update.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
-
+    
     public static void restartInstanceStorageLayer(String instanceId) {
         WriteFile data = new WriteFile("C:\\Code\\CassandraClusterDetails.txt", true);
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(instanceId);
@@ -133,7 +133,7 @@ public class ConfigureStorageLayer {
             MainForm.lblInstanceStatus.setText("");
             MainForm.lblInstanceStatus.setText("Instance with Id: " + instanceId + " starts running.");
             try {
-
+                
                 data.writeToFile("InstanceID: " + inst.getInstanceId() + " , InstanceType: " + inst.getInstanceType() + ", AZ: ." + inst.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + inst.getPublicDnsName()
                         + ", PublicIP:" + inst.getPublicIpAddress() + ", PrivateIP: " + inst.getPrivateIpAddress() + ", Status: " + inst.getState().getName() + ".");
                 updateRestartedInstanceInfo(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getPrivateIpAddress(), inst.getState().getName());
@@ -143,7 +143,7 @@ public class ConfigureStorageLayer {
             }
         }
     }
-
+    
     public static void updateRestartedInstanceInfo(String instanceId, String pubDns, String pubIp, String PrivIp, String status) {
         try {
             if (DatabaseConnection.con == null) {
@@ -161,13 +161,14 @@ public class ConfigureStorageLayer {
             update.setString(4, PrivIp);
             update.setString(5, instanceId);
             update.executeUpdate();
+            update.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     public static Instance waitForRunningState(AmazonEC2 ec2Client, String instId) throws InterruptedException {
-
+        
         DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(instId);
         String status = "unknown";
         Instance instance = null;
@@ -182,12 +183,12 @@ public class ConfigureStorageLayer {
                 completed = true;
                 status = "Instance already stopped";
             }
-
+            
             if (instance.getState().getCode() == 16) {
                 status = "Instance is running";
                 completed = true;
             }
-
+            
             if (!completed) {
                 Thread.sleep(5000);
             }
@@ -195,7 +196,7 @@ public class ConfigureStorageLayer {
         System.out.println(status);
         return instance;
     }
-
+    
     public static String readInputStreamFromSshSession(ChannelExec channel) throws InterruptedException, IOException {
         InputStream input = null;
         String line = "";
@@ -233,9 +234,10 @@ public class ConfigureStorageLayer {
         channel.disconnect();
         return line;
     }
-
+    
     public static void stopCassandraNode(String pubDnsName) throws IOException {
         JSch jschClient = new JSch();
+        String msg = null;
         try {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
             JSch.setConfig("StrictHostKeyChecking", "no");
@@ -247,7 +249,8 @@ public class ConfigureStorageLayer {
             channel.setErrStream(System.err);
             channel.connect();
             try {
-                readInputStreamFromSshSession(channel);
+                msg = readInputStreamFromSshSession(channel);
+                MainForm.lblInstanceStatus.setText(msg);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -260,7 +263,7 @@ public class ConfigureStorageLayer {
             System.out.println(ex.getMessage());
         }
     }
-
+    
     public static String configureNoSqlServerNode(String pubDnsName, Boolean isNewNode, String seedIp, String InstanceId) throws IOException {
         JSch jschClient = new JSch();
         String hostId = "";
@@ -321,7 +324,7 @@ public class ConfigureStorageLayer {
         }
         return hostId;
     }
-
+    
     public static void buildNoSqlStorageCluster(int noOfNodes, String instanceType) throws SQLException {
         MainForm.btnBuildStorageCluster.setEnabled(false);
         String amiId = "ami-07e22925f7bf77a0c"; //fixed given AMI - prebuilt with Cassandra service installed and associated tools. 
@@ -331,7 +334,7 @@ public class ConfigureStorageLayer {
         MainForm.progressBarStorage.setIndeterminate(false);
         MainForm.progressBarStorage.setValue(100);
     }
-
+    
     public static void createEC2Instances(AmazonEC2 ec2Client, String amiId, String instanceType, int noOfNodes) {
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
@@ -340,7 +343,7 @@ public class ConfigureStorageLayer {
                 .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
                 .withMaxCount(noOfNodes)
                 .withMinCount(1);
-
+        
         @SuppressWarnings("ThrowableResultIgnored")
         RunInstancesResult runResponse = ec2Client.runInstances(runRequest);
         // List<String> instanceIds = new ArrayList<>();
@@ -371,9 +374,9 @@ public class ConfigureStorageLayer {
                 MainForm.txtAreaCassandraResourcesInfo.setText(ex.getMessage());
             }
         }
-
+        
     }
-
+    
     public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, WriteFile data) throws InterruptedException, SQLException {
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
@@ -383,7 +386,7 @@ public class ConfigureStorageLayer {
             MainForm.txtAreaCassandraResourcesInfo.append("Successfully created the following ec2 instances for the Cassandra Cluster:\n");
             MainForm.txtAreaCassandraResourcesInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: " + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".\n");
             try {
-
+                
                 data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: " + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
                         + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
                 dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getState().getName(), "");
@@ -395,9 +398,9 @@ public class ConfigureStorageLayer {
             System.out.println("Instances are not running.");
         }
     }
-
+    
     public static void dbInsertInstanceInfo(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status, String nodeHostId) throws SQLException {
-        String query = " INSERT INTO storage_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status, node_hostId)"
+        String query = "INSERT INTO storage_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status, node_hostId)"
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStmt = DatabaseConnection.con.prepareStatement(query);
         preparedStmt.setString(1, instanceId);
@@ -409,10 +412,42 @@ public class ConfigureStorageLayer {
         preparedStmt.setString(7, status);
         preparedStmt.setString(8, nodeHostId);
         preparedStmt.execute();
+        preparedStmt.close();
     }
-
+    
+    public static void loadStorageClusterInfoFromDatabase() {
+        MainForm.txtAreaCassandraResourcesInfo.setText("");
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT * FROM storage_nodes_info";
+            Statement st = DatabaseConnection.con.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                String instanceId = rs.getString("instance_id");
+                String instanceType = rs.getString("instance_type");
+                String az = rs.getString("availability_zone");
+                String publicDnsName = rs.getString("public_dnsname");
+                String publicIp = rs.getString("public_ip");
+                String privateIp = rs.getString("private_ip");
+                String status = rs.getString("status");
+                String nodeHostId = rs.getString("node_hostId");                
+                System.out.format("%s, %s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status, nodeHostId);
+                MainForm.txtAreaCassandraResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", HostId: " + nodeHostId + ".\n");
+            }
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public static void loadFromFileStorageClusterDetails(boolean isDPP) {
-
+        
         String fileName = "C:\\Code\\CassandraClusterDetails.txt";
         if (!isDPP) {
             MainForm.txtAreaCassandraResourcesInfo.setText("");
