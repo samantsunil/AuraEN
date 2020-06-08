@@ -1102,6 +1102,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         btnUpdateQoSProfile.setText("Update QoS Profile");
 
         txtAreaSustainabelQoSInfo.setColumns(20);
+        txtAreaSustainabelQoSInfo.setLineWrap(true);
         txtAreaSustainabelQoSInfo.setRows(5);
         jScrollPane11.setViewportView(txtAreaSustainabelQoSInfo);
 
@@ -1428,7 +1429,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String serviceName = rs.getString("service_name");
                 String instanceType = rs.getString("instance_type");
                 String jsonData = rs.getString("input_qos_values");
-                 txtAreaSustainabelQoSInfo.append("Service: " + serviceName + ", Instance Type: " + instanceType + ", [Input Workload:[sus. workload, sus. latency]]" + jsonData );
+                 txtAreaSustainabelQoSInfo.append("Service: " + serviceName + ", Instance Type: " + instanceType + ", [Input Workload:[sus. workload, sus. latency]]" + jsonData +".\n" );
             }
             st.close();
         } catch (SQLException ex) {
