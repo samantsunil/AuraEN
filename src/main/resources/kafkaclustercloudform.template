@@ -1,0 +1,150 @@
+{
+    "Outputs": {
+        "AZ01": {
+            "Description": "Availability Zone of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "instance01",
+                    "AvailabilityZone"
+                ]
+            }
+        },
+        "AZ02": {
+            "Description": "Availability Zone of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "instance02",
+                    "AvailabilityZone"
+                ]
+            }
+        },
+        "AZ03": {
+            "Description": "Availability Zone of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "instance03",
+                    "AvailabilityZone"
+                ]
+            }
+        },
+        "InstanceId01": {
+            "Description": "InstanceId of the newly created EC2 instance",
+            "Value": {
+                "Ref": "instance01"
+            }
+        },
+        "InstanceId02": {
+            "Description": "InstanceId of the newly created EC2 instance",
+            "Value": {
+                "Ref": "instance02"
+            }
+        },
+        "InstanceId03": {
+            "Description": "InstanceId of the newly created EC2 instance",
+            "Value": {
+                "Ref": "instance03"
+            }
+        },
+        "PublicDNS01": {
+            "Description": "Public DNSName of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "instance01",
+                    "PublicDnsName"
+                ]
+            }
+        },
+        "PublicDNS02": {
+            "Description": "Public DNSName of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "instance02",
+                    "PublicDnsName"
+                ]
+            }
+        },
+        "PublicDNS03": {
+            "Description": "Public DNSName of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "instance03",
+                    "PublicDnsName"
+                ]
+            }
+        },
+        "PublicIP01": {
+            "Description": "Public IP address of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "instance01",
+                    "PublicIp"
+                ]
+            }
+        },
+        "PublicIP02": {
+            "Description": "Public IP address of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "instance02",
+                    "PublicIp"
+                ]
+            }
+        },
+        "PublicIP03": {
+            "Description": "Public IP address of the newly created EC2 instance",
+            "Value": {
+                "Fn::GetAtt": [
+                    "instance03",
+                    "PublicIp"
+                ]
+            }
+        }
+    },
+    "Resources": {
+        "instance01": {
+            "Properties": {
+                "AvailabilityZone": "ap-southeast-2",
+                "ImageId": "ami-04fcc97b5f6edcd89",
+                "InstanceType": "t2.micro",
+                "KeyName": "awsSSH_key",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "kafka01"
+                    }
+                ]
+            },
+            "Type": "AWS::EC2::Instance"
+        },
+        "instance02": {
+            "Properties": {
+                "AvailabilityZone": "ap-southeast-2",
+                "ImageId": "ami-04fcc97b5f6edcd89",
+                "InstanceType": "t1.micro",
+                "KeyName": "awsSSH_key",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "kafka02"
+                    }
+                ]
+            },
+            "Type": "AWS::EC2::Instance"
+        },
+        "instance03": {
+            "Properties": {
+                "AvailabilityZone": "ap-southeast-2",
+                "ImageId": "ami-04fcc97b5f6edcd89",
+                "InstanceType": "t2.micro",
+                "KeyName": "awsSSH_key",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "kafka03"
+                    }
+                ]
+            },
+            "Type": "AWS::EC2::Instance"
+        }
+    }
+}
