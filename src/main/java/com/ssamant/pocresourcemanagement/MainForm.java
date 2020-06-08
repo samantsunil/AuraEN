@@ -203,6 +203,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         tblSustainableQoSProfile = new javax.swing.JTable();
         btnViewQoSProfile = new javax.swing.JButton();
         btnUpdateQoSProfile = new javax.swing.JButton();
+        jScrollPane11 = new javax.swing.JScrollPane();
+        txtAreaSustainabelQoSInfo = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Resource Management Framework [Data Processing Pipeline]");
@@ -1099,12 +1101,18 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         btnUpdateQoSProfile.setText("Update QoS Profile");
 
+        txtAreaSustainabelQoSInfo.setColumns(20);
+        txtAreaSustainabelQoSInfo.setRows(5);
+        jScrollPane11.setViewportView(txtAreaSustainabelQoSInfo);
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap(1043, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 857, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 176, Short.MAX_VALUE)
                 .addComponent(btnViewQoSProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addComponent(btnUpdateQoSProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1116,11 +1124,16 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnViewQoSProfile)
-                    .addComponent(btnUpdateQoSProfile))
-                .addContainerGap(403, Short.MAX_VALUE))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnViewQoSProfile)
+                            .addComponent(btnUpdateQoSProfile)))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(200, Short.MAX_VALUE))
         );
 
         dppLayersTab.addTab("View QoS Profile", jPanel7);
@@ -1415,7 +1428,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String serviceName = rs.getString("service_name");
                 String instanceType = rs.getString("instance_type");
                 String jsonData = rs.getString("input_qos_values");
-                             
+                 txtAreaSustainabelQoSInfo.append("Service: " + serviceName + ", Instance Type: " + instanceType + ", [Input Workload:[sus. workload, sus. latency]]" + jsonData );
             }
             st.close();
         } catch (SQLException ex) {
@@ -1527,6 +1540,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -1562,6 +1576,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JTextArea txtAreaSparkResourcesInfo;
     private javax.swing.JTextArea txtAreaStorageDetails;
     public static javax.swing.JTextArea txtAreaStorageResources;
+    private javax.swing.JTextArea txtAreaSustainabelQoSInfo;
     private javax.swing.JTextField txtFieldBrokerId;
     private javax.swing.JTextField txtFieldCurrentWorkload;
     private javax.swing.JTextField txtFieldDnsName;
