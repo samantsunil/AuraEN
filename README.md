@@ -5,7 +5,7 @@ The implementation is based on the following architecture of the resource manage
 ## Building the project
 The project depends on following tools and technologies for building:
 - JDK 1.8
-- Maven 3.6.3
+- Maven 3.6.3 \
 In addition, for testing the resource management on AWS cloud it requires following components:
   - AWS user account, 
   - AWS login credentials for accessing the AWS APIs for launching and managing the ec2 instances
@@ -15,6 +15,6 @@ In addition, for testing the resource management on AWS cloud it requires follow
   - Finally, the application requires the sustainable QoS profile for each selected ec2 instance types for running each of the data pipeline components such as ingestion, processing and storage, workload predictor as one-step-ahead data streaming rate prediction and end-to-end data processing delay (as end-to-end latency) requirement.
   
 Data processing pipeline application:
-  - The scripts are provided for running and configuring following selected serivice components at each layer of the data pipeline: Kafka service for data ingestion layer, Spark for stream processing layer and Cassandra as NoSql storage layer.
+  - The scripts are provided for running and configuring following service components at each layer of the data processing pipeline: Apache Kafka for data ingestion layer, Apache Spark for stream processing layer and Apache Cassandra for storage layer.
 Goal:
 The goal is to demonstrate, how the cloud resources can be managed (scaled) autonomically on the selected cloud provider for the multi-service multi-layer data processing pipeline considering the end-to-end QoS requirements at the minimal cost.
