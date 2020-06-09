@@ -30,7 +30,7 @@ public class DatabaseConnection {
                 System.out.println("Failed to connect to database.");
             }
         } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println("MySQL connection failed.");
+            System.out.println("MySQL connection failed.");            
             ex.printStackTrace();
         }
         return con;

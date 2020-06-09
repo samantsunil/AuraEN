@@ -19,11 +19,18 @@ import com.amazonaws.services.ec2.model.StartInstancesRequest;
 import com.amazonaws.services.ec2.model.StartInstancesResult;
 import com.amazonaws.services.ec2.model.StopInstancesRequest;
 import com.amazonaws.services.ec2.model.Tag;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 import com.ssamant.pocresourcemanagement.MainForm;
-import static com.ssamant.utilities.ConfigureStorageLayer.dbInsertInstanceInfo;
-import static com.ssamant.utilities.ConfigureStorageLayer.waitForRunningState;
+import static com.ssamant.utilities.ConfigureIngestionLayer.readInputStreamFromSshSession;
 import static com.ssamant.utilities.DatabaseConnection.getConnection;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import static java.lang.Thread.sleep;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,7 +48,7 @@ public class ConfigureProcessingLayer {
     public ConfigureProcessingLayer() {
 
     }
-    public static String ami_id_spark = "";
+    public static String ami_id_spark = "ami-028bc88846f2d33b3";
 
     public static void buildProcessingLayerCluster(int noOfNodes, String instanceType) {
         AmazonEC2 ec2Client = CloudLogin.getEC2Client();
@@ -129,7 +136,8 @@ public class ConfigureProcessingLayer {
         }
     }
 
-    public static void loadSparkClusterDetailsFromDb() {
+    public static Boolean loadSparkClusterDetailsFromDb() {
+        Boolean success = false;
         MainForm.txtAreaSparkResourcesInfo.setText("");
         try {
             if (DatabaseConnection.con == null) {
@@ -137,6 +145,7 @@ public class ConfigureProcessingLayer {
                     DatabaseConnection.con = DatabaseConnection.getConnection();
                 } catch (SQLException ex) {
                     Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                    MainForm.txtAreaSparkResourcesInfo.setText("Database connection failure. Please check the mysql server status.");
                 }
             }
             String query = "SELECT * FROM processing_nodes_info";
@@ -152,10 +161,33 @@ public class ConfigureProcessingLayer {
                 String status = rs.getString("status");
                 System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status);
                 MainForm.txtAreaSparkResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ".\n");
+                success = true;
             }
             st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return success;
+    }
+
+    public static void loadSparkClusterInfoFromFile() {
+        MainForm.txtAreaSparkResourcesInfo.setText("");
+        String fileName = "C:\\Code\\SparkClusterDetails.txt";
+        try {
+            if (new File("C:\\Code\\KafkaClusterDetails.txt").exists()) {
+                FileReader file = new FileReader(fileName);
+                BufferedReader rdr = new BufferedReader(file);
+                String aLine;
+                while ((aLine = rdr.readLine()) != null) {
+                    MainForm.txtAreaSparkResourcesInfo.append(aLine);
+                    MainForm.txtAreaSparkResourcesInfo.append("\n");
+                }
+                rdr.close();
+            } else {
+                System.out.println("File does not exist. No existing cluster info present.");
+            }
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -275,4 +307,100 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public static String getCurrentBrokerIds() {
+        String broker_ids = null;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT public_dnsname FROM ingestion_nodes_info WHERE status =?";
+            PreparedStatement st = DatabaseConnection.con.prepareStatement(query);
+            st.setString(1, "running");
+            ResultSet rs = st.executeQuery();
+            int i = 0;
+            while (rs.next()) {
+
+                String brokerDns = rs.getString(1);
+                if (i == 0) {
+                    broker_ids = brokerDns + ":9092";
+                } else {
+                    broker_ids = broker_ids + "," + brokerDns + ":9092";
+                }
+                i++;
+            }
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return broker_ids;
+    }
+
+    public static String getCurrentCassandraSeedIps() {
+        String cassandraSeeds = null;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT public_ip FROM storage_nodes_info WHERE status =?";
+            PreparedStatement st = DatabaseConnection.con.prepareStatement(query);
+            st.setString(1, "running");
+            ResultSet rs = st.executeQuery();
+            int i = 0;
+            while (rs.next()) {
+
+                String cassSeedIp = rs.getString(1);
+                if (i == 0) {
+                    cassandraSeeds = cassSeedIp;
+                } else {
+                    cassandraSeeds = cassandraSeeds + "," + cassSeedIp;
+                }
+                i++;
+            }
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return cassandraSeeds;
+
+    }
+
+    public static void configureNewlyCreatedSparkNode(String instanceId, String pubDnsName, String instanceType) {
+        String brokerId = getCurrentBrokerIds();
+        String cassandraSeedIp = getCurrentCassandraSeedIps();
+        JSch jschClient = new JSch();
+        try {
+            jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+            JSch.setConfig("StrictHostKeyChecking", "no");
+            Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
+            session.connect();
+            //run commands
+            String command = "sudo bash updateConfigParamsSpark.sh " + brokerId + " " + cassandraSeedIp + "";         //script file must be available in the instance home directory
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand(command);
+            channel.setErrStream(System.err);
+            channel.connect();
+            readInputStreamFromSshSession(channel);
+            sleep(5000);
+            String cmd = "sudo bash runSparkApp.sh";         //check to make sure ingestion and storage services are running before executing this script.
+            ChannelExec chnl = (ChannelExec) session.openChannel("exec");
+            chnl.setCommand(cmd);
+            chnl.setErrStream(System.err);
+            chnl.connect();
+            readInputStreamFromSshSession(chnl);
+            sleep(5000);
+            session.disconnect();
+        } catch (JSchException | InterruptedException ex) {
+
+        }
+    }
+
 }

@@ -399,7 +399,6 @@ public static void loadIngestionClusterInfoFromDatabase() {
             channel.connect();
             readInputStreamFromSshSession(channel);
             sleep(5000);
-            readInputStreamFromSshSession(channel);
             session.disconnect();
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());
