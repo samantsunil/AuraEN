@@ -25,7 +25,6 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.ssamant.pocresourcemanagement.MainForm;
-import static com.ssamant.pocresourcemanagement.MainForm.getEC2Client;
 import static com.ssamant.utilities.DatabaseConnection.getConnection;
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,6 +38,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import logincredentials.CloudLogin;
 
 /**
  *
@@ -60,7 +60,7 @@ public class ConfigureStorageLayer {
 
                             return request.getDryRunRequest();
                         };
-                AmazonEC2 ec2Client = MainForm.getEC2Client();
+                AmazonEC2 ec2Client = CloudLogin.getEC2Client();
                 DryRunResult dryResponse = ec2Client.dryRun(dryRequest);
 
                 if (!dryResponse.isSuccessful()) {
@@ -121,7 +121,7 @@ public class ConfigureStorageLayer {
     public static void restartInstanceStorageLayer(String instanceId) {
         WriteFile data = new WriteFile("C:\\Code\\CassandraClusterDetails.txt", true);
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(instanceId);
-        AmazonEC2 ec2Client = MainForm.getEC2Client();
+        AmazonEC2 ec2Client = CloudLogin.getEC2Client();
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
         Instance inst = null;
         try {
@@ -345,7 +345,7 @@ public class ConfigureStorageLayer {
     public static void buildNoSqlStorageCluster(int noOfNodes, String instanceType) throws SQLException {
         MainForm.btnBuildStorageCluster.setEnabled(false);
         String amiId = "ami-07e22925f7bf77a0c"; //fixed given AMI - prebuilt with Cassandra service installed and associated tools. 
-        AmazonEC2 ec2Client = getEC2Client();
+        AmazonEC2 ec2Client = CloudLogin.getEC2Client();
         createEC2Instances(ec2Client, amiId, instanceType, noOfNodes);
         MainForm.btnBuildStorageCluster.setEnabled(true);
         MainForm.progressBarStorage.setIndeterminate(false);
