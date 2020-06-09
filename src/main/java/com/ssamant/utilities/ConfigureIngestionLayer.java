@@ -25,14 +25,12 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.ssamant.pocresourcemanagement.MainForm;
-import static com.ssamant.pocresourcemanagement.MainForm.getEC2Client;
 import static com.ssamant.pocresourcemanagement.MainForm.lblClusterStatus;
 import static com.ssamant.pocresourcemanagement.MainForm.lblInstanceStopMsg;
 import static com.ssamant.pocresourcemanagement.MainForm.lblStartedInstance;
 import static com.ssamant.pocresourcemanagement.MainForm.lblStopInstance;
 import static com.ssamant.pocresourcemanagement.MainForm.txtAreaClusterInfo;
 import static com.ssamant.pocresourcemanagement.MainForm.txtAreaIngestionDetails;
-import static com.ssamant.utilities.ConfigureStorageLayer.dbInsertInstanceInfo;
 import static com.ssamant.utilities.DatabaseConnection.getConnection;
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,6 +44,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import logincredentials.CloudLogin;
 
 /**
  *
@@ -60,7 +59,7 @@ public class ConfigureIngestionLayer {
 
     public static void buildIngestionLayerCluster(int noOfBrokers, String instType) {
         try {
-            AmazonEC2 ec2Client = getEC2Client();
+            AmazonEC2 ec2Client = CloudLogin.getEC2Client();
             createEC2Instances(ec2Client, instType, noOfBrokers);
         } catch (InterruptedException ex) {
             System.out.printf("Error in instance creation " + ex.getMessage());
@@ -154,7 +153,7 @@ public class ConfigureIngestionLayer {
 
                         return request.getDryRunRequest();
                     };
-            AmazonEC2 ec2Client = getEC2Client();
+            AmazonEC2 ec2Client = CloudLogin.getEC2Client();
             DryRunResult dryResponse = ec2Client.dryRun(dryRequest);
 
             if (!dryResponse.isSuccessful()) {
@@ -214,7 +213,7 @@ public class ConfigureIngestionLayer {
 
     public static void restartKafkaBrokerNode(String instId) throws InterruptedException {
 
-        AmazonEC2 ec2Client = getEC2Client();
+        AmazonEC2 ec2Client = CloudLogin.getEC2Client();
         WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(instId);
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);

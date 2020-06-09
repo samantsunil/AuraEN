@@ -31,8 +31,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+          <Group type="102" alignment="1" attributes="0">
               <Component id="dppLayersTab" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -41,8 +40,8 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="dppLayersTab" min="-2" pref="685" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="56" max="32767" attributes="0"/>
+              <Component id="dppLayersTab" min="-2" pref="815" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="156" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -143,7 +142,7 @@
                                               <Component id="txtFieldBrokerId" min="-2" pref="239" max="-2" attributes="0"/>
                                           </Group>
                                           <Group type="102" attributes="0">
-                                              <EmptySpace min="0" pref="1" max="32767" attributes="0"/>
+                                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                               <Group type="103" groupAlignment="1" attributes="0">
                                                   <Component id="btnSshAccess" min="-2" pref="239" max="-2" attributes="0"/>
                                                   <Group type="102" alignment="1" attributes="0">
@@ -160,22 +159,22 @@
                                   </Group>
                               </Group>
                           </Group>
-                          <Group type="102" attributes="0">
+                          <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel17" min="-2" pref="144" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lblInstanceStopMsg" min="-2" max="-2" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jLabel17" min="-2" pref="144" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
                                       <Component id="txtFieldStartInstId" min="-2" pref="225" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="btnStartInstance" min="-2" pref="152" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="125" max="-2" attributes="0"/>
                                       <Component id="btnStartIngestionService" min="-2" pref="195" max="-2" attributes="0"/>
                                   </Group>
+                                  <Component id="lblInstanceStopMsg" min="-2" pref="440" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -238,18 +237,13 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="progressBarIngestion" min="-2" pref="17" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" min="-2" pref="277" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                      <Component id="jScrollPane1" min="-2" pref="220" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
                       <Component id="lblErrDnsName" min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
                               <Component id="lblStopInstance" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="80" max="-2" attributes="0"/>
-                              <Component id="lblStartedInstance" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="236" max="-2" attributes="0"/>
-                              <Component id="lblInstanceStopMsg" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
@@ -274,9 +268,13 @@
                                       <Component id="btnStartIngestionService" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
+                      <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                      <Component id="lblInstanceStopMsg" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="lblStartedInstance" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -402,7 +400,6 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="33" green="0" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="located here"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -540,84 +537,209 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="progressBarProcessing" max="32767" attributes="0"/>
+                  <Component id="jScrollPane9" max="32767" attributes="0"/>
+                  <Component id="jPanel8" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jLabel7" max="32767" attributes="0"/>
-                                  <Component id="jLabel4" alignment="0" min="-2" pref="194" max="-2" attributes="0"/>
-                                  <Component id="jLabel5" alignment="0" pref="211" max="32767" attributes="0"/>
-                                  <Component id="jLabel6" alignment="0" min="-2" pref="188" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel4" min="-2" pref="194" max="-2" attributes="0"/>
+                                  <Component id="jLabel6" min="-2" pref="188" max="-2" attributes="0"/>
+                                  <Component id="jLabel7" min="-2" pref="169" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="btnBuildProcessingCluster" pref="259" max="32767" attributes="0"/>
-                                  <Component id="comboBoxSlaveInstType" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="comboBoxSlaveNodes" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="comboBoxMasterInstType" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="comboBoxProcFrameworks" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="comboBoxProcFrameworks" max="32767" attributes="0"/>
+                                  <Component id="comboBoxNoSparkNodes" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="comboBoxSparkInstType" alignment="0" pref="239" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jPanel4" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jScrollPane9" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="progressBarProcessing" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="289" max="-2" attributes="0"/>
+                              <Component id="btnBuildProcessingCluster" min="-2" pref="152" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
+                              <Component id="lblBuildProcessingCluster" min="-2" pref="540" max="-2" attributes="0"/>
                           </Group>
                       </Group>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="comboBoxProcFrameworks" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="comboBoxMasterInstType" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="comboBoxSlaveNodes" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="comboBoxSlaveInstType" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="btnBuildProcessingCluster" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="comboBoxProcFrameworks" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="progressBarProcessing" min="-2" pref="24" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane9" min="-2" pref="219" max="-2" attributes="0"/>
-                      <EmptySpace pref="166" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="comboBoxNoSparkNodes" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="comboBoxSparkInstType" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="btnBuildProcessingCluster" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblBuildProcessingCluster" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="progressBarProcessing" min="-2" pref="19" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                      <Component id="jScrollPane9" min="-2" pref="161" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="220" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JLabel" name="jLabel4">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Processing Framework:"/>
-              </Properties>
+            <Container class="javax.swing.JScrollPane" name="jScrollPane9">
+              <AuxValues>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTextArea" name="txtAreaSparkResourcesInfo">
+                  <Properties>
+                    <Property name="columns" type="int" value="20"/>
+                    <Property name="rows" type="int" value="5"/>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Component class="javax.swing.JProgressBar" name="progressBarProcessing">
             </Component>
+            <Container class="javax.swing.JPanel" name="jPanel8">
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="jLabel5" min="-2" pref="78" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="txtFieldStartRestartInstId" min="-2" pref="199" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="btnStopInstanceProc" min="-2" pref="75" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="btnRestartInstanceProc" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="lblStopRestartStatus" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="329" max="32767" attributes="0"/>
+                          <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="30" pref="30" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="txtFieldStartRestartInstId" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnStopInstanceProc" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnRestartInstanceProc" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                                  <Component id="lblStopRestartStatus" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="jPanel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="21" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="jLabel5">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Instance Id:"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JTextField" name="txtFieldStartRestartInstId">
+                </Component>
+                <Component class="javax.swing.JButton" name="btnStopInstanceProc">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Stop"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStopInstanceProcActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="btnRestartInstanceProc">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Restart"/>
+                  </Properties>
+                </Component>
+                <Container class="javax.swing.JPanel" name="jPanel4">
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnLoadProcessingDetails" min="-2" pref="267" max="-2" attributes="0"/>
+                              <EmptySpace pref="50" max="32767" attributes="0"/>
+                              <Component id="btnDeleteCluster" min="-2" pref="210" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace pref="62" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="btnLoadProcessingDetails" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnDeleteCluster" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JButton" name="btnDeleteCluster">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Delete Cluster"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="btnLoadProcessingDetails">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Load Cluster Info"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLoadProcessingDetailsActionPerformed"/>
+                      </Events>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Component class="javax.swing.JLabel" name="lblStopRestartStatus">
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
             <Component class="javax.swing.JComboBox" name="comboBoxProcFrameworks">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
@@ -631,33 +753,7 @@
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel5">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Instance Type [Master node]:"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="comboBoxMasterInstType">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="5">
-                    <StringItem index="0" value="--select--"/>
-                    <StringItem index="1" value="t2.small"/>
-                    <StringItem index="2" value="t2.medium"/>
-                    <StringItem index="3" value="t2.large"/>
-                    <StringItem index="4" value="t2.xlarge"/>
-                  </StringArray>
-                </Property>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
-            </Component>
-            <Component class="javax.swing.JLabel" name="jLabel6">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="No of Slaves[Worker nodes]:"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="comboBoxSlaveNodes">
+            <Component class="javax.swing.JComboBox" name="comboBoxNoSparkNodes">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="11">
@@ -679,21 +775,15 @@
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel7">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Instance Type[Salve node]:"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="comboBoxSlaveInstType">
+            <Component class="javax.swing.JComboBox" name="comboBoxSparkInstType">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="6">
+                  <StringArray count="5">
                     <StringItem index="0" value="--select--"/>
                     <StringItem index="1" value="t2.micro"/>
                     <StringItem index="2" value="t2.small"/>
                     <StringItem index="3" value="t2.medium"/>
-                    <StringItem index="4" value="t2.large"/>
-                    <StringItem index="5" value="t2.xlarge"/>
+                    <StringItem index="4" value=" "/>
                   </StringArray>
                 </Property>
               </Properties>
@@ -709,38 +799,23 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuildProcessingClusterActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JProgressBar" name="progressBarProcessing">
+            <Component class="javax.swing.JLabel" name="jLabel4">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Processing Framework:"/>
+              </Properties>
             </Component>
-            <Container class="javax.swing.JScrollPane" name="jScrollPane9">
-              <AuxValues>
-                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-              </AuxValues>
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-              <SubComponents>
-                <Component class="javax.swing.JTextArea" name="txtAreaSparkResourcesInfo">
-                  <Properties>
-                    <Property name="columns" type="int" value="20"/>
-                    <Property name="rows" type="int" value="5"/>
-                  </Properties>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Container class="javax.swing.JPanel" name="jPanel4">
-
-              <Layout>
-                <DimensionLayout dim="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="872" max="32767" attributes="0"/>
-                  </Group>
-                </DimensionLayout>
-                <DimensionLayout dim="1">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <EmptySpace min="0" pref="195" max="32767" attributes="0"/>
-                  </Group>
-                </DimensionLayout>
-              </Layout>
-            </Container>
+            <Component class="javax.swing.JLabel" name="jLabel6">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="No of Nodes:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel7">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Instance Type:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblBuildProcessingCluster">
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="panStorage">
@@ -797,7 +872,7 @@
                                       </Group>
                                   </Group>
                               </Group>
-                              <EmptySpace min="0" pref="194" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="203" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -826,7 +901,7 @@
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="btnBuildStorageCluster" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="33" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                               <Component id="lblBuildClusterstatus" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
                           </Group>
@@ -1472,15 +1547,22 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                                          <Component id="jLabel15" min="-2" pref="148" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="jLabel14" alignment="0" min="-2" pref="148" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                               <Component id="jLabel13" alignment="0" min="-2" pref="151" max="-2" attributes="0"/>
-                              <Component id="jLabel15" alignment="0" min="-2" pref="148" max="-2" attributes="0"/>
-                              <Component id="jLabel14" alignment="1" min="-2" pref="148" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jScrollPane5" pref="828" max="32767" attributes="0"/>
+                              <Component id="jScrollPane5" pref="837" max="32767" attributes="0"/>
                               <Component id="jScrollPane6" max="32767" attributes="0"/>
                               <Component id="jScrollPane7" max="32767" attributes="0"/>
                           </Group>
@@ -1497,33 +1579,34 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jScrollPane5" min="-2" pref="72" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+                                  <Component id="jScrollPane5" min="-2" pref="136" max="-2" attributes="0"/>
+                              </Group>
                               <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="120" max="-2" attributes="0"/>
                                   <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="28" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="jScrollPane6" min="-2" pref="82" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="jScrollPane6" min="-2" pref="112" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="jScrollPane7" min="-2" pref="82" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="1" attributes="0">
+                              <Component id="jScrollPane7" min="-2" pref="111" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
                                   <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
                               </Group>
                           </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="btnScaleDppResources" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                       </Group>
@@ -1618,7 +1701,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane11" min="-2" pref="857" max="-2" attributes="0"/>
-                      <EmptySpace pref="176" max="32767" attributes="0"/>
+                      <EmptySpace pref="185" max="32767" attributes="0"/>
                       <Component id="btnViewQoSProfile" min="-2" pref="145" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                       <Component id="btnUpdateQoSProfile" min="-2" pref="163" max="-2" attributes="0"/>
@@ -1645,7 +1728,7 @@
                               <Component id="jScrollPane11" min="-2" pref="218" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="200" max="32767" attributes="0"/>
+                      <EmptySpace pref="330" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
