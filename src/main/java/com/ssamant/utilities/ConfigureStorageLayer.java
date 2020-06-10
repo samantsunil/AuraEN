@@ -433,7 +433,7 @@ public class ConfigureStorageLayer {
     }
 
     public static ResultSet loadStorageClusterInfoFromDatabase() {
-        ResultSet rs =null;        
+        ResultSet rs = null;
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -444,16 +444,17 @@ public class ConfigureStorageLayer {
             }
             String query = "SELECT * FROM storage_nodes_info";
             Statement st = DatabaseConnection.con.createStatement();
-             rs = st.executeQuery(query);           
+            rs = st.executeQuery(query);
             st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rs;
     }
-public static ResultSet loadCurrentCassandraClusterInfo() {
-    ResultSet rs =null;
-    try {
+
+    public static ResultSet loadCurrentCassandraClusterInfo() {
+        ResultSet rs = null;
+        try {
             if (DatabaseConnection.con == null) {
                 try {
                     DatabaseConnection.con = DatabaseConnection.getConnection();
@@ -468,8 +469,9 @@ public static ResultSet loadCurrentCassandraClusterInfo() {
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-    return rs;
-}
+        return rs;
+    }
+
     public static void loadFromFileStorageClusterDetails(boolean isDPP) {
 
         String fileName = "C:\\Code\\CassandraClusterDetails.txt";

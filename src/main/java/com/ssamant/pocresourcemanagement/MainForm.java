@@ -511,6 +511,11 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         });
 
         btnRestartInstanceProc.setText("Restart");
+        btnRestartInstanceProc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRestartInstanceProcActionPerformed(evt);
+            }
+        });
 
         btnDeleteCluster.setText("Delete Cluster");
         btnDeleteCluster.addActionListener(new java.awt.event.ActionListener() {
@@ -1790,6 +1795,11 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnStorageActionPerformed
+
+    private void btnRestartInstanceProcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRestartInstanceProcActionPerformed
+        // TODO add your handling code here:
+        ConfigureProcessingLayer.restartedSparkProcessingNode(txtFieldStartRestartInstId.getText().trim());
+    }//GEN-LAST:event_btnRestartInstanceProcActionPerformed
 
     /**
      * @param args the command line arguments

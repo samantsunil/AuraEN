@@ -86,12 +86,12 @@ public class ConfigureProcessingLayer {
                     .withResources(inst.getInstanceId())
                     .withTags(tag);
             CreateTagsResult tag_response = ec2Client.createTags(createTagsRequest);
-            stratInstanceForProcessingCluster(ec2Client, inst, inst.getPlacement(), data);
+            startInstanceForProcessingCluster(ec2Client, inst, inst.getPlacement(), data);
             i++;
         }
     }
 
-    public static void stratInstanceForProcessingCluster(AmazonEC2 ec2Client, Instance inst, Placement az, WriteFile data) {
+    public static void startInstanceForProcessingCluster(AmazonEC2 ec2Client, Instance inst, Placement az, WriteFile data) {
         try {
             StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
             StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
@@ -105,6 +105,7 @@ public class ConfigureProcessingLayer {
                     data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: " + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
                             + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
                     dbInsertSpakInstanceDetail(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getState().getName());
+                    updateSparkClusterInfo(curInstance.getInstanceType());
                 } catch (IOException ex) {
                     System.out.println(ex.getMessage());
                     MainForm.txtAreaSparkResourcesInfo.append("Error while writing to a file: " + ex.getMessage());
@@ -116,7 +117,27 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+public static void updateSparkClusterInfo(String instanceType) {
+     int i = 1;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_type = CONCAT(instance_type, ?) WHERE cluster_id = ?";
+            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
+            update.setInt(1, i);
+            update.setString(2, "1X" + instanceType +",");
+                 update.setInt(3, 100); //clusterId= 100 fixed
+            update.executeUpdate();
+            update.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
     public static void dbInsertSpakInstanceDetail(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status) {
         try {
             String query = "INSERT INTO processing_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status)"
@@ -176,7 +197,7 @@ public class ConfigureProcessingLayer {
         return rs;
 
     }
-
+    
     public static void loadSparkClusterInfoFromFile() {
         MainForm.txtAreaSparkResourcesInfo.setText("");
         String fileName = "C:\\Code\\SparkClusterDetails.txt";
@@ -253,6 +274,7 @@ public class ConfigureProcessingLayer {
                         data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + curInstance.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
                                 + ", PublicIP:" + curInstance.getPublicIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
                         updateSparkRestartNodeDetails(curInstance.getInstanceId(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName());
+                        updateSparkClusterNodeRemoveInfo(curInstance.getInstanceType());
                     } catch (IOException ex) {
                         System.out.println(ex.getMessage());
                         MainForm.lblStopRestartStatus.setText("Error while writing to a file: " + ex.getMessage());
@@ -268,7 +290,27 @@ public class ConfigureProcessingLayer {
             MainForm.lblStopRestartStatus.setText("Enter the valid instance ID.");
         }
     }
-
+public static void updateSparkClusterNodeRemoveInfo(String instanceType) {
+    int i = 1;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_type = REPLACE(instance_type, ?, '') WHERE cluster_id = ?";
+            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
+            update.setInt(1, i);
+            update.setString(2, "1X" + instanceType);
+            update.setInt(3, 100); //clusterId= 100 fixed
+            update.executeUpdate();
+            update.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
     public static void updateRestartedInstanceInfoSpark(String instanceId, String pubDns, String pubIp, String status) {
         try {
             if (DatabaseConnection.con == null) {
@@ -292,6 +334,9 @@ public class ConfigureProcessingLayer {
     }
 
     public static void restartedSparkProcessingNode(String instId) {
+        if("".equals(instId)){
+            return;
+        }        
         try {
             AmazonEC2 ec2Client = CloudLogin.getEC2Client();
             WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
@@ -305,6 +350,7 @@ public class ConfigureProcessingLayer {
                     data.writeToFile("InstanceID: " + inst.getInstanceId() + " , InstanceType: " + inst.getInstanceType() + ", AZ: ." + inst.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + inst.getPublicDnsName()
                             + ", PublicIP:" + inst.getPublicIpAddress() + ", Status: " + inst.getState().getName() + ".");
                     updateRestartedInstanceInfoSpark(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getState().getName());
+                    updateSparkClusterInfo(inst.getInstanceType());
                 } catch (IOException ex) {
                     System.out.println(ex.getMessage());
                     MainForm.lblStopRestartStatus.setText("Error while writing to a file: " + ex.getMessage());
@@ -314,7 +360,6 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
     public static String getCurrentBrokerIds() {
         String broker_ids = null;
         try {
