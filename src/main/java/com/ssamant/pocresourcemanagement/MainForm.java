@@ -1405,22 +1405,24 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private void btnIngestionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngestionActionPerformed
         try {
             // ConfigureIngestionLayer.loadIngestionClusterInfoFromDatabase();
+            txtAreaIngestionDetails.setText("");
             txtAreaIngestionDetails.append("\n");
-            ResultSet rs = ConfigureIngestionLayer.loadCurrentClusterDetails();
-            while (rs.next()) {
-                String instanceId = rs.getString("instance_id");
-                String instanceType = rs.getString("instance_type");
-                String az = rs.getString("availability_zone");
-                String publicDnsName = rs.getString("public_dnsname");
-                String publicIp = rs.getString("public_ip");
-                String status = rs.getString("status");
-                String brokerId = rs.getString("broker_id");
-                //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
-                txtAreaIngestionDetails.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", Status: " + status + ", BrokerId: " + brokerId + ".\n");
-                txtAreaIngestionDetails.append("---------------------------------------------------------------------------------------------------------------------------\n");
-            }
+//            ResultSet rs = ConfigureIngestionLayer.loadCurrentClusterDetails();
+//            while (rs.next()) {
+//                String instanceId = rs.getString("instance_id");
+//                String instanceType = rs.getString("instance_type");
+//                String az = rs.getString("availability_zone");
+//                String publicDnsName = rs.getString("public_dnsname");
+//                String publicIp = rs.getString("public_ip");
+//                String status = rs.getString("status");
+//                String brokerId = rs.getString("broker_id");
+//                //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
+//                txtAreaIngestionDetails.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", Status: " + status + ", BrokerId: " + brokerId + ".\n");
+//                txtAreaIngestionDetails.append("---------------------------------------------------------------------------------------------------------------------------\n");
+//            }
+//            rs.close();
             //ConfigureIngestionLayer.loadFromFileKafkaClusterDetails(true); //if db is not connected.
-            txtAreaIngestionDetails.append("-----------Cluster Capacity & Topic details-----------\n");
+            // txtAreaIngestionDetails.append("-----------Cluster Capacity & Topic details-----------\n");
             ResultSet rss = ConfigureIngestionLayer.loadIngestionClusterCapacityDetails();
             while (rss.next()) {
                 int clusterID = rss.getInt("cluster_id");
@@ -1441,6 +1443,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 txtAreaIngestionDetails.append("Total throughput: " + Integer.toString(throughput) + "\n");
                 txtAreaIngestionDetails.append("Sustainable latency: " + Integer.toString(latency) + "\n");
             }
+            rss.close();
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1515,6 +1518,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         try {
             //ConfigureIngestionLayer.loadFromFileKafkaClusterDetails(false);
             //loadIngestionClusterInfoFromDatabase();
+            txtAreaClusterInfo.setText("");
+            txtAreaClusterInfo.append("");
             ResultSet rs = ConfigureIngestionLayer.loadCurrentClusterDetails();
             while (rs.next()) {
                 String instanceId = rs.getString("instance_id");
@@ -1526,7 +1531,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String brokerId = rs.getString("broker_id");
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
                 txtAreaClusterInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", Status: " + status + ", BrokerId: " + brokerId + ".\n");
-                txtAreaClusterInfo.append("------------------------------------------------------------------------------------------------------------\n");
+                txtAreaClusterInfo.append("-----------------------------------------------------------\n");
             }
             rs.close();
         } catch (SQLException ex) {
@@ -1795,7 +1800,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private void btnStorageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStorageActionPerformed
         try {
             // TODO add your handling code here:
-txtAreaStorageDetails.setText("");
+            txtAreaStorageDetails.setText("");
             ResultSet rs = ConfigureStorageLayer.loadCurrentCassandraClusterInfo();
             txtAreaStorageDetails.append("\n");
             while (rs.next()) {
@@ -1806,11 +1811,11 @@ txtAreaStorageDetails.setText("");
                 int latency = rs.getInt("latency");
 
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
-                txtAreaProcessingDetails.append("NoOfNodes: " + Integer.toString(noOfNodes) + ".\n");
-                txtAreaProcessingDetails.append("Cluster Resources: " + instanceTypes + ".\n");
-                txtAreaProcessingDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
-                txtAreaProcessingDetails.append("Latency: " + Integer.toString(latency) + ".\n");
-                txtAreaProcessingDetails.append("-------------------------------------------------------------------------------------------------------------------------\n");
+                txtAreaStorageDetails.append("NoOfNodes: " + Integer.toString(noOfNodes) + ".\n");
+                txtAreaStorageDetails.append("Cluster Resources: " + instanceTypes + ".\n");
+                txtAreaStorageDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
+                txtAreaStorageDetails.append("Latency: " + Integer.toString(latency) + ".\n");
+                txtAreaStorageDetails.append("--------------------------------------------------------\n");
             }
             rs.close();
         } catch (SQLException ex) {
