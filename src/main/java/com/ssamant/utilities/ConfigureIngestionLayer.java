@@ -56,6 +56,7 @@ public class ConfigureIngestionLayer {
 
     }
     public static String amiId = "ami-0cea39b134da9a7da";
+    public static String zkDnsName = "ec2-3-24-240-124.ap-southeast-2.compute.amazonaws.com";
 
     public static void buildIngestionLayerCluster(int noOfBrokers, String instType) {
         try {
@@ -109,15 +110,16 @@ public class ConfigureIngestionLayer {
         Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
         if (curInstance != null) {
             System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
-            txtAreaClusterInfo.append("Successfully created following ec2 instances for the Ingestion Cluster:\n");
-            txtAreaClusterInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP:" + curInstance.getPublicIpAddress() + ".\n");
+            txtAreaClusterInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP:" + curInstance.getPublicIpAddress() + 
+                    ", InstanceStatus: " + curInstance.getState().getName() + ", BrokerId: " + brokerId + ".\n");
+            txtAreaClusterInfo.append("---------------------------------------------------------------------------------------------------------------------");
             try {
 
                 data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
                         + ", PublicIP:" + curInstance.getPublicIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
                 try {
                     dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName(), brokerId);
-
+                    updateIngestionClusterInfo(curInstance.getInstanceType());
                 } catch (SQLException ex) {
                     Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -177,6 +179,7 @@ public class ConfigureIngestionLayer {
                     data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + curInstance.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
                             + ", PublicIP:" + curInstance.getPublicIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
                     updateInstanceInfoDbKafka(curInstance.getInstanceId(), curInstance.getState().getName());
+                    updateIngestionClusterRemoveNode(curInstance.getInstanceType());
                 } catch (IOException ex) {
                     System.out.println(ex.getMessage());
                     lblStopInstance.setText("Error while writing to a file: " + ex.getMessage());
@@ -189,7 +192,29 @@ public class ConfigureIngestionLayer {
             lblStopInstance.setText("Enter the valid instance ID.");
         }
     }
-
+   public static void updateIngestionClusterRemoveNode(String instanceType) {
+        int i=1;
+    try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE ingestion_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_type = REPLACE(instance_type, ?, ''), replication_factor = replication_factor - ?, partitions_count = partitions_count - ? WHERE cluster_id = ?";
+            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
+            update.setInt(1, i);
+            update.setString(2, "1X"+instanceType);
+            update.setInt(3, i);
+            update.setInt(4, i);
+            update.setInt(5, 100); //clusterId= 100 fixed
+            update.executeUpdate();
+            update.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+   }
     public static void updateInstanceInfoDbKafka(String instanceId, String status) {
         try {
             if (DatabaseConnection.con == null) {
@@ -227,6 +252,7 @@ public class ConfigureIngestionLayer {
                 data.writeToFile("InstanceID: " + inst.getInstanceId() + " , InstanceType: " + inst.getInstanceType() + ", AZ: ." + inst.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + inst.getPublicDnsName()
                         + ", PublicIP:" + inst.getPublicIpAddress() + ", Status: " + inst.getState().getName() + ".");
                 updateRestartedInstanceInfoIngestion(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getState().getName());
+                updateIngestionClusterInfo(inst.getInstanceType());
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
                 lblStartedInstance.setText("Error while writing to a file: " + ex.getMessage());
@@ -255,7 +281,29 @@ public class ConfigureIngestionLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+public static void updateIngestionClusterInfo(String instanceType) {
+    int i=1;
+    try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE ingestion_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_type = CONCAT(instance_type, ?), replication_factor = replication_factor + ?, partitions_count = partitions_count + ? WHERE cluster_id = ?";
+            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
+            update.setInt(1, i);
+            update.setString(2, "1X"+instanceType);
+            update.setInt(3, i);
+            update.setInt(4, i);
+            update.setInt(5, 100); //clusterId= 100 fixed
+            update.executeUpdate();
+            update.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
     public static void loadIngestionClusterInfoFromDatabase() {
         MainForm.txtAreaClusterInfo.setText("");
         try {
@@ -463,7 +511,7 @@ public class ConfigureIngestionLayer {
     }
 
     public static void deleteTopicFromZookeeper() {
-        String zkDnsName = "ec2-3-24-240-124.ap-southeast-2.compute.amazonaws.com"; //hard-coded now ... as zk is not managed by the app
+         
         JSch jschClient = new JSch();
         try {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file

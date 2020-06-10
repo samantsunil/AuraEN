@@ -5,10 +5,6 @@
  */
 package com.ssamant.pocresourcemanagement;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.ec2.AmazonEC2;
-import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import com.ssamant.utilities.ConfigureIngestionLayer;
@@ -25,7 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
-import logincredentials.CloudLogin;
 
 /**
  *
@@ -1388,6 +1383,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String brokerId = rs.getString("broker_id");
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
                 txtAreaIngestionDetails.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", Status: " + status + ", BrokerId: " + brokerId + ".\n");
+                txtAreaIngestionDetails.append("-------------------------------------------------------------------------------------------------------------------------");
             }
             //ConfigureIngestionLayer.loadFromFileKafkaClusterDetails(true); //if db is not connected.
             txtAreaIngestionDetails.append("-----------Cluster Capacity & Topic details-----------");
@@ -1402,14 +1398,14 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String zkDnsName = rss.getString("zk_dnsname");
                 int throughput = rss.getInt("throughput");
                 int latency = rss.getInt("latency");
-                
+
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
                 txtAreaIngestionDetails.append("No of Nodes: " + Integer.toString(noOfNodes) + "\n");
                 txtAreaIngestionDetails.append("Cluster Resource Composition: " + clusterComposition + "\n");
                 txtAreaIngestionDetails.append("Replication factor: " + Integer.toString(replicationFactor) + "\n");
                 txtAreaIngestionDetails.append("Topic partitions: " + Integer.toString(partitionsCount) + "\n");
                 txtAreaIngestionDetails.append("Total throughput: " + Integer.toString(throughput) + "\n");
-                txtAreaIngestionDetails.append("Sustainable Latency: " + Integer.toString(latency) + "\n");
+                txtAreaIngestionDetails.append("Sustainable latency: " + Integer.toString(latency) + "\n");
             }
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -1685,9 +1681,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
     private void btnStartKafkaClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartKafkaClusterActionPerformed
         // TODO add your handling code here:
-        if(!"".equals(txtFieldPartitions.getText().trim())){
+        if (!"".equals(txtFieldPartitions.getText().trim())) {
             ConfigureIngestionLayer.configureKafkaTopic(txtFieldPartitions.getText().trim());
-            
+
         }
     }//GEN-LAST:event_btnStartKafkaClusterActionPerformed
 
