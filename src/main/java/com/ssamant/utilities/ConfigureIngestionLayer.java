@@ -55,7 +55,7 @@ public class ConfigureIngestionLayer {
     public ConfigureIngestionLayer() {
 
     }
-    public static String amiId = "ami-0a139537a122f6310";
+    public static String amiId = "ami-0cea39b134da9a7da";
 
     public static void buildIngestionLayerCluster(int noOfBrokers, String instType) {
         try {
@@ -117,6 +117,7 @@ public class ConfigureIngestionLayer {
                         + ", PublicIP:" + curInstance.getPublicIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
                 try {
                     dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName(), brokerId);
+
                 } catch (SQLException ex) {
                     Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -254,7 +255,8 @@ public class ConfigureIngestionLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-public static void loadIngestionClusterInfoFromDatabase() {
+
+    public static void loadIngestionClusterInfoFromDatabase() {
         MainForm.txtAreaClusterInfo.setText("");
         try {
             if (DatabaseConnection.con == null) {
@@ -272,9 +274,9 @@ public static void loadIngestionClusterInfoFromDatabase() {
                 String instanceType = rs.getString("instance_type");
                 String az = rs.getString("availability_zone");
                 String publicDnsName = rs.getString("public_dnsname");
-                String publicIp = rs.getString("public_ip");                
+                String publicIp = rs.getString("public_ip");
                 String status = rs.getString("status");
-                String brokerId = rs.getString("broker_id");                
+                String brokerId = rs.getString("broker_id");
                 System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
                 MainForm.txtAreaClusterInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", Status: " + status + ", BrokerId: " + brokerId + ".\n");
             }
@@ -283,6 +285,47 @@ public static void loadIngestionClusterInfoFromDatabase() {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public static ResultSet loadCurrentClusterDetails() {
+        ResultSet rs = null;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT * FROM ingestion_nodes_info";
+            Statement st = DatabaseConnection.con.createStatement();
+            rs = st.executeQuery(query);
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rs;
+    }
+
+    public static ResultSet loadIngestionClusterCapacityDetails() {
+        ResultSet rs = null;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT * FROM ingestion_cluster_info";
+            Statement st = DatabaseConnection.con.createStatement();
+            rs = st.executeQuery(query);
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rs;
+    }
+
     public static void loadFromFileKafkaClusterDetails(boolean isDPP) {
 
         String fileName = "C:\\Code\\KafkaClusterDetails.txt";
@@ -325,17 +368,9 @@ public static void loadIngestionClusterInfoFromDatabase() {
         }
     }
 
-    public static void configureNewlyCreatedBroker(String pubDnsName, String newReplicationFactor, String newPartitionsCount, String newBrokerId) {
-        String oldReplicationFactor = "1"; //obtain from existing info       
-        String oldPartitionsCount = "1"; //obtain from existing info stored in DB 
+    public static void configureNewlyCreatedBroker(String pubDnsName, String newBrokerId) {
         if ("".equals(newBrokerId)) {
             newBrokerId = "0";
-        }
-        if ("".equals(newReplicationFactor)) {
-            newReplicationFactor = "1";
-        }
-        if ("".equals(newPartitionsCount)) {
-            newPartitionsCount = "1";
         }
         JSch jschClient = new JSch();
         try {
@@ -343,8 +378,7 @@ public static void loadIngestionClusterInfoFromDatabase() {
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
             session.connect();
-            //run commands - with 5 arguments: 
-            String command = "sudo bash configNewBroker.sh " + newBrokerId + " " + oldPartitionsCount + " " + newPartitionsCount + " " + oldReplicationFactor + " " + newReplicationFactor;
+            String command = "sudo bash configNewBroker.sh " + newBrokerId;
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
@@ -356,25 +390,70 @@ public static void loadIngestionClusterInfoFromDatabase() {
             channel1.setCommand(command1);
             channel1.setErrStream(System.err);
             channel1.connect();
-            readInputStreamFromSshSession(channel);
+            readInputStreamFromSshSession(channel1);
             sleep(5000);
-            if (!oldPartitionsCount.equals(newPartitionsCount)) {
-                String command2 = "sudo bash deleteTopic.sh"; //command to delete existing topic
-                ChannelExec channel2 = (ChannelExec) session.openChannel("exec");
-                channel2.setCommand(command2);
-                channel2.setErrStream(System.err);
-                channel2.connect();
-                readInputStreamFromSshSession(channel2);
-                sleep(5000);
-                deleteTopicFromZookeeper();
-                sleep(5000);
-                String cmd = "sudo bash createTopic.sh"; //command to create new kafka topic with new partitions and replication factor.
-                ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
-                channel3.setCommand(cmd);
-                channel3.setErrStream(System.err);
-                channel3.connect();
-                readInputStreamFromSshSession(channel3);
+            session.disconnect();
+        } catch (JSchException ex) {
+            System.out.println(ex.getMessage());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static String getActiveBrokerDns() {
+        String brokerDns = "";
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+
+            String query = "select public_dnsname from dpp_resources.ingestion_nodes_info where status = ? limit 1";
+            PreparedStatement pst = DatabaseConnection.con.prepareStatement(query);
+            pst.setString(1, "running");
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+
+                brokerDns = rs.getString(1);
+            }
+            pst.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return brokerDns;
+    }
+
+    public static void configureKafkaTopic(String partitionsCount) {
+        JSch jschClient = new JSch();
+        String brokerDns = getActiveBrokerDns();
+        if("".equals(brokerDns)){
+            brokerDns=MainForm.txtFieldInstId.getText().trim();
+        }
+        try {
+            jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+            JSch.setConfig("StrictHostKeyChecking", "no");
+            Session session = jschClient.getSession("ubuntu", brokerDns, 22);
+            session.connect();
+            //run commands
+            deleteTopicFromZookeeper();
+            sleep(5000);
+            String cmd = "sudo bash configKafkaTopic.sh 1 " + partitionsCount + " 1 " + partitionsCount; //command to configure kafka topic before starting the cluster - based on no of kafka nodes.
+            ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
+            channel3.setCommand(cmd);
+            channel3.setErrStream(System.err);
+            channel3.connect();
+            readInputStreamFromSshSession(channel3);
+            sleep(5000);
+            String cmd1 = "sudo bash createTopic.sh"; //command to create new kafka topic with new partitions and replication factor.
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand(cmd1);
+            channel.setErrStream(System.err);
+            channel.connect();
+            readInputStreamFromSshSession(channel);
+            sleep(3000);
             session.disconnect();
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());
@@ -430,6 +509,12 @@ public static void loadIngestionClusterInfoFromDatabase() {
             }
             if (channel.isClosed()) {
                 System.out.println("exit-status: " + channel.getExitStatus());
+                break;
+            }
+            else if(channel.isEOF()){
+                break;
+            }
+            else if(channel.getExitStatus()==0){
                 break;
             }
             sleep(1000);
