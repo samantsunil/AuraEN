@@ -101,6 +101,7 @@ public class ConfigureStorageLayer {
                         data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + curInstance.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
                                 + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
                         updateInstanceInfoDb(curInstance.getInstanceId(), curInstance.getState().getName());
+                        updateCassandraClusterNodeRemoveInfo(curInstance.getInstanceType());
                     } catch (IOException ex) {
                         System.out.println(ex.getMessage());
                         MainForm.txtAreaCassandraResourcesInfo.append("Error while writing to a file: " + ex.getMessage());
@@ -113,7 +114,27 @@ public class ConfigureStorageLayer {
             }
         }
     }
-
+public static void updateCassandraClusterNodeRemoveInfo(String instanceType){
+    int i = 1;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE storage_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_type = REPLACE(instance_type, ?, '') WHERE cluster_id = ?";
+            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
+            update.setInt(1, i);
+            update.setString(2, "1X" + instanceType);
+            update.setInt(3, 100); //clusterId= 100 fixed
+            update.executeUpdate();
+            update.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
     public static void updateInstanceInfoDb(String instanceId, String status) {
         try {
             if (DatabaseConnection.con == null) {
@@ -155,6 +176,7 @@ public class ConfigureStorageLayer {
                 data.writeToFile("InstanceID: " + inst.getInstanceId() + " , InstanceType: " + inst.getInstanceType() + ", AZ: ." + inst.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + inst.getPublicDnsName()
                         + ", PublicIP:" + inst.getPublicIpAddress() + ", PrivateIP: " + inst.getPrivateIpAddress() + ", Status: " + inst.getState().getName() + ".");
                 updateRestartedInstanceInfo(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getPrivateIpAddress(), inst.getState().getName());
+                updateStorageClusterAddNodeInfo(inst.getInstanceType());
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
                 MainForm.txtAreaCassandraResourcesInfo.append("Error while writing to a file: " + ex.getMessage());
@@ -425,6 +447,7 @@ public class ConfigureStorageLayer {
                 data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: " + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
                         + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
                 dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getState().getName(), "");
+                updateStorageClusterAddNodeInfo(curInstance.getInstanceType());
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
                 MainForm.txtAreaCassandraResourcesInfo.append("Error while writing to a file: " + ex.getMessage());
@@ -433,7 +456,27 @@ public class ConfigureStorageLayer {
             System.out.println("Instances are not running.");
         }
     }
-
+public static void updateStorageClusterAddNodeInfo(String instanceType){
+    int i = 1;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE storage_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_type = CONCAT(instance_type, ?) WHERE cluster_id = ?";
+            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
+            update.setInt(1, i);
+            update.setString(2, "1X" + instanceType+",");
+            update.setInt(3, 100); //clusterId= 100 fixed
+            update.executeUpdate();
+            update.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
     public static void dbInsertInstanceInfo(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status, String nodeHostId) throws SQLException {
         String query = "INSERT INTO storage_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status, node_hostId)"
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
