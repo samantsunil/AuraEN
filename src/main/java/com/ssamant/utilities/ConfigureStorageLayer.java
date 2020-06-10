@@ -506,7 +506,7 @@ public static void updateStorageClusterAddNodeInfo(String instanceType){
             String query = "SELECT * FROM storage_nodes_info";
             Statement st = DatabaseConnection.con.createStatement();
             rs = st.executeQuery(query);
-            st.close();
+            //st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -526,7 +526,7 @@ public static void updateStorageClusterAddNodeInfo(String instanceType){
             String query = "SELECT * FROM storage_cluster_info";
             Statement st = DatabaseConnection.con.createStatement();
             rs = st.executeQuery(query);
-            st.close();
+            //st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }

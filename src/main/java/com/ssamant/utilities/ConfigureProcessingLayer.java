@@ -188,7 +188,7 @@ public static void updateSparkClusterInfo(String instanceType) {
             String query = "SELECT * FROM processing_nodes_info";
             Statement st = DatabaseConnection.con.createStatement();
             rs = st.executeQuery(query);
-            st.close();
+            //st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -208,7 +208,7 @@ public static void updateSparkClusterInfo(String instanceType) {
             String query = "SELECT * FROM processing_cluster_info";
             Statement st = DatabaseConnection.con.createStatement();
             rs = st.executeQuery(query);
-            st.close();
+            //st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }

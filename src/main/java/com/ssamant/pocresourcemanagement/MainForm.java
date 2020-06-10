@@ -1417,10 +1417,10 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String brokerId = rs.getString("broker_id");
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
                 txtAreaIngestionDetails.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", Status: " + status + ", BrokerId: " + brokerId + ".\n");
-                txtAreaIngestionDetails.append("-------------------------------------------------------------------------------------------------------------------------");
+                txtAreaIngestionDetails.append("---------------------------------------------------------------------------------------------------------------------------\n");
             }
             //ConfigureIngestionLayer.loadFromFileKafkaClusterDetails(true); //if db is not connected.
-            txtAreaIngestionDetails.append("-----------Cluster Capacity & Topic details-----------");
+            txtAreaIngestionDetails.append("-----------Cluster Capacity & Topic details-----------\n");
             ResultSet rss = ConfigureIngestionLayer.loadIngestionClusterCapacityDetails();
             while (rss.next()) {
                 int clusterID = rss.getInt("cluster_id");
@@ -1528,6 +1528,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 txtAreaClusterInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", Status: " + status + ", BrokerId: " + brokerId + ".\n");
                 txtAreaClusterInfo.append("------------------------------------------------------------------------------------------------------------\n");
             }
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1671,13 +1672,14 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String status = rs.getString("status");
                 String nodeHostId = rs.getString("node_hostId");
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status, nodeHostId);
-               txtAreaCassandraResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", HostId: " + nodeHostId + ".\n");
-               txtAreaCassandraResourcesInfo.append("------------------------------------------------------------------------------------------");
+                txtAreaCassandraResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", HostId: " + nodeHostId + ".\n");
+                txtAreaCassandraResourcesInfo.append("------------------------------------------------------------------------------------------");
             }
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }//GEN-LAST:event_btnLoadStorageClusterDetailsActionPerformed
 
     private void btnViewQoSProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewQoSProfileActionPerformed
@@ -1726,13 +1728,13 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status);
                 txtAreaSparkResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ".\n");
                 txtAreaSparkResourcesInfo.append("-------------------------------------------------------------------------------------------------------------------------");
-                
+
             }
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
-            
-      
+
 
     }//GEN-LAST:event_btnLoadProcessingDetailsActionPerformed
 
@@ -1761,7 +1763,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private void btnProcessingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessingActionPerformed
         // TODO add your handling code here:
         try {
-
+            txtAreaProcessingDetails.setText("");
             txtAreaProcessingDetails.append("\n");
             ResultSet rs = ConfigureProcessingLayer.loadCurrentSparkClusterInfo();
             while (rs.next()) {
@@ -1781,8 +1783,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 txtAreaProcessingDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
                 txtAreaProcessingDetails.append("Latency: " + Integer.toString(latency) + ".\n");
                 txtAreaProcessingDetails.append("Batch Interval: " + Integer.toString(batchInterval) + ".\n");
-                txtAreaProcessingDetails.append("-------------------------------------------------------------------------------------------------------------------------");
+                txtAreaProcessingDetails.append("-------------------------------------------------------------------------------------------------------------------------\n");
             }
+            rs.close();
 
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -1792,23 +1795,24 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private void btnStorageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStorageActionPerformed
         try {
             // TODO add your handling code here:
-            
+txtAreaStorageDetails.setText("");
             ResultSet rs = ConfigureStorageLayer.loadCurrentCassandraClusterInfo();
             txtAreaStorageDetails.append("\n");
             while (rs.next()) {
                 int clusterID = rs.getInt("cluster_id");
                 int noOfNodes = rs.getInt("no_of_nodes");
-                String instanceTypes = rs.getString("instance_types");              
+                String instanceTypes = rs.getString("instance_types");
                 int throughput = rs.getInt("throughput");
-                int latency = rs.getInt("latency");               
+                int latency = rs.getInt("latency");
 
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
                 txtAreaProcessingDetails.append("NoOfNodes: " + Integer.toString(noOfNodes) + ".\n");
                 txtAreaProcessingDetails.append("Cluster Resources: " + instanceTypes + ".\n");
                 txtAreaProcessingDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
-                txtAreaProcessingDetails.append("Latency: " + Integer.toString(latency) + ".\n");                
-                txtAreaProcessingDetails.append("-------------------------------------------------------------------------------------------------------------------------");
+                txtAreaProcessingDetails.append("Latency: " + Integer.toString(latency) + ".\n");
+                txtAreaProcessingDetails.append("-------------------------------------------------------------------------------------------------------------------------\n");
             }
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
