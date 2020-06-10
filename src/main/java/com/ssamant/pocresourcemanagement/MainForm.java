@@ -1016,9 +1016,20 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         });
 
         btnProcessing.setText("Spark Cluster");
+        btnProcessing.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProcessingActionPerformed(evt);
+            }
+        });
 
         btnStorage.setText("Cassandra Cluster");
+        btnStorage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStorageActionPerformed(evt);
+            }
+        });
 
+        txtAreaIngestionDetails.setEditable(false);
         txtAreaIngestionDetails.setBackground(new java.awt.Color(204, 255, 204));
         txtAreaIngestionDetails.setColumns(20);
         txtAreaIngestionDetails.setForeground(new java.awt.Color(153, 0, 0));
@@ -1195,10 +1206,10 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
                             .addComponent(btnIngestion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(30, 30, 30)
-                        .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
-                            .addComponent(btnProcessing, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(104, 104, 104)
+                        .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnProcessing, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
@@ -1492,6 +1503,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String brokerId = rs.getString("broker_id");
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
                 txtAreaClusterInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", Status: " + status + ", BrokerId: " + brokerId + ".\n");
+                txtAreaClusterInfo.append("------------------------------------------------------------------------------------------------------------\n");
             }
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -1621,9 +1633,28 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     }//GEN-LAST:event_btnConfigureStorageNodeActionPerformed
 
     private void btnLoadStorageClusterDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadStorageClusterDetailsActionPerformed
-        // TODO add your handling code here:
-        //ConfigureStorageLayer.loadFromFileStorageClusterDetails(false);
-        ConfigureStorageLayer.loadStorageClusterInfoFromDatabase();
+        try {
+            // TODO add your handling code here:
+            //ConfigureStorageLayer.loadFromFileStorageClusterDetails(false);
+            ResultSet rs = ConfigureStorageLayer.loadStorageClusterInfoFromDatabase();
+            txtAreaCassandraResourcesInfo.setText("");
+            while (rs.next()) {
+                String instanceId = rs.getString("instance_id");
+                String instanceType = rs.getString("instance_type");
+                String az = rs.getString("availability_zone");
+                String publicDnsName = rs.getString("public_dnsname");
+                String publicIp = rs.getString("public_ip");
+                String privateIp = rs.getString("private_ip");
+                String status = rs.getString("status");
+                String nodeHostId = rs.getString("node_hostId");
+                //System.out.format("%s, %s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status, nodeHostId);
+               txtAreaCassandraResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", HostId: " + nodeHostId + ".\n");
+               txtAreaCassandraResourcesInfo.append("------------------------------------------------------------------------------------------");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }//GEN-LAST:event_btnLoadStorageClusterDetailsActionPerformed
 
     private void btnViewQoSProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewQoSProfileActionPerformed
@@ -1657,11 +1688,28 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     }//GEN-LAST:event_btnStopInstanceProcActionPerformed
 
     private void btnLoadProcessingDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadProcessingDetailsActionPerformed
-        // TODO add your handling code here:
-        Boolean success = ConfigureProcessingLayer.loadSparkClusterDetailsFromDb();
-        if (!success) {
-            ConfigureProcessingLayer.loadSparkClusterInfoFromFile();
+        try {
+            // TODO add your handling code here:
+            //ConfigureProcessingLayer.loadSparkClusterInfoFromFile();
+            ResultSet rs = ConfigureProcessingLayer.loadSparkClusterDetailsFromDb();
+            while (rs.next()) {
+                String instanceId = rs.getString("instance_id");
+                String instanceType = rs.getString("instance_type");
+                String az = rs.getString("availability_zone");
+                String publicDnsName = rs.getString("public_dnsname");
+                String publicIp = rs.getString("public_ip");
+                String privateIp = rs.getString("private_ip");
+                String status = rs.getString("status");
+                //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status);
+                txtAreaSparkResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ".\n");
+                txtAreaSparkResourcesInfo.append("-------------------------------------------------------------------------------------------------------------------------");
+                
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
+            
+      
 
     }//GEN-LAST:event_btnLoadProcessingDetailsActionPerformed
 
@@ -1686,6 +1734,62 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         }
     }//GEN-LAST:event_btnStartKafkaClusterActionPerformed
+
+    private void btnProcessingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessingActionPerformed
+        // TODO add your handling code here:
+        try {
+
+            txtAreaProcessingDetails.append("\n");
+            ResultSet rs = ConfigureProcessingLayer.loadCurrentSparkClusterInfo();
+            while (rs.next()) {
+                int clusterID = rs.getInt("cluster_id");
+                int noOfNodes = rs.getInt("no_of_nodes");
+                String instanceTypes = rs.getString("instance_types");
+                String masterNodeId = rs.getString("master_node_id");
+                String masterNodeDns = rs.getString("master_node_dnsname");
+                String masterNodeIp = rs.getString("master_node_ip");
+                int throughput = rs.getInt("throughput");
+                int latency = rs.getInt("latency");
+                int batchInterval = rs.getInt("batch_interval");
+
+                //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
+                txtAreaProcessingDetails.append("NoOfNodes: " + Integer.toString(noOfNodes) + ".\n");
+                txtAreaProcessingDetails.append("Cluster Resources: " + instanceTypes + ".\n");
+                txtAreaProcessingDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
+                txtAreaProcessingDetails.append("Latency: " + Integer.toString(latency) + ".\n");
+                txtAreaProcessingDetails.append("Batch Interval: " + Integer.toString(batchInterval) + ".\n");
+                txtAreaProcessingDetails.append("-------------------------------------------------------------------------------------------------------------------------");
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnProcessingActionPerformed
+
+    private void btnStorageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStorageActionPerformed
+        try {
+            // TODO add your handling code here:
+            
+            ResultSet rs = ConfigureStorageLayer.loadCurrentCassandraClusterInfo();
+            txtAreaStorageDetails.append("\n");
+            while (rs.next()) {
+                int clusterID = rs.getInt("cluster_id");
+                int noOfNodes = rs.getInt("no_of_nodes");
+                String instanceTypes = rs.getString("instance_types");              
+                int throughput = rs.getInt("throughput");
+                int latency = rs.getInt("latency");               
+
+                //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
+                txtAreaProcessingDetails.append("NoOfNodes: " + Integer.toString(noOfNodes) + ".\n");
+                txtAreaProcessingDetails.append("Cluster Resources: " + instanceTypes + ".\n");
+                txtAreaProcessingDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
+                txtAreaProcessingDetails.append("Latency: " + Integer.toString(latency) + ".\n");                
+                txtAreaProcessingDetails.append("-------------------------------------------------------------------------------------------------------------------------");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnStorageActionPerformed
 
     /**
      * @param args the command line arguments

@@ -136,38 +136,45 @@ public class ConfigureProcessingLayer {
         }
     }
 
-    public static Boolean loadSparkClusterDetailsFromDb() {
-        Boolean success = false;
-        MainForm.txtAreaSparkResourcesInfo.setText("");
+    public static ResultSet loadSparkClusterDetailsFromDb() {
+        ResultSet rs = null;
         try {
             if (DatabaseConnection.con == null) {
                 try {
                     DatabaseConnection.con = DatabaseConnection.getConnection();
                 } catch (SQLException ex) {
                     Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-                    MainForm.txtAreaSparkResourcesInfo.setText("Database connection failure. Please check the mysql server status.");
                 }
             }
             String query = "SELECT * FROM processing_nodes_info";
             Statement st = DatabaseConnection.con.createStatement();
-            ResultSet rs = st.executeQuery(query);
-            while (rs.next()) {
-                String instanceId = rs.getString("instance_id");
-                String instanceType = rs.getString("instance_type");
-                String az = rs.getString("availability_zone");
-                String publicDnsName = rs.getString("public_dnsname");
-                String publicIp = rs.getString("public_ip");
-                String privateIp = rs.getString("private_ip");
-                String status = rs.getString("status");
-                System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status);
-                MainForm.txtAreaSparkResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ".\n");
-                success = true;
-            }
+            rs = st.executeQuery(query);
             st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return success;
+        return rs;
+    }
+
+    public static ResultSet loadCurrentSparkClusterInfo() {
+        ResultSet rs = null;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT * FROM processing_cluster_info";
+            Statement st = DatabaseConnection.con.createStatement();
+            rs = st.executeQuery(query);
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rs;
+
     }
 
     public static void loadSparkClusterInfoFromFile() {

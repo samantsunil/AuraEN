@@ -1432,10 +1432,10 @@
                                   <Component id="jScrollPane2" pref="398" max="32767" attributes="0"/>
                                   <Component id="btnIngestion" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jScrollPane4" pref="416" max="32767" attributes="0"/>
-                                  <Component id="btnProcessing" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="104" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="jScrollPane4" min="-2" pref="416" max="-2" attributes="0"/>
+                                  <Component id="btnProcessing" min="-2" pref="416" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -1494,11 +1494,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Spark Cluster"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProcessingActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnStorage">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Cassandra Cluster"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStorageActionPerformed"/>
+              </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane2">
               <AuxValues>
@@ -1509,6 +1515,7 @@
               <SubComponents>
                 <Component class="javax.swing.JTextArea" name="txtAreaIngestionDetails">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="cc" green="ff" red="cc" type="rgb"/>
                     </Property>

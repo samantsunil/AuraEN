@@ -110,8 +110,8 @@ public class ConfigureIngestionLayer {
         Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
         if (curInstance != null) {
             System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
-            txtAreaClusterInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP:" + curInstance.getPublicIpAddress() + 
-                    ", InstanceStatus: " + curInstance.getState().getName() + ", BrokerId: " + brokerId + ".\n");
+            txtAreaClusterInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP:" + curInstance.getPublicIpAddress()
+                    + ", InstanceStatus: " + curInstance.getState().getName() + ", BrokerId: " + brokerId + ".\n");
             txtAreaClusterInfo.append("---------------------------------------------------------------------------------------------------------------------");
             try {
 
@@ -192,9 +192,10 @@ public class ConfigureIngestionLayer {
             lblStopInstance.setText("Enter the valid instance ID.");
         }
     }
-   public static void updateIngestionClusterRemoveNode(String instanceType) {
-        int i=1;
-    try {
+
+    public static void updateIngestionClusterRemoveNode(String instanceType) {
+        int i = 1;
+        try {
             if (DatabaseConnection.con == null) {
                 try {
                     DatabaseConnection.con = getConnection();
@@ -205,7 +206,7 @@ public class ConfigureIngestionLayer {
             String query = "UPDATE ingestion_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_type = REPLACE(instance_type, ?, ''), replication_factor = replication_factor - ?, partitions_count = partitions_count - ? WHERE cluster_id = ?";
             PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
             update.setInt(1, i);
-            update.setString(2, "1X"+instanceType);
+            update.setString(2, "1X" + instanceType);
             update.setInt(3, i);
             update.setInt(4, i);
             update.setInt(5, 100); //clusterId= 100 fixed
@@ -214,7 +215,8 @@ public class ConfigureIngestionLayer {
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-   }
+    }
+
     public static void updateInstanceInfoDbKafka(String instanceId, String status) {
         try {
             if (DatabaseConnection.con == null) {
@@ -281,9 +283,10 @@ public class ConfigureIngestionLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-public static void updateIngestionClusterInfo(String instanceType) {
-    int i=1;
-    try {
+
+    public static void updateIngestionClusterInfo(String instanceType) {
+        int i = 1;
+        try {
             if (DatabaseConnection.con == null) {
                 try {
                     DatabaseConnection.con = getConnection();
@@ -294,7 +297,7 @@ public static void updateIngestionClusterInfo(String instanceType) {
             String query = "UPDATE ingestion_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_type = CONCAT(instance_type, ?), replication_factor = replication_factor + ?, partitions_count = partitions_count + ? WHERE cluster_id = ?";
             PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
             update.setInt(1, i);
-            update.setString(2, "1X"+instanceType);
+            update.setString(2, "1X" + instanceType);
             update.setInt(3, i);
             update.setInt(4, i);
             update.setInt(5, 100); //clusterId= 100 fixed
@@ -303,37 +306,14 @@ public static void updateIngestionClusterInfo(String instanceType) {
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-}
-    public static void loadIngestionClusterInfoFromDatabase() {
-        MainForm.txtAreaClusterInfo.setText("");
-        try {
-            if (DatabaseConnection.con == null) {
-                try {
-                    DatabaseConnection.con = DatabaseConnection.getConnection();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            String query = "SELECT * FROM ingestion_nodes_info";
-            Statement st = DatabaseConnection.con.createStatement();
-            ResultSet rs = st.executeQuery(query);
-            while (rs.next()) {
-                String instanceId = rs.getString("instance_id");
-                String instanceType = rs.getString("instance_type");
-                String az = rs.getString("availability_zone");
-                String publicDnsName = rs.getString("public_dnsname");
-                String publicIp = rs.getString("public_ip");
-                String status = rs.getString("status");
-                String brokerId = rs.getString("broker_id");
-                System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
-                MainForm.txtAreaClusterInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", Status: " + status + ", BrokerId: " + brokerId + ".\n");
-            }
-            st.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
+    /**
+     * This function returns the info about currently allocated and any stopped
+     * broker nodes available
+     *
+     * @return
+     */
     public static ResultSet loadCurrentClusterDetails() {
         ResultSet rs = null;
         try {
@@ -354,6 +334,12 @@ public static void updateIngestionClusterInfo(String instanceType) {
         return rs;
     }
 
+    /**
+     * This function returns the current ingestion cluster info from the
+     * database.
+     *
+     * @return
+     */
     public static ResultSet loadIngestionClusterCapacityDetails() {
         ResultSet rs = null;
         try {
@@ -416,6 +402,13 @@ public static void updateIngestionClusterInfo(String instanceType) {
         }
     }
 
+    /**
+     * This function configures the server.properties for new kafka broker and
+     * starts the server [assumes that zookeeper server is up and running]
+     *
+     * @param pubDnsName
+     * @param newBrokerId
+     */
     public static void configureNewlyCreatedBroker(String pubDnsName, String newBrokerId) {
         if ("".equals(newBrokerId)) {
             newBrokerId = "0";
@@ -448,6 +441,14 @@ public static void updateIngestionClusterInfo(String instanceType) {
         }
     }
 
+    /**
+     * This function returns the first available active kafka broker from the
+     * newly build cluster - required to launch the kafka topic creation command
+     * before making the the cluster ready for accepting the data streams from
+     * the producers.
+     *
+     * @return
+     */
     public static String getActiveBrokerDns() {
         String brokerDns = "";
         try {
@@ -474,11 +475,18 @@ public static void updateIngestionClusterInfo(String instanceType) {
         return brokerDns;
     }
 
+    /**
+     * This function creates the kafka topic based on the size of the current
+     * kafka cluster. We assume parition count and replication factor are equal
+     * for small size cluster.
+     *
+     * @param partitionsCount
+     */
     public static void configureKafkaTopic(String partitionsCount) {
         JSch jschClient = new JSch();
         String brokerDns = getActiveBrokerDns();
-        if("".equals(brokerDns)){
-            brokerDns=MainForm.txtFieldInstId.getText().trim();
+        if ("".equals(brokerDns)) {
+            brokerDns = MainForm.txtFieldInstId.getText().trim();
         }
         try {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
@@ -510,8 +518,13 @@ public static void updateIngestionClusterInfo(String instanceType) {
         }
     }
 
+    /**
+     * This function is used to delete the existing topic from the zookeeper,
+     * whenever there is a change in the number of brokers in the cluster due to
+     * scaling.
+     */
     public static void deleteTopicFromZookeeper() {
-         
+
         JSch jschClient = new JSch();
         try {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
@@ -558,11 +571,9 @@ public static void updateIngestionClusterInfo(String instanceType) {
             if (channel.isClosed()) {
                 System.out.println("exit-status: " + channel.getExitStatus());
                 break;
-            }
-            else if(channel.isEOF()){
+            } else if (channel.isEOF()) {
                 break;
-            }
-            else if(channel.getExitStatus()==0){
+            } else if (channel.getExitStatus() == 0) {
                 break;
             }
             sleep(1000);

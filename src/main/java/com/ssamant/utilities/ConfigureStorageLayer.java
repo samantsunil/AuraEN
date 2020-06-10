@@ -432,8 +432,8 @@ public class ConfigureStorageLayer {
         preparedStmt.close();
     }
 
-    public static void loadStorageClusterInfoFromDatabase() {
-        MainForm.txtAreaCassandraResourcesInfo.setText("");
+    public static ResultSet loadStorageClusterInfoFromDatabase() {
+        ResultSet rs =null;        
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -444,25 +444,32 @@ public class ConfigureStorageLayer {
             }
             String query = "SELECT * FROM storage_nodes_info";
             Statement st = DatabaseConnection.con.createStatement();
-            ResultSet rs = st.executeQuery(query);
-            while (rs.next()) {
-                String instanceId = rs.getString("instance_id");
-                String instanceType = rs.getString("instance_type");
-                String az = rs.getString("availability_zone");
-                String publicDnsName = rs.getString("public_dnsname");
-                String publicIp = rs.getString("public_ip");
-                String privateIp = rs.getString("private_ip");
-                String status = rs.getString("status");
-                String nodeHostId = rs.getString("node_hostId");
-                System.out.format("%s, %s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status, nodeHostId);
-                MainForm.txtAreaCassandraResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", HostId: " + nodeHostId + ".\n");
-            }
+             rs = st.executeQuery(query);           
             st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return rs;
     }
-
+public static ResultSet loadCurrentCassandraClusterInfo() {
+    ResultSet rs =null;
+    try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT * FROM storage_cluster_info";
+            Statement st = DatabaseConnection.con.createStatement();
+            rs = st.executeQuery(query);
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    return rs;
+}
     public static void loadFromFileStorageClusterDetails(boolean isDPP) {
 
         String fileName = "C:\\Code\\CassandraClusterDetails.txt";
