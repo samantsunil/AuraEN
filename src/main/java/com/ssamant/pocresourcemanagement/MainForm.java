@@ -1807,9 +1807,10 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 int clusterID = rs.getInt("cluster_id");
                 int noOfNodes = rs.getInt("no_of_nodes");
                 String instanceTypes = rs.getString("instance_types");
-                String masterNodeId = rs.getString("master_node_id");
-                String masterNodeDns = rs.getString("master_node_dnsname");
-                String masterNodeIp = rs.getString("master_node_ip");
+                String masterNodeId = rs.getString("master_instance_id");
+                String masterNodeDns = rs.getString("master_public_dnsname");
+                String masterNodeIp = rs.getString("master_public_ip");
+                String masterNodePrivIp = rs.getString("master_private_ip");
                 int throughput = rs.getInt("throughput");
                 int latency = rs.getInt("latency");
                 int batchInterval = rs.getInt("batch_interval");
