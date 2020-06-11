@@ -1,0 +1,4 @@
+CREATE KEYSPACE IF NOT EXISTS VehicleDataKeySpace WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};
+CREATE TABLE VehicleDataKeySpace.Poi_Traffic(vehicleid text , vehicletype text , distance bigint,  timeStamp timestamp,PRIMARY KEY (vehicleid));
+exit
+
