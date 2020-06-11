@@ -166,6 +166,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         jLabel4 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jLabel31 = new javax.swing.JLabel();
+        comboBoxMasterNodeInstType = new javax.swing.JComboBox<>();
+        btnCreateMasterNode = new javax.swing.JButton();
         panStorage = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         comboBoxNoSQLDb = new javax.swing.JComboBox<>();
@@ -727,6 +730,17 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addComponent(btnBuildProcessingCluster))
         );
 
+        jLabel31.setText("Instance Type:");
+
+        comboBoxMasterNodeInstType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--select--", "t2.micro", "t2.small", "t2.medium" }));
+
+        btnCreateMasterNode.setText("Create Master Node");
+        btnCreateMasterNode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateMasterNodeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panProcessingLayout = new javax.swing.GroupLayout(panProcessing);
         panProcessing.setLayout(panProcessingLayout);
         panProcessingLayout.setHorizontalGroup(
@@ -741,6 +755,12 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             .addGroup(panProcessingLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(58, 58, 58)
+                .addComponent(jLabel31)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(comboBoxMasterNodeInstType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCreateMasterNode, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -749,6 +769,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panProcessingLayout.createSequentialGroup()
                 .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panProcessingLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panProcessingLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1831,6 +1854,11 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         ConfigureProcessingLayer.restartedSparkProcessingNode(txtFieldStartRestartInstId.getText().trim());
     }//GEN-LAST:event_btnRestartInstanceProcActionPerformed
 
+    private void btnCreateMasterNodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateMasterNodeActionPerformed
+        // TODO add your handling code here:
+        ConfigureProcessingLayer.createMasterNode(comboBoxMasterNodeInstType.getSelectedItem().toString());
+    }//GEN-LAST:event_btnCreateMasterNodeActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1872,6 +1900,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JButton btnClearAllStorage;
     private javax.swing.JButton btnConfigureSparkNode;
     private javax.swing.JButton btnConfigureStorageNode;
+    private javax.swing.JButton btnCreateMasterNode;
     private javax.swing.JButton btnDeleteCluster;
     private javax.swing.JButton btnDeleteIngestionCluster;
     private javax.swing.JButton btnIngestion;
@@ -1898,6 +1927,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JComboBox<String> comboBoxDbInstType;
     private javax.swing.JComboBox<String> comboBoxIngestionServices;
     private javax.swing.JComboBox<String> comboBoxInstanceType;
+    private javax.swing.JComboBox<String> comboBoxMasterNodeInstType;
     private javax.swing.JComboBox<String> comboBoxNoNodes;
     private javax.swing.JComboBox<String> comboBoxNoSQLDb;
     private javax.swing.JComboBox<String> comboBoxNoSparkNodes;
@@ -1928,6 +1958,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

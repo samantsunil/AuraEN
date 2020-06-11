@@ -135,27 +135,7 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-public static void updateSparkClusterInfo(String instanceType) {
-     int i = 1;
-        try {
-            if (DatabaseConnection.con == null) {
-                try {
-                    DatabaseConnection.con = getConnection();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_type = CONCAT(instance_type, ?) WHERE cluster_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setInt(1, i);
-            update.setString(2, "1X" + instanceType +",");
-                 update.setInt(3, 100); //clusterId= 100 fixed
-            update.executeUpdate();
-            update.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-}
+
     public static void dbInsertSpakInstanceDetail(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status) {
         try {
             String query = "INSERT INTO processing_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status)"
@@ -215,7 +195,7 @@ public static void updateSparkClusterInfo(String instanceType) {
         return rs;
 
     }
-    
+
     public static void loadSparkClusterInfoFromFile() {
         MainForm.txtAreaSparkResourcesInfo.setText("");
         String fileName = "C:\\Code\\SparkClusterDetails.txt";
@@ -308,8 +288,9 @@ public static void updateSparkClusterInfo(String instanceType) {
             MainForm.lblStopRestartStatus.setText("Enter the valid instance ID.");
         }
     }
-public static void updateSparkClusterNodeRemoveInfo(String instanceType) {
-    int i = 1;
+
+    public static void updateSparkClusterNodeRemoveInfo(String instanceType) {
+        int i = 1;
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -328,7 +309,8 @@ public static void updateSparkClusterNodeRemoveInfo(String instanceType) {
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-}
+    }
+
     public static void updateRestartedInstanceInfoSpark(String instanceId, String pubDns, String pubIp, String status) {
         try {
             if (DatabaseConnection.con == null) {
@@ -352,9 +334,9 @@ public static void updateSparkClusterNodeRemoveInfo(String instanceType) {
     }
 
     public static void restartedSparkProcessingNode(String instId) {
-        if("".equals(instId)){
+        if ("".equals(instId)) {
             return;
-        }        
+        }
         try {
             AmazonEC2 ec2Client = CloudLogin.getEC2Client();
             WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
@@ -378,6 +360,83 @@ public static void updateSparkClusterNodeRemoveInfo(String instanceType) {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public static void createMasterNode(String instanceType) {
+        try {
+            AmazonEC2 ec2Client = CloudLogin.getEC2Client();
+            RunInstancesRequest runRequest = new RunInstancesRequest()
+                    .withImageId(ami_id_spark) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
+                    .withInstanceType(InstanceType.T2Micro) //free -tier instance type used
+                    .withKeyName("mySSHkey") //keypair name
+                    .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
+                    .withMaxCount(1)
+                    .withMinCount(1);
+            RunInstancesResult runResponse = ec2Client.runInstances(runRequest);
+            Instance inst = runResponse.getReservation().getInstances().get(0);
+            Tag tag = new Tag()
+                    .withKey("Name")
+                    .withValue("spark-master");
+            CreateTagsRequest createTagsRequest = new CreateTagsRequest()
+                    .withResources(inst.getInstanceId())
+                    .withTags(tag);
+            CreateTagsResult tag_response = ec2Client.createTags(createTagsRequest);
+            StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
+            StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
+            Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
+            if (curInstance != null) {
+                System.out.println("successfully created master node for spark cluster.");
+                dbUpdateMasterNodeInfo(curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getInstanceId());
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void dbUpdateMasterNodeInfo(String pubDns, String pubIp, String privIp, String instId) {
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE processing_cluster_info SET master_instance_id = ?, master_public_dnsname = ?, master_public_ip = ?, master_private_ip = ? WHERE cluster_id = ?";
+            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
+            update.setString(1, instId);
+            update.setString(2, pubDns);
+            update.setString(3, pubIp);
+            update.setString(4, privIp);
+            update.setInt(5, 100); //clusterId= 100 fixed
+            update.executeUpdate();
+            update.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void updateSparkClusterInfo(String instanceType) {
+        int i = 1;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_type = CONCAT(instance_type, ?) WHERE cluster_id = ?";
+            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
+            update.setInt(1, i);
+            update.setString(2, "1X" + instanceType + ",");
+            update.setInt(3, 100); //clusterId= 100 fixed
+            update.executeUpdate();
+            update.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public static String getCurrentBrokerIds() {
         String broker_ids = null;
         try {
