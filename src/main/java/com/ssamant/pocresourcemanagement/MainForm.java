@@ -148,6 +148,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         btnDeleteCluster = new javax.swing.JButton();
         btnLoadProcessingDetails = new javax.swing.JButton();
         lblStopRestartStatus = new javax.swing.JLabel();
+        btnClearFieldsProcessing = new javax.swing.JButton();
         lblBuildProcessingCluster = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
         txtFieldInstanceIdConfigure = new javax.swing.JTextField();
@@ -166,6 +167,26 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         jLabel4 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        txtFieldAmiId = new javax.swing.JTextField();
+        jLabel38 = new javax.swing.JLabel();
+        lblBuildProcessingCluster1 = new javax.swing.JLabel();
+        jPanel11 = new javax.swing.JPanel();
+        txtFieldInstanceIdConfigure1 = new javax.swing.JTextField();
+        txtFieldDnsNameConfigure1 = new javax.swing.JTextField();
+        txtFieldInstTypeConfigure1 = new javax.swing.JTextField();
+        jLabel32 = new javax.swing.JLabel();
+        jLabel33 = new javax.swing.JLabel();
+        jLabel34 = new javax.swing.JLabel();
+        btnConfigureSparkNode1 = new javax.swing.JButton();
+        lblConfigureSparkNode1 = new javax.swing.JLabel();
+        jPanel12 = new javax.swing.JPanel();
+        btnBuildProcessingCluster1 = new javax.swing.JButton();
+        comboBoxNoSparkNodes1 = new javax.swing.JComboBox<>();
+        comboBoxProcFrameworks1 = new javax.swing.JComboBox<>();
+        comboBoxSparkInstType1 = new javax.swing.JComboBox<>();
+        jLabel35 = new javax.swing.JLabel();
+        jLabel36 = new javax.swing.JLabel();
+        jLabel37 = new javax.swing.JLabel();
         jLabel31 = new javax.swing.JLabel();
         comboBoxMasterNodeInstType = new javax.swing.JComboBox<>();
         btnCreateMasterNode = new javax.swing.JButton();
@@ -573,23 +594,36 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addGap(46, 46, 46))
         );
 
+        btnClearFieldsProcessing.setText("Clear All");
+        btnClearFieldsProcessing.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearFieldsProcessingActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtFieldStartRestartInstId, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnStopInstanceProc, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnRestartInstanceProc))
-                    .addComponent(lblStopRestartStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 510, Short.MAX_VALUE)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtFieldStartRestartInstId, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnStopInstanceProc, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnRestartInstanceProc))
+                            .addComponent(lblStopRestartStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 510, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnClearFieldsProcessing, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(194, 194, 194)))
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -605,7 +639,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                             .addComponent(btnStopInstanceProc)
                             .addComponent(btnRestartInstanceProc))
                         .addGap(38, 38, 38)
-                        .addComponent(lblStopRestartStatus))
+                        .addComponent(lblStopRestartStatus)
+                        .addGap(16, 16, 16)
+                        .addComponent(btnClearFieldsProcessing))
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
@@ -692,6 +728,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         jLabel6.setText("No of Nodes:");
 
+        jLabel38.setText("AMI Id:");
+
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
@@ -700,35 +738,92 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addContainerGap(50, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel38, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)))
                 .addGap(30, 30, 30)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboBoxSparkInstType, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(comboBoxProcFrameworks, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(comboBoxNoSparkNodes, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnBuildProcessingCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(comboBoxNoSparkNodes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(comboBoxSparkInstType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(comboBoxProcFrameworks, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGap(52, 52, 52)
+                        .addComponent(btnBuildProcessingCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFieldAmiId))
                 .addGap(21, 21, 21))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboBoxProcFrameworks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4))
-                .addGap(24, 24, 24)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboBoxSparkInstType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboBoxNoSparkNodes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(comboBoxProcFrameworks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(comboBoxSparkInstType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(comboBoxNoSparkNodes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtFieldAmiId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel38))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(btnBuildProcessingCluster))
         );
+
+        jPanel11.add(txtFieldInstanceIdConfigure1);
+        jPanel11.add(txtFieldDnsNameConfigure1);
+        jPanel11.add(txtFieldInstTypeConfigure1);
+
+        jLabel32.setText("Instance Id:");
+        jPanel11.add(jLabel32);
+
+        jLabel33.setText("Dns Name:");
+        jPanel11.add(jLabel33);
+
+        jLabel34.setText("Instance Type:");
+        jPanel11.add(jLabel34);
+
+        btnConfigureSparkNode1.setText("Configure Spark Node");
+        btnConfigureSparkNode1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfigureSparkNodeActionPerformed(evt);
+            }
+        });
+        jPanel11.add(btnConfigureSparkNode1);
+        jPanel11.add(lblConfigureSparkNode1);
+
+        btnBuildProcessingCluster1.setText("Build Cluster");
+        btnBuildProcessingCluster1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuildProcessingClusterActionPerformed(evt);
+            }
+        });
+        jPanel12.add(btnBuildProcessingCluster1);
+
+        comboBoxNoSparkNodes1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--select--", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
+        jPanel12.add(comboBoxNoSparkNodes1);
+
+        comboBoxProcFrameworks1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--select--", "Spark" }));
+        jPanel12.add(comboBoxProcFrameworks1);
+
+        comboBoxSparkInstType1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--select--", "t2.micro", "t2.small", "t2.medium", " " }));
+        jPanel12.add(comboBoxSparkInstType1);
+
+        jLabel35.setText("Processing Framework:");
+        jPanel12.add(jLabel35);
+
+        jLabel36.setText("Instance Type:");
+        jPanel12.add(jLabel36);
+
+        jLabel37.setText("No of Nodes:");
+        jPanel12.add(jLabel37);
 
         jLabel31.setText("Instance Type:");
 
@@ -769,9 +864,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panProcessingLayout.createSequentialGroup()
                 .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panProcessingLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panProcessingLayout.createSequentialGroup()
                         .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panProcessingLayout.createSequentialGroup()
@@ -784,8 +876,11 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                                     .addComponent(comboBoxMasterNodeInstType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnCreateMasterNode)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(18, 18, 18)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panProcessingLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblBuildProcessingCluster)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(progressBarProcessing, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1403,7 +1498,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             String no = String.valueOf(comboBoxBrokersNo.getSelectedItem());
             int noOfBrokers = Integer.parseInt(no);
             String instType = String.valueOf(comboBoxInstanceType.getSelectedItem());
-            String amiId = "ami-0a139537a122f6310"; //kafka snapshot AMI
             try {
                 ConfigureIngestionLayer.buildIngestionLayerCluster(noOfBrokers, instType);
             } catch (Exception ex) {
@@ -1436,25 +1530,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
      */
     private void btnIngestionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngestionActionPerformed
         try {
-            // ConfigureIngestionLayer.loadIngestionClusterInfoFromDatabase();
+            
             txtAreaIngestionDetails.setText("");
             txtAreaIngestionDetails.append("\n");
-//            ResultSet rs = ConfigureIngestionLayer.loadCurrentClusterDetails();
-//            while (rs.next()) {
-//                String instanceId = rs.getString("instance_id");
-//                String instanceType = rs.getString("instance_type");
-//                String az = rs.getString("availability_zone");
-//                String publicDnsName = rs.getString("public_dnsname");
-//                String publicIp = rs.getString("public_ip");
-//                String status = rs.getString("status");
-//                String brokerId = rs.getString("broker_id");
-//                //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
-//                txtAreaIngestionDetails.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", Status: " + status + ", BrokerId: " + brokerId + ".\n");
-//                txtAreaIngestionDetails.append("---------------------------------------------------------------------------------------------------------------------------\n");
-//            }
-//            rs.close();
-            //ConfigureIngestionLayer.loadFromFileKafkaClusterDetails(true); //if db is not connected.
-            // txtAreaIngestionDetails.append("-----------Cluster Capacity & Topic details-----------\n");
             ResultSet rss = ConfigureIngestionLayer.loadIngestionClusterCapacityDetails();
             while (rss.next()) {
                 int clusterID = rss.getInt("cluster_id");
@@ -1488,7 +1566,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         if ("".equals(txtFieldFutureWorkload.getText()) || "".equals(txtFieldE2eLatency.getText())) {
             lblErrorMsgCompResAllocation.setText("Please enter appropriate values for future workload and e2e latency.");
         } else {
-                 //call resource optimizer algorithm -
+            //call resource optimizer algorithm -
         }
     }//GEN-LAST:event_btnScaleIngestionClusterActionPerformed
 
@@ -1547,9 +1625,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
      */
     private void btnLoadIngestionClusterInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadIngestionClusterInfoActionPerformed
 
-        try {
-            //ConfigureIngestionLayer.loadFromFileKafkaClusterDetails(false);
-            //loadIngestionClusterInfoFromDatabase();
+        try {            
             txtAreaClusterInfo.setText("");
             txtAreaClusterInfo.append("");
             ResultSet rs = ConfigureIngestionLayer.loadCurrentClusterDetails();
@@ -1572,17 +1648,15 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     }//GEN-LAST:event_btnLoadIngestionClusterInfoActionPerformed
 
     private void btnBuildProcessingClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuildProcessingClusterActionPerformed
-        // TODO add your handling code here:
-        // CloudFormationSparkCluster.createCloudFormation();
-        //txtAreaSparkResourcesInfo.append("Start creating resources for Spark cluster...\n");
+
         lblBuildProcessingCluster.setText("Start creating resources for Spark cluster...");
         btnBuildProcessingCluster.setEnabled(false);
         //function call to build spark cluster ... ConfigureProcessingLayer.createEc2Instances();
-        if ((comboBoxNoSparkNodes.getSelectedIndex() != 0) && (comboBoxSparkInstType.getSelectedIndex() != 0)) {
+        if ((comboBoxNoSparkNodes.getSelectedIndex() != 0) && (comboBoxSparkInstType.getSelectedIndex() != 0) && (!"".equals(txtFieldAmiId.getText().trim()))) {
             try {
-                ConfigureProcessingLayer.buildProcessingLayerCluster(Integer.parseInt(String.valueOf(comboBoxNoSparkNodes.getSelectedItem())), String.valueOf(comboBoxSparkInstType.getSelectedIndex()));
-            } catch (Exception ex) {
-
+                ConfigureProcessingLayer.buildProcessingLayerCluster(Integer.parseInt(String.valueOf(comboBoxNoSparkNodes.getSelectedItem())), String.valueOf(comboBoxSparkInstType.getSelectedIndex()), txtFieldAmiId.getText().trim());
+            } catch (NumberFormatException ex) {
+                lblBuildProcessingCluster.setText(ex.getMessage());
             }
         } else {
             lblBuildProcessingCluster.setText("Please select the values for no of nodes and instance type.");
@@ -1710,7 +1784,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String nodeHostId = rs.getString("node_hostId");
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status, nodeHostId);
                 txtAreaCassandraResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", HostId: " + nodeHostId + ".\n");
-                txtAreaCassandraResourcesInfo.append("------------------------------------------------------------------------------------------");
+                txtAreaCassandraResourcesInfo.append("----------------------------------------------------------\n");
             }
             rs.close();
         } catch (SQLException ex) {
@@ -1764,7 +1838,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String status = rs.getString("status");
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status);
                 txtAreaSparkResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ".\n");
-                txtAreaSparkResourcesInfo.append("-------------------------------------------------------------------------------------------------------------------------");
+                txtAreaSparkResourcesInfo.append("-----------------------------------------------------------------------\n");
 
             }
             rs.close();
@@ -1821,7 +1895,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 txtAreaProcessingDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
                 txtAreaProcessingDetails.append("Latency: " + Integer.toString(latency) + ".\n");
                 txtAreaProcessingDetails.append("Batch Interval: " + Integer.toString(batchInterval) + ".\n");
-                txtAreaProcessingDetails.append("-------------------------------------------------------------------------------------------------------------------------\n");
+                txtAreaProcessingDetails.append("----------------------------------------------------------\n");
             }
             rs.close();
 
@@ -1866,6 +1940,23 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         ConfigureProcessingLayer.createMasterNode(comboBoxMasterNodeInstType.getSelectedItem().toString());
     }//GEN-LAST:event_btnCreateMasterNodeActionPerformed
 
+    private void btnClearFieldsProcessingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearFieldsProcessingActionPerformed
+        // TODO add your handling code here:
+        clearFormFieldsProcessingTab();
+    }//GEN-LAST:event_btnClearFieldsProcessingActionPerformed
+public void clearFormFieldsProcessingTab() {
+    txtFieldStartRestartInstId.setText("");
+    comboBoxProcFrameworks.setSelectedIndex(0);
+    comboBoxSparkInstType.setSelectedIndex(0);
+    comboBoxNoSparkNodes.setSelectedIndex(0);
+    comboBoxMasterNodeInstType.setSelectedIndex(0);
+    txtAreaSparkResourcesInfo.setText("");
+    txtFieldInstanceIdConfigure.setText("");
+    txtFieldDnsNameConfigure.setText("");
+    txtFieldInstTypeConfigure.setText("");
+    lblStopRestartStatus.setText("");
+    lblBuildProcessingCluster.setText("");
+}
     /**
      * @param args the command line arguments
      */
@@ -1903,9 +1994,12 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuildIngestionCluster;
     private javax.swing.JButton btnBuildProcessingCluster;
+    private javax.swing.JButton btnBuildProcessingCluster1;
     public static javax.swing.JButton btnBuildStorageCluster;
     private javax.swing.JButton btnClearAllStorage;
+    private javax.swing.JButton btnClearFieldsProcessing;
     private javax.swing.JButton btnConfigureSparkNode;
+    private javax.swing.JButton btnConfigureSparkNode1;
     private javax.swing.JButton btnConfigureStorageNode;
     private javax.swing.JButton btnCreateMasterNode;
     private javax.swing.JButton btnDeleteCluster;
@@ -1938,8 +2032,11 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JComboBox<String> comboBoxNoNodes;
     private javax.swing.JComboBox<String> comboBoxNoSQLDb;
     private javax.swing.JComboBox<String> comboBoxNoSparkNodes;
+    private javax.swing.JComboBox<String> comboBoxNoSparkNodes1;
     private javax.swing.JComboBox<String> comboBoxProcFrameworks;
+    private javax.swing.JComboBox<String> comboBoxProcFrameworks1;
     private javax.swing.JComboBox<String> comboBoxSparkInstType;
+    private javax.swing.JComboBox<String> comboBoxSparkInstType1;
     private javax.swing.JTabbedPane dppLayersTab;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1966,6 +2063,13 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1974,6 +2078,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1995,8 +2101,10 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JLabel lblBuildClusterstatus;
     private javax.swing.JLabel lblBuildProcessingCluster;
+    private javax.swing.JLabel lblBuildProcessingCluster1;
     public static javax.swing.JLabel lblClusterStatus;
     private javax.swing.JLabel lblConfigureSparkNode;
+    private javax.swing.JLabel lblConfigureSparkNode1;
     private javax.swing.JLabel lblErrDnsName;
     private javax.swing.JLabel lblErrorMsgCompResAllocation;
     public static javax.swing.JLabel lblInstanceStatus;
@@ -2024,18 +2132,22 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JTextArea txtAreaStorageDetails;
     public static javax.swing.JTextArea txtAreaStorageResources;
     private javax.swing.JTextArea txtAreaSustainabelQoSInfo;
+    private javax.swing.JTextField txtFieldAmiId;
     private javax.swing.JTextField txtFieldBrokerId;
     private javax.swing.JTextField txtFieldCurrentWorkload;
     private javax.swing.JTextField txtFieldDnsName;
     private javax.swing.JTextField txtFieldDnsNameConfigure;
+    private javax.swing.JTextField txtFieldDnsNameConfigure1;
     private javax.swing.JTextField txtFieldDnsNameStorage;
     private javax.swing.JTextField txtFieldE2eLatency;
     private javax.swing.JTextField txtFieldFutureWorkload;
     public static javax.swing.JTextField txtFieldInstId;
     private javax.swing.JTextField txtFieldInstIdConfigure;
     private javax.swing.JTextField txtFieldInstTypeConfigure;
+    private javax.swing.JTextField txtFieldInstTypeConfigure1;
     private javax.swing.JTextField txtFieldInstanceId;
     private javax.swing.JTextField txtFieldInstanceIdConfigure;
+    private javax.swing.JTextField txtFieldInstanceIdConfigure1;
     private javax.swing.JTextField txtFieldPartitions;
     private javax.swing.JTextField txtFieldReplication;
     private javax.swing.JTextField txtFieldSeedIp;

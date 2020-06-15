@@ -68,9 +68,9 @@ public class ConfigureProcessingLayer {
     }
     public static String ami_id_spark = "ami-028bc88846f2d33b3";
 
-    public static void buildProcessingLayerCluster(int noOfNodes, String instanceType) {
+    public static void buildProcessingLayerCluster(int noOfNodes, String instanceType, String ami_id) {
         AmazonEC2 ec2Client = CloudLogin.getEC2Client();
-        createEC2NodeForProcessingLayer(noOfNodes, instanceType, ec2Client);
+        createEC2NodeForProcessingLayer(noOfNodes, instanceType, ec2Client, ami_id);
     }
 
     public static void createMasterNode(String instanceType) {
@@ -127,9 +127,9 @@ public class ConfigureProcessingLayer {
         }
     }
 
-    public static void createEC2NodeForProcessingLayer(int noOfNodes, String instanceType, AmazonEC2 ec2Client) {
+    public static void createEC2NodeForProcessingLayer(int noOfNodes, String instanceType, AmazonEC2 ec2Client, String amiId) {
         RunInstancesRequest runRequest = new RunInstancesRequest()
-                .withImageId(ami_id_spark) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
+                .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                 .withInstanceType(InstanceType.T2Micro) //free -tier instance type used
                 .withKeyName("mySSHkey") //keypair name
                 .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
@@ -200,7 +200,7 @@ public class ConfigureProcessingLayer {
                     Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_type = CONCAT(instance_type, ?) WHERE cluster_id = ?";
+            String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_types = CONCAT(instance_types, ?) WHERE cluster_id = ?";
             PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
             update.setInt(1, i);
             update.setString(2, "1X" + instanceType + ",");
@@ -375,7 +375,7 @@ public class ConfigureProcessingLayer {
                     Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_type = REPLACE(instance_type, ?, '') WHERE cluster_id = ?";
+            String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_types = REPLACE(instance_types, ?, '') WHERE cluster_id = ?";
             PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
             update.setInt(1, i);
             update.setString(2, "1X" + instanceType);
@@ -503,8 +503,8 @@ public class ConfigureProcessingLayer {
     }
 
     public static void configureNewlyCreatedSparkNode(String instanceId, String pubDnsName, String instanceType) {
-        String brokerId = getCurrentBrokerIds();
-        String cassandraSeedIp = getCurrentCassandraSeedIps();
+        String brokerId = "136.186.108.167:9092";//getCurrentBrokerIds();
+        String cassandraSeedIp = "136.186.108.110";//getCurrentCassandraSeedIps();
         JSch jschClient = new JSch();
         try {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
