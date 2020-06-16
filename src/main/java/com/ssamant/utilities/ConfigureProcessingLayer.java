@@ -68,17 +68,18 @@ public class ConfigureProcessingLayer {
     }
     public static String ami_id_spark = "ami-028bc88846f2d33b3";
 
-    public static void buildProcessingLayerCluster(int noOfNodes, String instanceType, String ami_id) {
+    public static void buildProcessingLayerCluster(int noOfNodes, String instanceType, String ami_id, String clusterType) {
         AmazonEC2 ec2Client = CloudLogin.getEC2Client();
-        createEC2NodeForProcessingLayer(noOfNodes, instanceType, ec2Client, ami_id);
+        createEC2NodeForProcessingLayer(noOfNodes, instanceType, ec2Client, ami_id, clusterType);
     }
 
     public static void createMasterNode(String instanceType) {
+        String spark_master_ami = getAmiId("master");
         try {
             AmazonEC2 ec2Client = CloudLogin.getEC2Client();
             RunInstancesRequest runRequest = new RunInstancesRequest()
-                    .withImageId(ami_id_spark) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
-                    .withInstanceType(InstanceType.T2Micro) //free -tier instance type used
+                    .withImageId(spark_master_ami)
+                    .withInstanceType(instanceType) //free -tier instance type used
                     .withKeyName("mySSHkey") //keypair name
                     .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
                     .withMaxCount(1)
@@ -96,8 +97,15 @@ public class ConfigureProcessingLayer {
             StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
             Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
             if (curInstance != null) {
-                System.out.println("successfully created master node for spark cluster.");
+                System.out.println("successfully created master node for the spark cluster.");
                 dbUpdateMasterNodeInfo(curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getInstanceId());
+                MainForm.txtAreaSparkResourcesInfo.append("--------Spark Master Node Info-----------------\n");
+                MainForm.txtAreaSparkResourcesInfo.append("Public DNS: " + curInstance.getPublicDnsName() + ", Public IP: " + curInstance.getPublicIpAddress() + ", Private IP: " + curInstance.getPrivateIpAddress() + ", Instance Id: " + curInstance.getInstanceId() + ".\n");
+                Boolean success = configureAndRunMasterNode(curInstance.getPublicDnsName());
+                if (success) {
+                    MainForm.txtAreaSparkResourcesInfo.append("----------------------------\n");
+                    MainForm.txtAreaSparkResourcesInfo.append("Spark Cluster Running... accessible at: www." + curInstance.getPublicDnsName() + ":8080\n");
+                }
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
@@ -127,10 +135,74 @@ public class ConfigureProcessingLayer {
         }
     }
 
-    public static void createEC2NodeForProcessingLayer(int noOfNodes, String instanceType, AmazonEC2 ec2Client, String amiId) {
+    public static String getAmiId(String clusterType) {
+        String service_name = null;
+        String ami_id = null;
+        if (null != clusterType) {
+            switch (clusterType) {
+                case "single-node":
+                    service_name = "spark-local";
+                    break;
+                case "multi-node":
+                    service_name = "spark-worker";
+                    break;
+                case "master":
+                    service_name = "spark-master";
+                    break;
+                case "kafka":
+                    service_name = "kafka";
+                    break;
+                case "cassandra":
+                    service_name = "cassandra";
+                    break;
+                default:
+                    break;
+            }
+        }
+        ResultSet rs = null;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT ami_id FROM ami_info WHERE service_name = ?";
+            PreparedStatement pst = DatabaseConnection.con.prepareStatement(query);
+            pst.setString(1, service_name);
+            rs = pst.executeQuery();
+            while (rs.next()) {
+
+                ami_id = rs.getString(1);
+            }
+            pst.close();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return ami_id;
+    }
+
+    public static void createEC2NodeForProcessingLayer(int noOfNodes, String instanceType, AmazonEC2 ec2Client, String amiId, String clusterType) {
+        String imageId = getAmiId(clusterType);
+        String nodeType = "";
+        if (!"".equals(imageId)) {
+            amiId = imageId;
+        }
+        String tagValue = "";
+        if ("single-node".equals(clusterType)) {
+            tagValue = "spark-node-0";
+            nodeType = "local";
+        }
+        if ("multi-node".equals(clusterType)) {
+            tagValue = "spark-worker-0";
+            nodeType = "worker";
+        }
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
-                .withInstanceType(InstanceType.T2Micro) //free -tier instance type used
+                .withInstanceType(instanceType) //free -tier instance type used
                 .withKeyName("mySSHkey") //keypair name
                 .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
                 .withMaxCount(noOfNodes)
@@ -139,7 +211,7 @@ public class ConfigureProcessingLayer {
         @SuppressWarnings("ThrowableResultIgnored")
         RunInstancesResult runResponse = ec2Client.runInstances(runRequest);
         // List<String> instanceIds = new ArrayList<>();
-        WriteFile data = new WriteFile("C:\\Code\\SparkClusterDetails.txt", true); //to save cluster info in a text file - append mode.
+        // WriteFile data = new WriteFile("C:\\Code\\SparkClusterDetails.txt", true); //to save cluster info in a text file - append mode.
         if (DatabaseConnection.con == null) {
             try {
                 DatabaseConnection.con = DatabaseConnection.getConnection();
@@ -153,17 +225,17 @@ public class ConfigureProcessingLayer {
             // instanceIds.add(inst.getInstanceId());
             Tag tag = new Tag()
                     .withKey("Name")
-                    .withValue("spark-0" + String.valueOf(i));
+                    .withValue(tagValue + String.valueOf(i));
             CreateTagsRequest createTagsRequest = new CreateTagsRequest()
                     .withResources(inst.getInstanceId())
                     .withTags(tag);
             CreateTagsResult tag_response = ec2Client.createTags(createTagsRequest);
-            startInstanceForProcessingCluster(ec2Client, inst, inst.getPlacement(), data);
+            startInstanceForProcessingCluster(ec2Client, inst, inst.getPlacement(), nodeType);
             i++;
         }
     }
 
-    public static void startInstanceForProcessingCluster(AmazonEC2 ec2Client, Instance inst, Placement az, WriteFile data) {
+    public static void startInstanceForProcessingCluster(AmazonEC2 ec2Client, Instance inst, Placement az, String nodeType) {
         try {
             StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
             StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
@@ -172,16 +244,8 @@ public class ConfigureProcessingLayer {
                 System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
                 MainForm.txtAreaSparkResourcesInfo.append("Successfully created the following ec2 instances for the Cassandra Cluster:\n");
                 MainForm.txtAreaSparkResourcesInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: " + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".\n");
-                try {
-
-                    data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: " + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
-                            + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
-                    dbInsertSpakInstanceDetail(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getState().getName());
-                    updateSparkClusterInfo(curInstance.getInstanceType());
-                } catch (IOException ex) {
-                    System.out.println(ex.getMessage());
-                    MainForm.txtAreaSparkResourcesInfo.append("Error while writing to a file: " + ex.getMessage());
-                }
+                dbInsertSpakInstanceDetail(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getState().getName(), nodeType);
+                updateSparkClusterInfo(curInstance.getInstanceType());
             } else {
                 System.out.println("Instances are not running.");
             }
@@ -212,10 +276,10 @@ public class ConfigureProcessingLayer {
         }
     }
 
-    public static void dbInsertSpakInstanceDetail(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status) {
+    public static void dbInsertSpakInstanceDetail(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status, String nodeType) {
         try {
-            String query = "INSERT INTO processing_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status)"
-                    + " VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO processing_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status, node_type)"
+                    + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStmt = DatabaseConnection.con.prepareStatement(query);
             preparedStmt.setString(1, instanceId);
             preparedStmt.setString(2, instanceType);
@@ -224,6 +288,7 @@ public class ConfigureProcessingLayer {
             preparedStmt.setString(5, publicIp);
             preparedStmt.setString(6, privateIp);
             preparedStmt.setString(7, status);
+            preparedStmt.setString(8, nodeType);
             preparedStmt.execute();
             preparedStmt.close();
         } catch (SQLException ex) {
@@ -342,17 +407,10 @@ public class ConfigureProcessingLayer {
                 //lblInstanceStopMsg.setText("Successfully stop the instance: " + instanceId + ".");
                 if (curInstance != null) {
                     MainForm.lblStopRestartStatus.setText("Successfully stop the instance: " + instanceId + ".");
-                    WriteFile data = new WriteFile("C:\\Code\\SparkClusterDetails.txt", true);
-                    try {
-
-                        data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + curInstance.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
-                                + ", PublicIP:" + curInstance.getPublicIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
-                        updateSparkRestartNodeDetails(curInstance.getInstanceId(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName());
-                        updateSparkClusterNodeRemoveInfo(curInstance.getInstanceType());
-                    } catch (IOException ex) {
-                        System.out.println(ex.getMessage());
-                        MainForm.lblStopRestartStatus.setText("Error while writing to a file: " + ex.getMessage());
-                    }
+                    //data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + curInstance.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
+                    //       + ", PublicIP:" + curInstance.getPublicIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
+                    updateSparkRestartNodeDetails(curInstance.getInstanceId(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName());
+                    updateSparkClusterNodeRemoveInfo(curInstance.getInstanceType());
                 } else {
                     System.out.println("Instances are not running.");
                 }
@@ -415,22 +473,14 @@ public class ConfigureProcessingLayer {
         }
         try {
             AmazonEC2 ec2Client = CloudLogin.getEC2Client();
-            WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
+            //WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
             StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(instId);
             StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
             Instance inst = ConfigureIngestionLayer.waitForRunningState(ec2Client, instId);
             if (inst != null) {
                 MainForm.lblStopRestartStatus.setText("Instance with Id: " + instId + " starts running successfully.");
-                try {
-
-                    data.writeToFile("InstanceID: " + inst.getInstanceId() + " , InstanceType: " + inst.getInstanceType() + ", AZ: ." + inst.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + inst.getPublicDnsName()
-                            + ", PublicIP:" + inst.getPublicIpAddress() + ", Status: " + inst.getState().getName() + ".");
-                    updateRestartedInstanceInfoSpark(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getState().getName());
-                    updateSparkClusterInfo(inst.getInstanceType());
-                } catch (IOException ex) {
-                    System.out.println(ex.getMessage());
-                    MainForm.lblStopRestartStatus.setText("Error while writing to a file: " + ex.getMessage());
-                }
+                updateRestartedInstanceInfoSpark(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getState().getName());
+                updateSparkClusterInfo(inst.getInstanceType());
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
@@ -502,9 +552,118 @@ public class ConfigureProcessingLayer {
 
     }
 
-    public static void configureNewlyCreatedSparkNode(String instanceId, String pubDnsName, String instanceType) {
-        String brokerId = "136.186.108.167:9092";//getCurrentBrokerIds();
-        String cassandraSeedIp = "136.186.108.110";//getCurrentCassandraSeedIps();
+    public static String getMasterNodeDns() {
+        String masterUrl = "";
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT master_public_dnsname FROM processing_cluster_info WHERE cluster_id = ?";
+            PreparedStatement st = DatabaseConnection.con.prepareStatement(query);
+            st.setInt(1, 100);
+            ResultSet rs = st.executeQuery();
+            int i = 0;
+            while (rs.next()) {
+
+                masterUrl = rs.getString(1);
+
+            }
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        masterUrl = "spark://" + masterUrl + ":7077";
+        return masterUrl;
+    }
+
+    public static void configureNewlyCreatedSparkNode(String instanceId, String pubDnsName, String nodeType) {
+        JSch jschClient = new JSch();
+        if ("local".equals(nodeType)) {
+            String brokerId = getCurrentBrokerIds();
+            String cassandraSeedIp = getCurrentCassandraSeedIps();
+            try {
+                jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+                JSch.setConfig("StrictHostKeyChecking", "no");
+                Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
+                session.connect();
+                //run commands
+                String command = "sudo bash updateConfigParamsSpark.sh " + brokerId + " " + cassandraSeedIp + "";         //script file must be available in the instance home directory
+                ChannelExec channel = (ChannelExec) session.openChannel("exec");
+                channel.setCommand(command);
+                channel.setErrStream(System.err);
+                channel.connect();
+                readInputStreamFromSshSession(channel);
+                sleep(5000);
+                String cmd = "sudo bash runSparkApp.sh";         //check to make sure ingestion and storage services are running before executing this script.
+                ChannelExec chnl = (ChannelExec) session.openChannel("exec");
+                chnl.setCommand(cmd);
+                chnl.setErrStream(System.err);
+                chnl.connect();
+                readInputStreamFromSshSession(chnl);
+                sleep(5000);
+                session.disconnect();
+            } catch (JSchException | InterruptedException ex) {
+                System.out.println(ex.getMessage());
+            }
+        } else {
+            String masterUrl = getMasterNodeDns();
+            try {
+                jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+                JSch.setConfig("StrictHostKeyChecking", "no");
+                Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
+                session.connect();
+                //run commands
+                String command = "sudo bash startWorker.sh " + masterUrl;         //script file must be available in the instance home directory
+                ChannelExec channel = (ChannelExec) session.openChannel("exec");
+                channel.setCommand(command);
+                channel.setErrStream(System.err);
+                channel.connect();
+                readInputStreamFromSshSession(channel);
+                sleep(5000);
+                session.disconnect();
+            } catch (JSchException | InterruptedException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+
+    public static String getSparkWorkerIps() {
+        String privIps = "";
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT private_ip FROM processing_nodes_info WHERE node_type = ?";
+            PreparedStatement st = DatabaseConnection.con.prepareStatement(query);
+            st.setString(1, "worker");
+            ResultSet rs = st.executeQuery();
+            int i = 0;
+            while (rs.next()) {
+
+                String ip = rs.getString(1);
+                privIps = privIps + ip + " ";
+            }
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        privIps = privIps.trim();
+        return privIps;
+    }
+
+    public static Boolean configureAndRunMasterNode(String pubDnsName) {
+        Boolean success = false;
+        String brokerId = getCurrentBrokerIds();
+        String cassandraSeedIp = getCurrentCassandraSeedIps();
+        String workerIps = getSparkWorkerIps();
         JSch jschClient = new JSch();
         try {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
@@ -512,14 +671,36 @@ public class ConfigureProcessingLayer {
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
             session.connect();
             //run commands
-            String command = "sudo bash updateConfigParamsSpark.sh " + brokerId + " " + cassandraSeedIp + "";         //script file must be available in the instance home directory
+            String command = "sudo bash upd8SparkClusterConfig.sh " + brokerId + " " + cassandraSeedIp + " " + workerIps;         //script file must be available in the instance home directory
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
             channel.connect();
             readInputStreamFromSshSession(channel);
             sleep(5000);
-            String cmd = "sudo bash runSparkApp.sh";         //check to make sure ingestion and storage services are running before executing this script.
+            String cmd = "sudo bash startSparkCluster.sh";         //check to make sure ingestion and storage services are running before executing this script.
+            ChannelExec chnl = (ChannelExec) session.openChannel("exec");
+            chnl.setCommand(cmd);
+            chnl.setErrStream(System.err);
+            chnl.connect();
+            readInputStreamFromSshSession(chnl);
+            sleep(5000);
+            session.disconnect();
+            success = true;
+        } catch (JSchException | InterruptedException ex) {
+
+        }
+        return success;
+    }
+
+    public static void submitJobToSparkCluster(String pubDns) {
+        JSch jschClient = new JSch();
+        try {
+            jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+            JSch.setConfig("StrictHostKeyChecking", "no");
+            Session session = jschClient.getSession("ubuntu", pubDns, 22);
+            session.connect();
+            String cmd = "sudo bash runSparkAppCluster.sh";         //check to make sure ingestion and storage services are running before executing this script.
             ChannelExec chnl = (ChannelExec) session.openChannel("exec");
             chnl.setCommand(cmd);
             chnl.setErrStream(System.err);
