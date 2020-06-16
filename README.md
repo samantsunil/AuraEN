@@ -18,4 +18,4 @@ Data processing pipeline application:
   - The scripts are provided for running and configuring following service components at each layer of the data processing pipeline: Apache Kafka for data ingestion layer, Apache Spark for stream processing layer and Apache Cassandra for storage layer.\
 In addition, it requires an application (e.g. execuatble jar file) for submitting the spark streaming jobs in the processing layer which requires the updated connectivity info about the recently updated ingestion layer and storage layer resources. \
 Goal:
-The goal is to demonstrate, how the cloud resources can be managed (scaled) autonomically on the selected cloud provider for the multi-service multi-layer data processing pipeline considering the end-to-end QoS requirements at the minimal cost.
+The goal is to demonstrate how the cloud resources can be requested, configured and managed (scaled) autonomically for running a multi-service, multi-layer data processing pipeline based on the end-to-end QoS requirements at the minimal cost.
