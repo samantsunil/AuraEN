@@ -66,7 +66,7 @@ public class ConfigureProcessingLayer {
     public ConfigureProcessingLayer() {
 
     }
-    public static String ami_id_spark = "ami-028bc88846f2d33b3";
+    public static String ami_id_spark = "";
 
     public static void buildProcessingLayerCluster(int noOfNodes, String instanceType, String ami_id, String clusterType) {
         AmazonEC2 ec2Client = CloudLogin.getEC2Client();
@@ -74,11 +74,11 @@ public class ConfigureProcessingLayer {
     }
 
     public static void createMasterNode(String instanceType) {
-        String spark_master_ami = getAmiId("master");
+        ami_id_spark = DatabaseConnection.getServiceAmi("spark-master");
         try {
             AmazonEC2 ec2Client = CloudLogin.getEC2Client();
             RunInstancesRequest runRequest = new RunInstancesRequest()
-                    .withImageId(spark_master_ami)
+                    .withImageId(ami_id_spark)
                     .withInstanceType(instanceType) //free -tier instance type used
                     .withKeyName("mySSHkey") //keypair name
                     .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
@@ -135,71 +135,26 @@ public class ConfigureProcessingLayer {
         }
     }
 
-    public static String getAmiId(String clusterType) {
-        String service_name = null;
-        String ami_id = null;
-        if (null != clusterType) {
-            switch (clusterType) {
-                case "single-node":
-                    service_name = "spark-local";
-                    break;
-                case "multi-node":
-                    service_name = "spark-worker";
-                    break;
-                case "master":
-                    service_name = "spark-master";
-                    break;
-                case "kafka":
-                    service_name = "kafka";
-                    break;
-                case "cassandra":
-                    service_name = "cassandra";
-                    break;
-                default:
-                    break;
-            }
-        }
-        ResultSet rs = null;
-        try {
-            if (DatabaseConnection.con == null) {
-                try {
-                    DatabaseConnection.con = DatabaseConnection.getConnection();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            String query = "SELECT ami_id FROM ami_info WHERE service_name = ?";
-            PreparedStatement pst = DatabaseConnection.con.prepareStatement(query);
-            pst.setString(1, service_name);
-            rs = pst.executeQuery();
-            while (rs.next()) {
-
-                ami_id = rs.getString(1);
-            }
-            pst.close();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return ami_id;
-    }
-
     public static void createEC2NodeForProcessingLayer(int noOfNodes, String instanceType, AmazonEC2 ec2Client, String amiId, String clusterType) {
-        String imageId = getAmiId(clusterType);
         String nodeType = "";
+        String tagValue = "";
+        String serviceName="";
+        if ("Single-node".equals(clusterType)) {
+            tagValue = "spark-node-0";
+            nodeType = "local";
+            serviceName="spark-local";
+        }
+        if ("Multi-node".equals(clusterType)) {
+            tagValue = "spark-worker-0";
+            nodeType = "worker";
+            serviceName="spark-worker";
+        }
+        String imageId = DatabaseConnection.getServiceAmi(serviceName);
+
         if (!"".equals(imageId)) {
             amiId = imageId;
         }
-        String tagValue = "";
-        if ("single-node".equals(clusterType)) {
-            tagValue = "spark-node-0";
-            nodeType = "local";
-        }
-        if ("multi-node".equals(clusterType)) {
-            tagValue = "spark-worker-0";
-            nodeType = "worker";
-        }
+
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                 .withInstanceType(instanceType) //free -tier instance type used
@@ -611,6 +566,10 @@ public class ConfigureProcessingLayer {
             }
         } else {
             String masterUrl = getMasterNodeDns();
+            if(masterUrl==null || "".equals(masterUrl)){
+                System.out.println("Please create and start the master node first!");
+                return;
+            }
             try {
                 jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
                 JSch.setConfig("StrictHostKeyChecking", "no");

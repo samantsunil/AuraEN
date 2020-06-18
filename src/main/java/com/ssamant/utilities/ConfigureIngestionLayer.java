@@ -73,8 +73,8 @@ public class ConfigureIngestionLayer {
     public ConfigureIngestionLayer() {
 
     }
-    public static String amiId = "ami-0cea39b134da9a7da";
-    public static String zkDnsName = "ec2-3-24-240-124.ap-southeast-2.compute.amazonaws.com";
+    public static String amiId = null;
+    public static String zkDnsName = "ec2-13-211-235-35.ap-southeast-2.compute.amazonaws.com";
 
     public static void buildIngestionLayerCluster(int noOfBrokers, String instType) {
         try {
@@ -87,9 +87,13 @@ public class ConfigureIngestionLayer {
     }
 
     public static void createEC2Instances(AmazonEC2 ec2Client, String instType, int noOfBrokers) throws InterruptedException {
+        amiId = DatabaseConnection.getServiceAmi("kafka");
+        if(amiId==null || "".equals(amiId)){
+            amiId=""; //set fixed value
+        }
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
-                .withInstanceType(InstanceType.T2Micro) //free -tier instance type used
+                .withInstanceType(instType) //free -tier instance type used
                 .withKeyName("mySSHkey") //keypair name
                 .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
                 .withMaxCount(noOfBrokers)
@@ -98,7 +102,7 @@ public class ConfigureIngestionLayer {
         @SuppressWarnings("ThrowableResultIgnored")
         RunInstancesResult runResponse = ec2Client.runInstances(runRequest);
         // List<String> instanceIds = new ArrayList<>();
-        WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true); //to save cluster info in a text file.
+        //WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true); //to save cluster info in a text file.
         if (DatabaseConnection.con == null) {
             try {
                 DatabaseConnection.con = DatabaseConnection.getConnection();
@@ -117,12 +121,12 @@ public class ConfigureIngestionLayer {
                     .withResources(inst.getInstanceId())
                     .withTags(tag);
             CreateTagsResult tag_response = ec2Client.createTags(createTagsRequest);
-            startEC2Instance(ec2Client, inst, inst.getPlacement(), data, i);
+            startEC2Instance(ec2Client, inst, inst.getPlacement(), i);
             i++;
         }
     }
 
-    public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, WriteFile data, int brokerId) throws InterruptedException {
+    public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, int brokerId) throws InterruptedException {
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
         Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
@@ -132,18 +136,10 @@ public class ConfigureIngestionLayer {
                     + ", InstanceStatus: " + curInstance.getState().getName() + ", BrokerId: " + brokerId + ".\n");
             txtAreaClusterInfo.append("---------------------------------------------------------------------------------------------------------------------");
             try {
-
-                data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
-                        + ", PublicIP:" + curInstance.getPublicIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
-                try {
-                    dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName(), brokerId);
-                    updateIngestionClusterInfo(curInstance.getInstanceType());
-                } catch (SQLException ex) {
-                    Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-                lblClusterStatus.setText("Error while writing to a file: " + ex.getMessage());
+                dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName(), brokerId);
+                updateIngestionClusterInfo(curInstance.getInstanceType());
+            } catch (SQLException ex) {
+                Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             System.out.println("Instances are not running.");
@@ -191,17 +187,9 @@ public class ConfigureIngestionLayer {
             //lblInstanceStopMsg.setText("Successfully stop the instance: " + instanceId + ".");
             if (curInstance != null) {
                 lblStopInstance.setText("Successfully stop the instance: " + instanceId + ".");
-                WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
-                try {
-
-                    data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + curInstance.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
-                            + ", PublicIP:" + curInstance.getPublicIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
-                    updateInstanceInfoDbKafka(curInstance.getInstanceId(), curInstance.getState().getName());
-                    updateIngestionClusterRemoveNode(curInstance.getInstanceType());
-                } catch (IOException ex) {
-                    System.out.println(ex.getMessage());
-                    lblStopInstance.setText("Error while writing to a file: " + ex.getMessage());
-                }
+                // WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
+                updateInstanceInfoDbKafka(curInstance.getInstanceId(), curInstance.getState().getName());
+                updateIngestionClusterRemoveNode(curInstance.getInstanceType());
             } else {
                 System.out.println("Instances are not running.");
             }
@@ -260,23 +248,15 @@ public class ConfigureIngestionLayer {
     public static void restartKafkaBrokerNode(String instId) throws InterruptedException {
 
         AmazonEC2 ec2Client = CloudLogin.getEC2Client();
-        WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
+        // WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(instId);
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
         Instance inst = waitForRunningState(ec2Client, instId);
         if (inst != null) {
             lblInstanceStopMsg.setText("Instance with Id: " + instId + " starts running.");
             lblStartedInstance.setText("Instance with Id: " + instId + " starts running successfully.");
-            try {
-
-                data.writeToFile("InstanceID: " + inst.getInstanceId() + " , InstanceType: " + inst.getInstanceType() + ", AZ: ." + inst.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + inst.getPublicDnsName()
-                        + ", PublicIP:" + inst.getPublicIpAddress() + ", Status: " + inst.getState().getName() + ".");
-                updateRestartedInstanceInfoIngestion(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getState().getName());
-                updateIngestionClusterInfo(inst.getInstanceType());
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-                lblStartedInstance.setText("Error while writing to a file: " + ex.getMessage());
-            }
+            updateRestartedInstanceInfoIngestion(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getState().getName());
+            updateIngestionClusterInfo(inst.getInstanceType());
         }
     }
 

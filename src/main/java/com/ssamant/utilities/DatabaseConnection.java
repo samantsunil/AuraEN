@@ -25,7 +25,11 @@ package com.ssamant.utilities;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -53,5 +57,30 @@ public class DatabaseConnection {
         }
         return con;
 
+    }
+    public static String getServiceAmi(String serviceName) {
+        String ami_id="";
+                try {
+            if (con == null) {
+                try {
+                    con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            String query = "SELECT ami_id FROM dpp_resources.ami_info WHERE service_name = ? limit 1";
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.setString(1, serviceName);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+
+                ami_id = rs.getString(1);
+            }
+            pst.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ami_id;
     }
 }
