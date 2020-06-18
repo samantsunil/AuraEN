@@ -118,7 +118,7 @@ public class ConfigureStorageLayer {
                     Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            String query = "UPDATE storage_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_type = REPLACE(instance_type, ?, '') WHERE cluster_id = ?";
+            String query = "UPDATE storage_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_types = REPLACE(instance_types, ?, '') WHERE cluster_id = ?";
             PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
             update.setInt(1, i);
             update.setString(2, "1X" + instanceType);
