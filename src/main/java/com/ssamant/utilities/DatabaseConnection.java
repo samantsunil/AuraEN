@@ -45,7 +45,7 @@ public class DatabaseConnection {
     public static Connection getConnection() throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/dpp_resources", "root", "dpp*");
+            con = DriverManager.getConnection("jdbc:mysql://136.186.108.219:3306/dpp_resources", "root", "dpp2020*");
             if (con != null) {
                 System.out.println("Database connection successful.");
             } else {
