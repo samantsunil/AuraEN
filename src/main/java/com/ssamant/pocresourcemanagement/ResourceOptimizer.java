@@ -149,13 +149,13 @@ public class ResourceOptimizer {
                                 }
                                 switch (i) {
                                     case 0:
-                                        instance_type = "m2.small";
+                                        instance_type = "t2.micro";
                                         break;
                                     case 1:
-                                        instance_type = "m2.medium";
+                                        instance_type = "t2.small";
                                         break;
                                     default:
-                                        instance_type = "m2.large";
+                                        instance_type = "t2.medium";
                                         break;
                                 }
                                 soln2.add(String.valueOf(z) + 'X' + instance_type);
@@ -218,13 +218,13 @@ public class ResourceOptimizer {
                                 }
                                 switch (i) {
                                     case 0:
-                                        instance_type = "m2.small";
+                                        instance_type = "t2.micro";
                                         break;
                                     case 1:
-                                        instance_type = "m2.medium";
+                                        instance_type = "t2.small";
                                         break;
                                     default:
-                                        instance_type = "m2.large";
+                                        instance_type = "t2.medium";
                                         break;
                                 }
                                 soln3.add(String.valueOf(z) + 'X' + instance_type);

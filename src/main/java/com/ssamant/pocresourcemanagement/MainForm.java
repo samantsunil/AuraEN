@@ -121,14 +121,14 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         jLabel19 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         txtFieldInstId = new javax.swing.JTextField();
-        txtFieldBrokerId = new javax.swing.JTextField();
-        btnSshAccess = new javax.swing.JButton();
+        btnBuildZkServer = new javax.swing.JButton();
         jPanel14 = new javax.swing.JPanel();
         txtFieldPartitions = new javax.swing.JTextField();
         txtFieldReplication = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         btnStartKafkaCluster = new javax.swing.JButton();
+        comboBoxZkInstType = new javax.swing.JComboBox<>();
         jPanel15 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtAreaClusterInfo = new javax.swing.JTextArea();
@@ -369,16 +369,18 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel19.setText("DNSName:");
+        jLabel19.setText("Service:");
 
-        jLabel21.setText("Broker Id:");
+        jLabel21.setText("Instance Type:");
 
+        txtFieldInstId.setEditable(false);
+        txtFieldInstId.setText("Zookeeper");
         txtFieldInstId.setName(""); // NOI18N
 
-        btnSshAccess.setText("Configure Kafka Broker");
-        btnSshAccess.addActionListener(new java.awt.event.ActionListener() {
+        btnBuildZkServer.setText("Build Zookeeper Service");
+        btnBuildZkServer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSshAccessActionPerformed(evt);
+                btnBuildZkServerActionPerformed(evt);
             }
         });
 
@@ -437,6 +439,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
+        comboBoxZkInstType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Choose an instance type", "t2.micro", "t2.small", "t2.medium", "a1.large" }));
+
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
         jPanel13Layout.setHorizontalGroup(
@@ -447,10 +451,10 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     .addComponent(jLabel21))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSshAccess, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtFieldInstId, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
-                        .addComponent(txtFieldBrokerId)))
+                    .addComponent(btnBuildZkServer, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(comboBoxZkInstType, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtFieldInstId, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -462,12 +466,12 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
                     .addComponent(txtFieldInstId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(22, 22, 22)
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(19, 19, 19)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel21)
-                    .addComponent(txtFieldBrokerId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboBoxZkInstType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSshAccess)
+                .addComponent(btnBuildZkServer)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel13Layout.createSequentialGroup()
                 .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1738,9 +1742,11 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
      */
     private void btnIngestionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngestionActionPerformed
         try {
-            
+
             txtAreaIngestionDetails.setText("");
+            txtAreaIngestionDetails.setText("Current Allocation:");
             txtAreaIngestionDetails.append("\n");
+            txtAreaIngestionDetails.append("---------------------------\n");
             ResultSet rss = ConfigureIngestionLayer.loadIngestionClusterCapacityDetails();
             while (rss.next()) {
                 int clusterID = rss.getInt("cluster_id");
@@ -1755,11 +1761,12 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
                 txtAreaIngestionDetails.append("No of Nodes: " + Integer.toString(noOfNodes) + "\n");
-                txtAreaIngestionDetails.append("Cluster Resource Composition: " + clusterComposition + "\n");
+                txtAreaIngestionDetails.append("Cluster Resources: " + clusterComposition + "\n");
                 txtAreaIngestionDetails.append("Replication factor: " + Integer.toString(replicationFactor) + "\n");
                 txtAreaIngestionDetails.append("Topic partitions: " + Integer.toString(partitionsCount) + "\n");
-                txtAreaIngestionDetails.append("Total throughput: " + Integer.toString(throughput) + "\n");
-                txtAreaIngestionDetails.append("Sustainable latency: " + Integer.toString(latency) + "\n");
+                txtAreaIngestionDetails.append("Throughput: " + Integer.toString(throughput) + "\n");
+                txtAreaIngestionDetails.append("Latency: " + Integer.toString(latency) + "\n");
+                txtAreaIngestionDetails.append("-----------------------------------------------------------\n");
             }
             rss.close();
         } catch (SQLException ex) {
@@ -1776,7 +1783,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         } else {
             //call resource optimizer algorithm -
             clearDppLayerTabFields();
-            int workload =Integer.parseInt(txtFieldFutureWorkload.getText().trim());
+            int workload = Integer.parseInt(txtFieldFutureWorkload.getText().trim());
             ResourceOptimizer.getResourceAllocation(workload, workload, workload, Integer.parseInt(txtFieldE2eLatency.getText().trim()));
         }
     }//GEN-LAST:event_btnScaleIngestionClusterActionPerformed
@@ -1821,8 +1828,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         txtFieldStartInstId.setText("");
         txtFieldInstId.setText("");
         txtFieldPartitions.setText("");
-        txtFieldReplication.setText("");
-        txtFieldBrokerId.setText("");
+        txtFieldReplication.setText("");        
         lblErrDnsName.setText("");
         lblStartedInstance.setText("");
         lblStopInstance.setText("");
@@ -1836,7 +1842,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
      */
     private void btnLoadIngestionClusterInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadIngestionClusterInfoActionPerformed
 
-        try {            
+        try {
             txtAreaClusterInfo.setText("");
             txtAreaClusterInfo.append("");
             ResultSet rs = ConfigureIngestionLayer.loadCurrentClusterDetails();
@@ -1874,7 +1880,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         }
         lblBuildProcessingCluster.setText("Instances for Spark service cluster are created successfully.");
         btnBuildProcessingCluster.setEnabled(true);
-        comboBoxNoSparkNodes.setEnabled(true); 
+        comboBoxNoSparkNodes.setEnabled(true);
     }//GEN-LAST:event_btnBuildProcessingClusterActionPerformed
 
     private void btnBuildStorageClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuildStorageClusterActionPerformed
@@ -1909,21 +1915,23 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
      *
      * @param evt
      */
-    private void btnSshAccessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSshAccessActionPerformed
+    private void btnBuildZkServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuildZkServerActionPerformed
         // TODO add your handling code here:
-        String pubDnsName = txtFieldInstId.getText().trim();
-        if (!"".equals(pubDnsName)) {
-            try {
-                ConfigureIngestionLayer.configureNewlyCreatedBroker(pubDnsName, txtFieldBrokerId.getText().trim());
-            } catch (Exception ex) {
-                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        if (comboBoxZkInstType.getSelectedIndex() > 0) {
+            String instanceType = comboBoxZkInstType.getSelectedItem().toString();
+            if (!"".equals(instanceType)) {
+                try {
+                    ConfigureIngestionLayer.createZkServer(instanceType);
+                } catch (Exception ex) {
+                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                lblErrDnsName.setText("Please enter valid pubilc DNS name of the running instance.");
             }
-        } else {
-            lblErrDnsName.setText("Please enter valid pubilc DNS name of the running instance.");
         }
 
 
-    }//GEN-LAST:event_btnSshAccessActionPerformed
+    }//GEN-LAST:event_btnBuildZkServerActionPerformed
 
     private void txtFieldPartitionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldPartitionsActionPerformed
         // TODO add your handling code here:
@@ -1968,7 +1976,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         if ((!"".equals(txtFieldDnsNameStorage.getText()))) {
             if (rdBtnNewNode.isSelected()) {
                 isNewNode = true;
-                if("".equals(seedIp) || seedIp==null){
+                if ("".equals(seedIp) || seedIp == null) {
                     lblNonSeedMsg.setText("You must enter a seed node IP for non-seed node!");
                     return;
                 }
@@ -2026,7 +2034,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String serviceName = rs.getString("service_name");
                 String instanceType = rs.getString("instance_type");
                 String jsonData = rs.getString("input_qos_values");
-                txtAreaSustainabelQoSInfo.append("Service: " + serviceName + ", Instance Type: " + instanceType + ", [Input Workload:[sus. workload, sus. latency]]" + jsonData + ".\n");
+                txtAreaSustainabelQoSInfo.append("Service: " + serviceName + ", Instance Type: " + instanceType + ", [sus. workload: sus. latency]" + jsonData + ".\n");
             }
             st.close();
         } catch (SQLException ex) {
@@ -2092,7 +2100,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         // TODO add your handling code here:
         try {
             txtAreaProcessingDetails.setText("");
+            txtAreaProcessingDetails.setText("Current Allocation:");
             txtAreaProcessingDetails.append("\n");
+            txtAreaProcessingDetails.append("-----------------------------\n");
             ResultSet rs = ConfigureProcessingLayer.loadCurrentSparkClusterInfo();
             while (rs.next()) {
                 int clusterID = rs.getInt("cluster_id");
@@ -2125,8 +2135,11 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         try {
             // TODO add your handling code here:
             txtAreaStorageDetails.setText("");
-            ResultSet rs = ConfigureStorageLayer.loadCurrentCassandraClusterInfo();
+            txtAreaStorageDetails.setText("Current Allocation:");
             txtAreaStorageDetails.append("\n");
+            txtAreaStorageDetails.append("---------------------------\n");
+            ResultSet rs = ConfigureStorageLayer.loadCurrentCassandraClusterInfo();
+
             while (rs.next()) {
                 int clusterID = rs.getInt("cluster_id");
                 int noOfNodes = rs.getInt("no_of_nodes");
@@ -2135,7 +2148,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 int latency = rs.getInt("latency");
 
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
-                txtAreaStorageDetails.append("NoOfNodes: " + Integer.toString(noOfNodes) + ".\n");
+                txtAreaStorageDetails.append("No Of Nodes: " + Integer.toString(noOfNodes) + ".\n");
                 txtAreaStorageDetails.append("Cluster Resources: " + instanceTypes + ".\n");
                 txtAreaStorageDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
                 txtAreaStorageDetails.append("Latency: " + Integer.toString(latency) + ".\n");
@@ -2163,49 +2176,50 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     }//GEN-LAST:event_btnClearFieldsProcessingActionPerformed
 
     private void comboBoxClusterTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboBoxClusterTypeItemStateChanged
-              // TODO add your handling code here:
-              if(comboBoxClusterType.getSelectedIndex()==1){
-                  comboBoxNoSparkNodes.setSelectedIndex(1);
-                  comboBoxNoSparkNodes.setEnabled(false);
-              }
-              else {
-                 comboBoxNoSparkNodes.setEnabled(true); 
-              }
+        // TODO add your handling code here:
+        if (comboBoxClusterType.getSelectedIndex() == 1) {
+            comboBoxNoSparkNodes.setSelectedIndex(1);
+            comboBoxNoSparkNodes.setEnabled(false);
+        } else {
+            comboBoxNoSparkNodes.setEnabled(true);
+        }
     }//GEN-LAST:event_comboBoxClusterTypeItemStateChanged
 
     private void btnSparkSubmitAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSparkSubmitAppActionPerformed
         // TODO add your handling code here:
-        if(!"".equals(txtFieldMasterNodeDns.getText().trim())) {
-        
-    }
+        if (!"".equals(txtFieldMasterNodeDns.getText().trim())) {
+
+        }
     }//GEN-LAST:event_btnSparkSubmitAppActionPerformed
 
     private void btnClearAllDppLayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearAllDppLayersActionPerformed
         // TODO add your handling code here:
         clearDppLayerTabFields();
     }//GEN-LAST:event_btnClearAllDppLayersActionPerformed
-    public void clearDppLayerTabFields(){
+    public void clearDppLayerTabFields() {
         txtAreaIngestionResources.setText("");
         txtAreaProcessingResources.setText("");
         txtAreaStorageResources.setText("");
         lblErrorMsgCompResAllocation.setText("");
-        
+
     }
+
     public void clearFormFieldsProcessingTab() {
-    txtFieldStartRestartInstId.setText("");
-    comboBoxProcFrameworks.setSelectedIndex(0);
-    comboBoxSparkInstType.setSelectedIndex(0);
-    comboBoxNoSparkNodes.setSelectedIndex(0);
-    comboBoxMasterNodeInstType.setSelectedIndex(0);
-    comboBoxClusterType.setSelectedIndex(0);
-    txtAreaSparkResourcesInfo.setText("");
-    txtFieldInstanceIdConfigure.setText("");
-    txtFieldDnsNameConfigure.setText("");
-    
-    lblStopRestartStatus.setText("");
-    lblBuildProcessingCluster.setText("");
-    comboBoxNoSparkNodes.setEnabled(true); 
-}
+        txtFieldStartRestartInstId.setText("");
+        comboBoxProcFrameworks.setSelectedIndex(0);
+        comboBoxSparkInstType.setSelectedIndex(0);
+        comboBoxNoSparkNodes.setSelectedIndex(0);
+        comboBoxMasterNodeInstType.setSelectedIndex(0);
+        comboBoxClusterType.setSelectedIndex(0);
+        txtAreaSparkResourcesInfo.setText("");
+        txtFieldInstanceIdConfigure.setText("");
+        txtFieldDnsNameConfigure.setText("");
+
+        lblStopRestartStatus.setText("");
+        lblBuildProcessingCluster.setText("");
+        comboBoxNoSparkNodes.setEnabled(true);
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -2245,6 +2259,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JButton btnBuildProcessingCluster;
     private javax.swing.JButton btnBuildProcessingCluster1;
     public static javax.swing.JButton btnBuildStorageCluster;
+    private javax.swing.JButton btnBuildZkServer;
     private javax.swing.JButton btnClearAllDppLayers;
     private javax.swing.JButton btnClearAllStorage;
     private javax.swing.JButton btnClearFieldsProcessing;
@@ -2264,7 +2279,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JButton btnScaleDppResources;
     private javax.swing.JButton btnScaleIngestionCluster;
     private javax.swing.JButton btnSparkSubmitApp;
-    private javax.swing.JButton btnSshAccess;
     private javax.swing.JButton btnStartCluster;
     private javax.swing.JButton btnStartIngestionService;
     private javax.swing.JButton btnStartInstance;
@@ -2290,6 +2304,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JComboBox<String> comboBoxProcFrameworks1;
     private javax.swing.JComboBox<String> comboBoxSparkInstType;
     private javax.swing.JComboBox<String> comboBoxSparkInstType1;
+    private javax.swing.JComboBox<String> comboBoxZkInstType;
     private javax.swing.JTabbedPane dppLayersTab;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
@@ -2399,7 +2414,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     public static javax.swing.JTextArea txtAreaStorageResources;
     private javax.swing.JTextArea txtAreaSustainabelQoSInfo;
     private javax.swing.JTextField txtFieldAmiId;
-    private javax.swing.JTextField txtFieldBrokerId;
     private javax.swing.JTextField txtFieldCurrentWorkload;
     private javax.swing.JTextField txtFieldDnsName;
     private javax.swing.JTextField txtFieldDnsNameConfigure;

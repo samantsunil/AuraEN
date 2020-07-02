@@ -86,14 +86,59 @@ public class ConfigureIngestionLayer {
 
     }
 
+    public static void createZkServer(String instanceType) {
+        String zkAmi = DatabaseConnection.getServiceAmi("zookeeper");
+        if (zkAmi != null || !"".equals(zkAmi)) {
+            AmazonEC2 ec2Client = CloudLogin.getEC2Client();
+            RunInstancesRequest runRequest = new RunInstancesRequest()
+                    .withImageId(zkAmi) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
+                    .withInstanceType(instanceType) //free -tier instance type t2.micro
+                    .withKeyName("mySSHkey") //keypair name
+                    .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
+                    .withMaxCount(1)
+                    .withMinCount(1);
+            RunInstancesResult runResponse = ec2Client.runInstances(runRequest);
+            Instance inst = runResponse.getReservation().getInstances().get(0);
+            Tag tag = new Tag()
+                    .withKey("Name")
+                    .withValue("zookeeper-server");
+            CreateTagsRequest createTagsRequest = new CreateTagsRequest()
+                    .withResources(inst.getInstanceId())
+                    .withTags(tag);
+            CreateTagsResult tag_response = ec2Client.createTags(createTagsRequest);
+            StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
+            StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
+            Instance curInstance = null;
+            try {
+                curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (curInstance != null) {
+                try {
+                    dbUpdateZkServerInfo(curInstance.getPublicDnsName());
+                    sleep(10000);
+                    startZookeeperServer(curInstance.getPublicDnsName());
+                    
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        } else {
+            System.out.println("No AMI exist for zookeeper service.");
+        }
+
+    }
+
     public static void createEC2Instances(AmazonEC2 ec2Client, String instType, int noOfBrokers) throws InterruptedException {
         amiId = DatabaseConnection.getServiceAmi("kafka");
-        if(amiId==null || "".equals(amiId)){
-            amiId=""; //set fixed value
+        if (amiId == null || "".equals(amiId)) {
+            amiId = ""; //set fixed value
         }
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
-                .withInstanceType(instType) //free -tier instance type used
+                .withInstanceType(instType) //free -tier instance type t2.micro
                 .withKeyName("mySSHkey") //keypair name
                 .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
                 .withMaxCount(noOfBrokers)
@@ -138,6 +183,9 @@ public class ConfigureIngestionLayer {
             try {
                 dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName(), brokerId);
                 updateIngestionClusterInfo(curInstance.getInstanceType());
+                sleep(10000);
+                String brokId = Integer.toString(brokerId - 1);
+                configureNewlyCreatedBroker(curInstance.getPublicDnsName(), brokId);
             } catch (SQLException ex) {
                 Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -146,19 +194,40 @@ public class ConfigureIngestionLayer {
         }
     }
 
+    public static void dbUpdateZkServerInfo(String zkDnsName) {
+
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE ingestion_cluster_info SET zk_dnsname = ? WHERE cluster_id = ?";
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, zkDnsName);
+                update.setInt(2, 100);
+                update.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public static void dbInsertInstanceInfo(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String status, int brokerId) throws SQLException {
         String query = "INSERT INTO ingestion_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, status, broker_id)"
                 + " VALUES (?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement preparedStmt = DatabaseConnection.con.prepareStatement(query);
-        preparedStmt.setString(1, instanceId);
-        preparedStmt.setString(2, instanceType);
-        preparedStmt.setString(3, az);
-        preparedStmt.setString(4, pubDnsName);
-        preparedStmt.setString(5, publicIp);
-        preparedStmt.setString(6, status);
-        preparedStmt.setString(7, String.valueOf(brokerId));
-        preparedStmt.execute();
-        preparedStmt.close();
+        try (PreparedStatement preparedStmt = DatabaseConnection.con.prepareStatement(query)) {
+            preparedStmt.setString(1, instanceId);
+            preparedStmt.setString(2, instanceType);
+            preparedStmt.setString(3, az);
+            preparedStmt.setString(4, pubDnsName);
+            preparedStmt.setString(5, publicIp);
+            preparedStmt.setString(6, status);
+            preparedStmt.setString(7, String.valueOf(brokerId - 1));
+            preparedStmt.execute();
+        }
     }
 
     public static void stopKafkaBrokerNode(String instanceId) throws InterruptedException {
@@ -459,18 +528,41 @@ public class ConfigureIngestionLayer {
             }
 
             String query = "select public_dnsname from dpp_resources.ingestion_nodes_info where status = ? limit 1";
-            PreparedStatement pst = DatabaseConnection.con.prepareStatement(query);
-            pst.setString(1, "running");
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
-
-                brokerDns = rs.getString(1);
+            try (PreparedStatement pst = DatabaseConnection.con.prepareStatement(query)) {
+                pst.setString(1, "running");
+                ResultSet rs = pst.executeQuery();
+                while (rs.next()) {
+                    
+                    brokerDns = rs.getString(1);
+                }
             }
-            pst.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return brokerDns;
+    }
+    public static String getZookeeperDns(){
+                String zkDns = "";
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "select zk_dnsname from dpp_resources.ingestion_cluster_info where cluster_id = ? limit 1";
+                    try (PreparedStatement pst = DatabaseConnection.con.prepareStatement(query)) {
+                        pst.setInt(1, 100);
+                        ResultSet rs = pst.executeQuery();
+                        while (rs.next()) {
+                            
+                            zkDns = rs.getString(1);
+                        }       }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return zkDns;
     }
 
     /**
@@ -494,7 +586,7 @@ public class ConfigureIngestionLayer {
             //run commands
             deleteTopicFromZookeeper();
             sleep(5000);
-            String cmd = "sudo bash configKafkaTopic.sh 1 " + partitionsCount + " 1 " + partitionsCount; //command to configure kafka topic before starting the cluster - based on no of kafka nodes.
+            String cmd = "sudo bash configKafkaTopic.sh 1 " + partitionsCount + " 1 1"; //command to configure kafka topic before starting the cluster - based on no of kafka nodes.
             ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
             channel3.setCommand(cmd);
             channel3.setErrStream(System.err);
@@ -527,7 +619,8 @@ public class ConfigureIngestionLayer {
         try {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
-            Session session = jschClient.getSession("ubuntu", zkDnsName, 22);
+            String zkDns = getZookeeperDns();
+            Session session = jschClient.getSession("ubuntu", zkDns, 22);
             session.connect();
             //run commands
             String command = "sudo bash deleteTopicsZk.sh";         //script file must be available on the instance home directory
@@ -545,7 +638,28 @@ public class ConfigureIngestionLayer {
         }
 
     }
-
+    public static void startZookeeperServer(String zkDns){
+      JSch jschClient = new JSch();
+        try {
+            jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+            JSch.setConfig("StrictHostKeyChecking", "no");            
+            Session session = jschClient.getSession("ubuntu", zkDns, 22);
+            session.connect();
+            //run commands
+            String command = "sudo bash runZookeeperService.sh";         //script file must be available on the instance home directory
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand(command);
+            channel.setErrStream(System.err);
+            channel.connect();
+            readInputStreamFromSshSession(channel);
+            sleep(5000);
+            session.disconnect();
+        } catch (JSchException ex) {
+            System.out.println(ex.getMessage());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }  
+    }
     public static void readInputStreamFromSshSession(ChannelExec channel) throws InterruptedException {
         InputStream input = null;
         try {

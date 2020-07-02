@@ -394,10 +394,10 @@
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="btnSshAccess" min="-2" pref="159" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="txtFieldInstId" pref="157" max="32767" attributes="0"/>
-                                  <Component id="txtFieldBrokerId" max="32767" attributes="0"/>
+                              <Component id="btnBuildZkServer" min="-2" pref="159" max="-2" attributes="0"/>
+                              <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="comboBoxZkInstType" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="txtFieldInstId" alignment="0" pref="157" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
@@ -414,13 +414,13 @@
                               <Component id="jLabel19" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="txtFieldInstId" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jLabel21" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="txtFieldBrokerId" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="jLabel21" min="-2" max="-2" attributes="0"/>
+                              <Component id="comboBoxZkInstType" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnSshAccess" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnBuildZkServer" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -433,30 +433,30 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabel19">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="DNSName:"/>
+                    <Property name="text" type="java.lang.String" value="Service:"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel21">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Broker Id:"/>
+                    <Property name="text" type="java.lang.String" value="Instance Type:"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtFieldInstId">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                    <Property name="text" type="java.lang.String" value="Zookeeper"/>
                     <Property name="name" type="java.lang.String" value="" noResource="true"/>
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                   </AuxValues>
                 </Component>
-                <Component class="javax.swing.JTextField" name="txtFieldBrokerId">
-                </Component>
-                <Component class="javax.swing.JButton" name="btnSshAccess">
+                <Component class="javax.swing.JButton" name="btnBuildZkServer">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Configure Kafka Broker"/>
+                    <Property name="text" type="java.lang.String" value="Build Zookeeper Service"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSshAccessActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuildZkServerActionPerformed"/>
                   </Events>
                 </Component>
                 <Container class="javax.swing.JPanel" name="jPanel14">
@@ -538,6 +538,22 @@
                     </Component>
                   </SubComponents>
                 </Container>
+                <Component class="javax.swing.JComboBox" name="comboBoxZkInstType">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="5">
+                        <StringItem index="0" value="Choose an instance type"/>
+                        <StringItem index="1" value="t2.micro"/>
+                        <StringItem index="2" value="t2.small"/>
+                        <StringItem index="3" value="t2.medium"/>
+                        <StringItem index="4" value="a1.large"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
+                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="jPanel15">
