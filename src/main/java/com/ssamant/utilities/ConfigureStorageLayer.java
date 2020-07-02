@@ -374,7 +374,7 @@ public class ConfigureStorageLayer {
         String amiId=null;
         amiId = DatabaseConnection.getServiceAmi("cassandra");
         if("".equals(amiId) || amiId ==null){
-            amiId = "ami-0e3a3de3cdd28fcd9";
+            amiId = "ami-08743c551f55bbdbd";
         }
          
         AmazonEC2 ec2Client = CloudLogin.getEC2Client();

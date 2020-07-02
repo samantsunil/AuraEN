@@ -279,14 +279,14 @@ public class ConfigureIngestionLayer {
                 }
             }
             String query = "UPDATE ingestion_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_type = REPLACE(instance_type, ?, ''), replication_factor = replication_factor - ?, partitions_count = partitions_count - ? WHERE cluster_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setInt(1, i);
-            update.setString(2, "1X" + instanceType);
-            update.setInt(3, i);
-            update.setInt(4, i);
-            update.setInt(5, 100); //clusterId= 100 fixed
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setInt(1, i);
+                update.setString(2, "1X" + instanceType);
+                update.setInt(3, i);
+                update.setInt(4, i);
+                update.setInt(5, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -339,13 +339,13 @@ public class ConfigureIngestionLayer {
                 }
             }
             String query = "UPDATE ingestion_nodes_info SET status = ?, public_dnsname = ?, public_ip = ? WHERE instance_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setString(1, status);
-            update.setString(2, pubDns);
-            update.setString(3, pubIp);
-            update.setString(4, instanceId);
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, status);
+                update.setString(2, pubDns);
+                update.setString(3, pubIp);
+                update.setString(4, instanceId);
+                update.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -362,14 +362,14 @@ public class ConfigureIngestionLayer {
                 }
             }
             String query = "UPDATE ingestion_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_type = CONCAT(instance_type, ?), replication_factor = replication_factor + ?, partitions_count = partitions_count + ? WHERE cluster_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setInt(1, i);
-            update.setString(2, "1X" + instanceType);
-            update.setInt(3, i);
-            update.setInt(4, i);
-            update.setInt(5, 100); //clusterId= 100 fixed
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setInt(1, i);
+                update.setString(2, "1X" + instanceType);
+                update.setInt(3, i);
+                update.setInt(4, i);
+                update.setInt(5, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -641,6 +641,7 @@ public class ConfigureIngestionLayer {
     public static void startZookeeperServer(String zkDns){
       JSch jschClient = new JSch();
         try {
+            sleep(5000);
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");            
             Session session = jschClient.getSession("ubuntu", zkDns, 22);
