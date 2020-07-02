@@ -119,7 +119,7 @@ public class ConfigureIngestionLayer {
                     dbUpdateZkServerInfo(curInstance.getPublicDnsName());
                     sleep(10000);
                     startZookeeperServer(curInstance.getPublicDnsName());
-                    
+
                 } catch (InterruptedException ex) {
                     Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -209,6 +209,7 @@ public class ConfigureIngestionLayer {
                 update.setString(1, zkDnsName);
                 update.setInt(2, 100);
                 update.executeUpdate();
+                update.close();
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
@@ -227,6 +228,7 @@ public class ConfigureIngestionLayer {
             preparedStmt.setString(6, status);
             preparedStmt.setString(7, String.valueOf(brokerId - 1));
             preparedStmt.execute();
+            preparedStmt.close();
         }
     }
 
@@ -286,6 +288,7 @@ public class ConfigureIngestionLayer {
                 update.setInt(4, i);
                 update.setInt(5, 100); //clusterId= 100 fixed
                 update.executeUpdate();
+                update.close();
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
@@ -308,6 +311,7 @@ public class ConfigureIngestionLayer {
                 update.setString(3, "");
                 update.setString(4, instanceId);
                 update.executeUpdate();
+                update.close();
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
@@ -345,6 +349,7 @@ public class ConfigureIngestionLayer {
                 update.setString(3, pubIp);
                 update.setString(4, instanceId);
                 update.executeUpdate();
+                update.close();
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
@@ -369,6 +374,7 @@ public class ConfigureIngestionLayer {
                 update.setInt(4, i);
                 update.setInt(5, 100); //clusterId= 100 fixed
                 update.executeUpdate();
+                update.close();
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
@@ -435,13 +441,13 @@ public class ConfigureIngestionLayer {
             try {
                 if (new File("C:\\Code\\KafkaClusterDetails.txt").exists()) {
                     FileReader file = new FileReader(fileName);
-                    BufferedReader rdr = new BufferedReader(file);
-                    String aLine;
-                    while ((aLine = rdr.readLine()) != null) {
-                        txtAreaClusterInfo.append(aLine);
-                        txtAreaClusterInfo.append("\n");
+                    try (BufferedReader rdr = new BufferedReader(file)) {
+                        String aLine;
+                        while ((aLine = rdr.readLine()) != null) {
+                            txtAreaClusterInfo.append(aLine);
+                            txtAreaClusterInfo.append("\n");
+                        }
                     }
-                    rdr.close();
                 } else {
                     System.out.println("File does not exist. No existing cluster info present.");
                 }
@@ -532,17 +538,19 @@ public class ConfigureIngestionLayer {
                 pst.setString(1, "running");
                 ResultSet rs = pst.executeQuery();
                 while (rs.next()) {
-                    
+
                     brokerDns = rs.getString(1);
                 }
+                pst.close();
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return brokerDns;
     }
-    public static String getZookeeperDns(){
-                String zkDns = "";
+
+    public static String getZookeeperDns() {
+        String zkDns = "";
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -552,13 +560,15 @@ public class ConfigureIngestionLayer {
                 }
             }
             String query = "select zk_dnsname from dpp_resources.ingestion_cluster_info where cluster_id = ? limit 1";
-                    try (PreparedStatement pst = DatabaseConnection.con.prepareStatement(query)) {
-                        pst.setInt(1, 100);
-                        ResultSet rs = pst.executeQuery();
-                        while (rs.next()) {
-                            
-                            zkDns = rs.getString(1);
-                        }       }
+            try (PreparedStatement pst = DatabaseConnection.con.prepareStatement(query)) {
+                pst.setInt(1, 100);
+                ResultSet rs = pst.executeQuery();
+                while (rs.next()) {
+
+                    zkDns = rs.getString(1);
+                }
+                pst.close();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -586,7 +596,7 @@ public class ConfigureIngestionLayer {
             //run commands
             deleteTopicFromZookeeper();
             sleep(5000);
-            String cmd = "sudo bash configKafkaTopic.sh 1 " + partitionsCount + " 1 1 " + getZookeeperDns() +":2181"; //command to configure kafka topic before starting the cluster - based on no of kafka nodes.
+            String cmd = "sudo bash configKafkaTopic.sh 1 " + partitionsCount + " 1 1 " + getZookeeperDns() + ":2181"; //command to configure kafka topic before starting the cluster - based on no of kafka nodes.
             ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
             channel3.setCommand(cmd);
             channel3.setErrStream(System.err);
@@ -627,7 +637,7 @@ public class ConfigureIngestionLayer {
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect();
+            channel.connect(60000);
             readInputStreamFromSshSession(channel);
             sleep(5000);
             session.disconnect();
@@ -638,12 +648,13 @@ public class ConfigureIngestionLayer {
         }
 
     }
-    public static void startZookeeperServer(String zkDns){
-      JSch jschClient = new JSch();
+
+    public static void startZookeeperServer(String zkDns) {
+        JSch jschClient = new JSch();
         try {
             sleep(5000);
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
-            JSch.setConfig("StrictHostKeyChecking", "no");            
+            JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", zkDns, 22);
             session.connect(60000);
             //run commands
@@ -651,7 +662,7 @@ public class ConfigureIngestionLayer {
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect();
+            channel.connect(60000);
             readInputStreamFromSshSession(channel);
             sleep(5000);
             session.disconnect();
@@ -659,8 +670,9 @@ public class ConfigureIngestionLayer {
             System.out.println(ex.getMessage());
         } catch (InterruptedException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-        }  
+        }
     }
+
     public static void readInputStreamFromSshSession(ChannelExec channel) throws InterruptedException {
         InputStream input = null;
         try {

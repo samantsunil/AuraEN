@@ -119,12 +119,12 @@ public class ConfigureStorageLayer {
                 }
             }
             String query = "UPDATE storage_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_types = REPLACE(instance_types, ?, '') WHERE cluster_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setInt(1, i);
-            update.setString(2, "1X" + instanceType);
-            update.setInt(3, 100); //clusterId= 100 fixed
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setInt(1, i);
+                update.setString(2, "1X" + instanceType);
+                update.setInt(3, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -140,13 +140,13 @@ public class ConfigureStorageLayer {
                 }
             }
             String query = "UPDATE storage_nodes_info SET status = ?, public_dnsname = ?, public_ip = ? WHERE instance_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setString(1, status);
-            update.setString(2, "");
-            update.setString(3, "");
-            update.setString(4, instanceId);
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, status);
+                update.setString(2, "");
+                update.setString(3, "");
+                update.setString(4, instanceId);
+                update.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -181,14 +181,14 @@ public class ConfigureStorageLayer {
                 }
             }
             String query = "UPDATE storage_nodes_info SET status = ?, public_dnsname = ?, public_ip = ?, private_ip = ? WHERE instance_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setString(1, status);
-            update.setString(2, pubDns);
-            update.setString(3, pubIp);
-            update.setString(4, PrivIp);
-            update.setString(5, instanceId);
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, status);
+                update.setString(2, pubDns);
+                update.setString(3, pubIp);
+                update.setString(4, PrivIp);
+                update.setString(5, instanceId);
+                update.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -359,11 +359,11 @@ public class ConfigureStorageLayer {
                 }
             }
             String query = "UPDATE storage_nodes_info SET node_hostId = ? WHERE instance_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setString(1, hostId);
-            update.setString(2, instanceId);
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, hostId);
+                update.setString(2, instanceId);
+                update.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -460,6 +460,7 @@ public class ConfigureStorageLayer {
                 update.setString(2, "1X" + instanceType + ",");
                 update.setInt(3, 100); //clusterId= 100 fixed
                 update.executeUpdate();
+                update.close();
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
@@ -479,6 +480,7 @@ public class ConfigureStorageLayer {
             preparedStmt.setString(7, status);
             preparedStmt.setString(8, nodeHostId);
             preparedStmt.execute();
+            preparedStmt.close();
         }
     }
 
@@ -530,13 +532,13 @@ public class ConfigureStorageLayer {
             try {
                 if (new File("C:\\Code\\CassandraClusterDetails.txt").exists()) {
                     FileReader file = new FileReader(fileName);
-                    BufferedReader rdr = new BufferedReader(file);
-                    String aLine;
-                    while ((aLine = rdr.readLine()) != null) {
-                        MainForm.txtAreaCassandraResourcesInfo.append(aLine);
-                        MainForm.txtAreaCassandraResourcesInfo.append("\n");
+                    try (BufferedReader rdr = new BufferedReader(file)) {
+                        String aLine;
+                        while ((aLine = rdr.readLine()) != null) {
+                            MainForm.txtAreaCassandraResourcesInfo.append(aLine);
+                            MainForm.txtAreaCassandraResourcesInfo.append("\n");
+                        }
                     }
-                    rdr.close();
                 } else {
                     System.out.println("File does not exist. No existing cluster info present.");
                 }
@@ -548,13 +550,13 @@ public class ConfigureStorageLayer {
             try {
                 if (new File("C:\\Code\\CassandraClusterDetails.txt").exists()) {
                     FileReader file = new FileReader(fileName);
-                    BufferedReader rdr = new BufferedReader(file);
-                    String aLine;
-                    while ((aLine = rdr.readLine()) != null) {
-                        MainForm.txtAreaStorageResources.append(aLine);
-                        MainForm.txtAreaStorageResources.append("\n");
+                    try (BufferedReader rdr = new BufferedReader(file)) {
+                        String aLine;
+                        while ((aLine = rdr.readLine()) != null) {
+                            MainForm.txtAreaStorageResources.append(aLine);
+                            MainForm.txtAreaStorageResources.append("\n");
+                        }
                     }
-                    rdr.close();
                 } else {
                     System.out.println("File does not exist. No existing cluster info present.");
                 }

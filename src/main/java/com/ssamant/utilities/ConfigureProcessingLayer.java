@@ -101,6 +101,7 @@ public class ConfigureProcessingLayer {
                 dbUpdateMasterNodeInfo(curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getInstanceId());
                 MainForm.txtAreaSparkResourcesInfo.append("--------Spark Master Node Info-----------------\n");
                 MainForm.txtAreaSparkResourcesInfo.append("Public DNS: " + curInstance.getPublicDnsName() + ", Public IP: " + curInstance.getPublicIpAddress() + ", Private IP: " + curInstance.getPrivateIpAddress() + ", Instance Id: " + curInstance.getInstanceId() + ".\n");
+                sleep(5000);
                 Boolean success = configureAndRunMasterNode(curInstance.getPublicDnsName());
                 if (success) {
                     MainForm.txtAreaSparkResourcesInfo.append("----------------------------\n");
@@ -197,7 +198,7 @@ public class ConfigureProcessingLayer {
             Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
             if (curInstance != null) {
                 System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
-                MainForm.txtAreaSparkResourcesInfo.append("Successfully created the following ec2 instances for the Cassandra Cluster:\n");
+               // MainForm.txtAreaSparkResourcesInfo.append("Successfully created the following ec2 instances for the Spark Cluster:\n");
                 MainForm.txtAreaSparkResourcesInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: " + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".\n");
                 dbInsertSpakInstanceDetail(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getState().getName(), nodeType);
                 updateSparkClusterInfo(curInstance.getInstanceType());
@@ -206,6 +207,7 @@ public class ConfigureProcessingLayer {
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
+            MainForm.txtAreaSparkResourcesInfo.append(ex.getMessage());
         }
     }
 
@@ -220,12 +222,12 @@ public class ConfigureProcessingLayer {
                 }
             }
             String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_types = CONCAT(instance_types, ?) WHERE cluster_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setInt(1, i);
-            update.setString(2, "1X" + instanceType + ",");
-            update.setInt(3, 100); //clusterId= 100 fixed
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setInt(1, i);
+                update.setString(2, "1X" + instanceType + ",");
+                update.setInt(3, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -235,17 +237,17 @@ public class ConfigureProcessingLayer {
         try {
             String query = "INSERT INTO processing_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status, node_type)"
                     + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement preparedStmt = DatabaseConnection.con.prepareStatement(query);
-            preparedStmt.setString(1, instanceId);
-            preparedStmt.setString(2, instanceType);
-            preparedStmt.setString(3, az);
-            preparedStmt.setString(4, pubDnsName);
-            preparedStmt.setString(5, publicIp);
-            preparedStmt.setString(6, privateIp);
-            preparedStmt.setString(7, status);
-            preparedStmt.setString(8, nodeType);
-            preparedStmt.execute();
-            preparedStmt.close();
+            try (PreparedStatement preparedStmt = DatabaseConnection.con.prepareStatement(query)) {
+                preparedStmt.setString(1, instanceId);
+                preparedStmt.setString(2, instanceType);
+                preparedStmt.setString(3, az);
+                preparedStmt.setString(4, pubDnsName);
+                preparedStmt.setString(5, publicIp);
+                preparedStmt.setString(6, privateIp);
+                preparedStmt.setString(7, status);
+                preparedStmt.setString(8, nodeType);
+                preparedStmt.execute();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -298,13 +300,13 @@ public class ConfigureProcessingLayer {
         try {
             if (new File("C:\\Code\\KafkaClusterDetails.txt").exists()) {
                 FileReader file = new FileReader(fileName);
-                BufferedReader rdr = new BufferedReader(file);
-                String aLine;
-                while ((aLine = rdr.readLine()) != null) {
-                    MainForm.txtAreaSparkResourcesInfo.append(aLine);
-                    MainForm.txtAreaSparkResourcesInfo.append("\n");
+                try (BufferedReader rdr = new BufferedReader(file)) {
+                    String aLine;
+                    while ((aLine = rdr.readLine()) != null) {
+                        MainForm.txtAreaSparkResourcesInfo.append(aLine);
+                        MainForm.txtAreaSparkResourcesInfo.append("\n");
+                    }
                 }
-                rdr.close();
             } else {
                 System.out.println("File does not exist. No existing cluster info present.");
             }
@@ -323,13 +325,13 @@ public class ConfigureProcessingLayer {
                 }
             }
             String query = "UPDATE processing_nodes_info SET status = ?, public_dnsname = ?, public_ip = ? WHERE instance_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setString(1, status);
-            update.setString(2, pubDns);
-            update.setString(3, pubIp);
-            update.setString(4, instanceId);
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, status);
+                update.setString(2, pubDns);
+                update.setString(3, pubIp);
+                update.setString(4, instanceId);
+                update.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -389,12 +391,13 @@ public class ConfigureProcessingLayer {
                 }
             }
             String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_types = REPLACE(instance_types, ?, '') WHERE cluster_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setInt(1, i);
-            update.setString(2, "1X" + instanceType);
-            update.setInt(3, 100); //clusterId= 100 fixed
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setInt(1, i);
+                update.setString(2, "1X" + instanceType);
+                update.setInt(3, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+                update.close();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -410,13 +413,14 @@ public class ConfigureProcessingLayer {
                 }
             }
             String query = "UPDATE processing_nodes_info SET status = ?, public_dnsname = ?, public_ip = ? WHERE instance_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setString(1, status);
-            update.setString(2, pubDns);
-            update.setString(3, pubIp);
-            update.setString(4, instanceId);
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, status);
+                update.setString(2, pubDns);
+                update.setString(3, pubIp);
+                update.setString(4, instanceId);
+                update.executeUpdate();
+                update.close();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -453,21 +457,22 @@ public class ConfigureProcessingLayer {
                 }
             }
             String query = "SELECT public_dnsname FROM ingestion_nodes_info WHERE status =?";
-            PreparedStatement st = DatabaseConnection.con.prepareStatement(query);
-            st.setString(1, "running");
-            ResultSet rs = st.executeQuery();
-            int i = 0;
-            while (rs.next()) {
-
-                String brokerDns = rs.getString(1);
-                if (i == 0) {
-                    broker_ids = brokerDns + ":9092";
-                } else {
-                    broker_ids = broker_ids + "," + brokerDns + ":9092";
+            try (PreparedStatement st = DatabaseConnection.con.prepareStatement(query)) {
+                st.setString(1, "running");
+                ResultSet rs = st.executeQuery();
+                int i = 0;
+                while (rs.next()) {
+                    
+                    String brokerDns = rs.getString(1);
+                    if (i == 0) {
+                        broker_ids = brokerDns + ":9092";
+                    } else {
+                        broker_ids = broker_ids + "," + brokerDns + ":9092";
+                    }
+                    i++;
                 }
-                i++;
+                st.close();
             }
-            st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -485,21 +490,22 @@ public class ConfigureProcessingLayer {
                 }
             }
             String query = "SELECT public_ip FROM storage_nodes_info WHERE status =?";
-            PreparedStatement st = DatabaseConnection.con.prepareStatement(query);
-            st.setString(1, "running");
-            ResultSet rs = st.executeQuery();
-            int i = 0;
-            while (rs.next()) {
-
-                String cassSeedIp = rs.getString(1);
-                if (i == 0) {
-                    cassandraSeeds = cassSeedIp;
-                } else {
-                    cassandraSeeds = cassandraSeeds + "," + cassSeedIp;
+            try (PreparedStatement st = DatabaseConnection.con.prepareStatement(query)) {
+                st.setString(1, "running");
+                ResultSet rs = st.executeQuery();
+                int i = 0;
+                while (rs.next()) {
+                    
+                    String cassSeedIp = rs.getString(1);
+                    if (i == 0) {
+                        cassandraSeeds = cassSeedIp;
+                    } else {
+                        cassandraSeeds = cassandraSeeds + "," + cassSeedIp;
+                    }
+                    i++;
                 }
-                i++;
+                st.close();
             }
-            st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -518,16 +524,17 @@ public class ConfigureProcessingLayer {
                 }
             }
             String query = "SELECT master_public_dnsname FROM processing_cluster_info WHERE cluster_id = ?";
-            PreparedStatement st = DatabaseConnection.con.prepareStatement(query);
-            st.setInt(1, 100);
-            ResultSet rs = st.executeQuery();
-            int i = 0;
-            while (rs.next()) {
-
-                masterUrl = rs.getString(1);
-
+            try (PreparedStatement st = DatabaseConnection.con.prepareStatement(query)) {
+                st.setInt(1, 100);
+                ResultSet rs = st.executeQuery();
+                int i = 0;
+                while (rs.next()) {
+                    
+                    masterUrl = rs.getString(1);
+                    
+                }
+                st.close();
             }
-            st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -544,20 +551,20 @@ public class ConfigureProcessingLayer {
                 jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
                 JSch.setConfig("StrictHostKeyChecking", "no");
                 Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-                session.connect();
+                session.connect(60000);
                 //run commands
                 String command = "sudo bash updateConfigParamsSpark.sh " + brokerId + " " + cassandraSeedIp + "";         //script file must be available in the instance home directory
                 ChannelExec channel = (ChannelExec) session.openChannel("exec");
                 channel.setCommand(command);
                 channel.setErrStream(System.err);
-                channel.connect();
+                channel.connect(60000);
                 readInputStreamFromSshSession(channel);
                 sleep(5000);
                 String cmd = "sudo bash runSparkApp.sh";         //check to make sure ingestion and storage services are running before executing this script.
                 ChannelExec chnl = (ChannelExec) session.openChannel("exec");
                 chnl.setCommand(cmd);
                 chnl.setErrStream(System.err);
-                chnl.connect();
+                chnl.connect(60000);
                 readInputStreamFromSshSession(chnl);
                 sleep(5000);
                 session.disconnect();
@@ -567,20 +574,20 @@ public class ConfigureProcessingLayer {
         } else {
             String masterUrl = getMasterNodeDns();
             if(masterUrl==null || "".equals(masterUrl)){
-                System.out.println("Please create and start the master node first!");
+                System.out.println("Please create and then start the master node first!");
                 return;
             }
             try {
                 jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
                 JSch.setConfig("StrictHostKeyChecking", "no");
                 Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-                session.connect();
+                session.connect(60000);
                 //run commands
                 String command = "sudo bash startWorker.sh " + masterUrl;         //script file must be available in the instance home directory
                 ChannelExec channel = (ChannelExec) session.openChannel("exec");
                 channel.setCommand(command);
                 channel.setErrStream(System.err);
-                channel.connect();
+                channel.connect(60000);
                 readInputStreamFromSshSession(channel);
                 sleep(5000);
                 session.disconnect();
@@ -601,16 +608,17 @@ public class ConfigureProcessingLayer {
                 }
             }
             String query = "SELECT private_ip FROM processing_nodes_info WHERE node_type = ?";
-            PreparedStatement st = DatabaseConnection.con.prepareStatement(query);
-            st.setString(1, "worker");
-            ResultSet rs = st.executeQuery();
-            int i = 0;
-            while (rs.next()) {
-
-                String ip = rs.getString(1);
-                privIps = privIps + ip + " ";
+            try (PreparedStatement st = DatabaseConnection.con.prepareStatement(query)) {
+                st.setString(1, "worker");
+                ResultSet rs = st.executeQuery();
+                int i = 0;
+                while (rs.next()) {
+                    
+                    String ip = rs.getString(1);
+                    privIps = privIps + ip + " ";
+                }
+                st.close();
             }
-            st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -628,20 +636,20 @@ public class ConfigureProcessingLayer {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-            session.connect();
+            session.connect(60000);
             //run commands
             String command = "sudo bash upd8SparkClusterConfig.sh " + brokerId + " " + cassandraSeedIp + " " + workerIps;         //script file must be available in the instance home directory
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect();
+            channel.connect(60000);
             readInputStreamFromSshSession(channel);
             sleep(5000);
             String cmd = "sudo bash startSparkCluster.sh";         //check to make sure ingestion and storage services are running before executing this script.
             ChannelExec chnl = (ChannelExec) session.openChannel("exec");
             chnl.setCommand(cmd);
             chnl.setErrStream(System.err);
-            chnl.connect();
+            chnl.connect(60000);
             readInputStreamFromSshSession(chnl);
             sleep(5000);
             session.disconnect();
@@ -658,12 +666,12 @@ public class ConfigureProcessingLayer {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDns, 22);
-            session.connect();
+            session.connect(60000);
             String cmd = "sudo bash runSparkAppCluster.sh";         //check to make sure ingestion and storage services are running before executing this script.
             ChannelExec chnl = (ChannelExec) session.openChannel("exec");
             chnl.setCommand(cmd);
             chnl.setErrStream(System.err);
-            chnl.connect();
+            chnl.connect(60000);
             readInputStreamFromSshSession(chnl);
             sleep(5000);
             session.disconnect();
