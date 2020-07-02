@@ -179,7 +179,7 @@ public class ConfigureIngestionLayer {
             System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
             txtAreaClusterInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP:" + curInstance.getPublicIpAddress()
                     + ", InstanceStatus: " + curInstance.getState().getName() + ", BrokerId: " + brokerId + ".\n");
-            txtAreaClusterInfo.append("---------------------------------------------------------------------------------------------------------------------");
+            txtAreaClusterInfo.append("-------------------------------------------------------------------------------------------------------\n");
             try {
                 dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName(), brokerId);
                 updateIngestionClusterInfo(curInstance.getInstanceType());
@@ -278,11 +278,11 @@ public class ConfigureIngestionLayer {
                     Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            String query = "UPDATE ingestion_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_type = REPLACE(instance_type, ?, ''), replication_factor = replication_factor - ?, partitions_count = partitions_count - ? WHERE cluster_id = ?";
+            String query = "UPDATE ingestion_cluster_info SET no_of_nodes = no_of_nodes - ?, instance_type = REPLACE(instance_type, ?, ''), replication_factor = ?, partitions_count = partitions_count - ? WHERE cluster_id = ?";
             try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
                 update.setInt(1, i);
                 update.setString(2, "1X" + instanceType);
-                update.setInt(3, i);
+                update.setInt(3, 1);
                 update.setInt(4, i);
                 update.setInt(5, 100); //clusterId= 100 fixed
                 update.executeUpdate();
@@ -302,13 +302,13 @@ public class ConfigureIngestionLayer {
                 }
             }
             String query = "UPDATE ingestion_nodes_info SET status = ?, public_dnsname = ?, public_ip = ? WHERE instance_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setString(1, status);
-            update.setString(2, "");
-            update.setString(3, "");
-            update.setString(4, instanceId);
-            update.executeUpdate();
-            update.close();
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, status);
+                update.setString(2, "");
+                update.setString(3, "");
+                update.setString(4, instanceId);
+                update.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -453,13 +453,13 @@ public class ConfigureIngestionLayer {
             try {
                 if (new File("C:\\Code\\KafkaClusterDetails.txt").exists()) {
                     FileReader file = new FileReader(fileName);
-                    BufferedReader rdr = new BufferedReader(file);
-                    String aLine;
-                    while ((aLine = rdr.readLine()) != null) {
-                        txtAreaIngestionDetails.append(aLine);
-                        txtAreaIngestionDetails.append("\n");
+                    try (BufferedReader rdr = new BufferedReader(file)) {
+                        String aLine;
+                        while ((aLine = rdr.readLine()) != null) {
+                            txtAreaIngestionDetails.append(aLine);
+                            txtAreaIngestionDetails.append("\n");
+                        }
                     }
-                    rdr.close();
                 } else {
                     System.out.println("File does not exist. No existing cluster info present.");
                 }
@@ -485,19 +485,19 @@ public class ConfigureIngestionLayer {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-            session.connect();
+            session.connect(60000);
             String command = "sudo bash configNewBroker.sh " + newBrokerId + " " + getZookeeperDns();
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect();
+            channel.connect(60000);
             readInputStreamFromSshSession(channel);
             sleep(5000);
             String command1 = "sudo bash restartKafkaService.sh"; //command to start new kafka broker
             ChannelExec channel1 = (ChannelExec) session.openChannel("exec");
             channel1.setCommand(command1);
             channel1.setErrStream(System.err);
-            channel1.connect();
+            channel1.connect(60000);
             readInputStreamFromSshSession(channel1);
             sleep(5000);
             session.disconnect();
@@ -582,7 +582,7 @@ public class ConfigureIngestionLayer {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", brokerDns, 22);
-            session.connect();
+            session.connect(60000);
             //run commands
             deleteTopicFromZookeeper();
             sleep(5000);
@@ -590,14 +590,14 @@ public class ConfigureIngestionLayer {
             ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
             channel3.setCommand(cmd);
             channel3.setErrStream(System.err);
-            channel3.connect();
+            channel3.connect(60000);
             readInputStreamFromSshSession(channel3);
             sleep(5000);
             String cmd1 = "sudo bash createTopic.sh"; //command to create new kafka topic with new partitions and replication factor.
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(cmd1);
             channel.setErrStream(System.err);
-            channel.connect();
+            channel.connect(60000);
             readInputStreamFromSshSession(channel);
             sleep(3000);
             session.disconnect();
@@ -621,7 +621,7 @@ public class ConfigureIngestionLayer {
             JSch.setConfig("StrictHostKeyChecking", "no");
             String zkDns = getZookeeperDns();
             Session session = jschClient.getSession("ubuntu", zkDns, 22);
-            session.connect();
+            session.connect(60000);
             //run commands
             String command = "sudo bash deleteTopicsZk.sh";         //script file must be available on the instance home directory
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
@@ -645,7 +645,7 @@ public class ConfigureIngestionLayer {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");            
             Session session = jschClient.getSession("ubuntu", zkDns, 22);
-            session.connect();
+            session.connect(60000);
             //run commands
             String command = "sudo bash runZookeeperService.sh";         //script file must be available on the instance home directory
             ChannelExec channel = (ChannelExec) session.openChannel("exec");

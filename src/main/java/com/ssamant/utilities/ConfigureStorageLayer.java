@@ -269,12 +269,12 @@ public class ConfigureStorageLayer {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-            session.connect();
+            session.connect(60000);
             String command = "sudo bash shutDownCassandraNode.sh";
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect();
+            channel.connect(60000);
             try {
                 msg = readInputStreamFromSshSession(channel);
                 MainForm.lblInstanceStatus.setText(msg);
@@ -299,7 +299,7 @@ public class ConfigureStorageLayer {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-            session.connect();
+            session.connect(60000);
             String command = "";
             if (isNewNode && !"".equals(seedIp)) {
                 command = "sudo service cassandra stop;sudo bash clearCassandraLogs.sh;sudo bash configureCassandraNewNode.sh " + seedIp;
@@ -309,14 +309,14 @@ public class ConfigureStorageLayer {
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect();
+            channel.connect(60000);
             readInputStreamFromSshSession(channel);
             sleep(5000);
             String command1 = "sudo bash restartCassandra.sh"; //command to start new cassandra node
             ChannelExec channel1 = (ChannelExec) session.openChannel("exec");
             channel1.setCommand(command1);
             channel1.setErrStream(System.err);
-            channel1.connect();
+            channel1.connect(60000);
             readInputStreamFromSshSession(channel1);
             sleep(5000);
             if (!isNewNode && "".equals(seedIp)) {
@@ -324,7 +324,7 @@ public class ConfigureStorageLayer {
                 ChannelExec channel2 = (ChannelExec) session.openChannel("exec");
                 channel2.setCommand(command2);
                 channel2.setErrStream(System.err);
-                channel2.connect();
+                channel2.connect(60000);
                 readInputStreamFromSshSession(channel2);
                 sleep(5000);
             }
@@ -332,7 +332,7 @@ public class ConfigureStorageLayer {
             ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
             channel3.setCommand(command3);
             channel3.setErrStream(System.err);
-            channel3.connect();
+            channel3.connect(60000);
             hostId = readInputStreamFromSshSession(channel3);
             sleep(5000);
             session.disconnect();
@@ -432,8 +432,9 @@ public class ConfigureStorageLayer {
         Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
         if (curInstance != null) {
             System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
-            MainForm.txtAreaCassandraResourcesInfo.append("Successfully created the following ec2 instances for the Cassandra Cluster:\n");
+            //MainForm.txtAreaCassandraResourcesInfo.append("Successfully created the following ec2 instances for the Cassandra Cluster:\n");
             MainForm.txtAreaCassandraResourcesInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: " + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".\n");
+            MainForm.txtAreaCassandraResourcesInfo.append("---------------------------------------------------------------\n");
             //data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: " + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
             //        + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
             dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getState().getName(), "");
@@ -453,13 +454,13 @@ public class ConfigureStorageLayer {
                     Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            String query = "UPDATE storage_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_type = CONCAT(instance_type, ?) WHERE cluster_id = ?";
-            PreparedStatement update = DatabaseConnection.con.prepareStatement(query);
-            update.setInt(1, i);
-            update.setString(2, "1X" + instanceType + ",");
-            update.setInt(3, 100); //clusterId= 100 fixed
-            update.executeUpdate();
-            update.close();
+            String query = "UPDATE storage_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_types = CONCAT(instance_types, ?) WHERE cluster_id = ?";
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setInt(1, i);
+                update.setString(2, "1X" + instanceType + ",");
+                update.setInt(3, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -468,17 +469,17 @@ public class ConfigureStorageLayer {
     public static void dbInsertInstanceInfo(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status, String nodeHostId) throws SQLException {
         String query = "INSERT INTO storage_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status, node_hostId)"
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement preparedStmt = DatabaseConnection.con.prepareStatement(query);
-        preparedStmt.setString(1, instanceId);
-        preparedStmt.setString(2, instanceType);
-        preparedStmt.setString(3, az);
-        preparedStmt.setString(4, pubDnsName);
-        preparedStmt.setString(5, publicIp);
-        preparedStmt.setString(6, privateIp);
-        preparedStmt.setString(7, status);
-        preparedStmt.setString(8, nodeHostId);
-        preparedStmt.execute();
-        preparedStmt.close();
+        try (PreparedStatement preparedStmt = DatabaseConnection.con.prepareStatement(query)) {
+            preparedStmt.setString(1, instanceId);
+            preparedStmt.setString(2, instanceType);
+            preparedStmt.setString(3, az);
+            preparedStmt.setString(4, pubDnsName);
+            preparedStmt.setString(5, publicIp);
+            preparedStmt.setString(6, privateIp);
+            preparedStmt.setString(7, status);
+            preparedStmt.setString(8, nodeHostId);
+            preparedStmt.execute();
+        }
     }
 
     public static ResultSet loadStorageClusterInfoFromDatabase() {

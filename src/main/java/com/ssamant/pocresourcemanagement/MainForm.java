@@ -214,7 +214,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         progressBarStorage = new javax.swing.JProgressBar();
         jScrollPane8 = new javax.swing.JScrollPane();
         txtAreaCassandraResourcesInfo = new javax.swing.JTextArea();
-        lblInstanceStatus = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel23 = new javax.swing.JLabel();
         txtFieldDnsNameStorage = new javax.swing.JTextField();
@@ -230,6 +229,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         btnClearAllStorage = new javax.swing.JButton();
         btnLoadStorageClusterDetails = new javax.swing.JButton();
         btnStartCluster = new javax.swing.JButton();
+        lblInstanceStatus = new javax.swing.JLabel();
         lblBuildClusterstatus = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         txtFieldStorageInstId = new javax.swing.JTextField();
@@ -394,7 +394,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         jLabel20.setText("Replication Factor:");
 
-        btnStartKafkaCluster.setText("Start Service Cluster");
+        btnStartKafkaCluster.setText("Configure & Create Topic");
         btnStartKafkaCluster.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnStartKafkaClusterActionPerformed(evt);
@@ -1158,7 +1158,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addComponent(btnConfigureStorageNode)
                 .addGap(7, 7, 7)
                 .addComponent(lblMissingDnsNameStorage)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         btnClearAllStorage.setText("Clear All");
@@ -1181,25 +1181,34 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+            .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addComponent(btnClearAllStorage, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnLoadStorageClusterDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnStartCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(lblInstanceStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(btnClearAllStorage, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnLoadStorageClusterDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnStartCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30))))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap(63, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(lblInstanceStatus)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClearAllStorage)
                     .addComponent(btnLoadStorageClusterDetails)
                     .addComponent(btnStartCluster))
                 .addGap(30, 30, 30))
         );
+
+        lblBuildClusterstatus.setText(":");
 
         jLabel22.setText("Instance Id:");
 
@@ -1268,13 +1277,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addGroup(panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panStorageLayout.createSequentialGroup()
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panStorageLayout.createSequentialGroup()
-                                .addGap(37, 37, 37)
-                                .addComponent(lblInstanceStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(panStorageLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panStorageLayout.createSequentialGroup()
                             .addGroup(panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1294,7 +1298,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                             .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(progressBarStorage, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 1011, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(84, Short.MAX_VALUE))
         );
         panStorageLayout.setVerticalGroup(
             panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1315,23 +1319,21 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                             .addComponent(comboBoxDbInstType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(btnBuildStorageCluster)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblBuildClusterstatus)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panStorageLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap(22, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 5, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)))
                 .addComponent(progressBarStorage, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblInstanceStatus)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 25, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         dppLayersTab.addTab("Storage Layer", panStorage);
@@ -1893,7 +1895,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             }
         }
         lblBuildClusterstatus.setText("");
-        lblBuildClusterstatus.setText("Instances for Cassandra service cluster are created successfully!");
+        lblBuildClusterstatus.setText("Instances for Cassandra cluster created successfully!");
     }//GEN-LAST:event_btnBuildStorageClusterActionPerformed
 
     private void btnStartInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartInstanceActionPerformed
@@ -1961,6 +1963,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
     private void clearStorageLayerFields() {
         txtFieldStorageInstId.setText("");
+        lblBuildClusterstatus.setText(":");
         txtFieldDnsNameStorage.setText("");
         comboBoxNoSQLDb.setSelectedIndex(0);
         comboBoxNoNodes.setSelectedIndex(0);
