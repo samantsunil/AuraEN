@@ -373,7 +373,7 @@ public class ConfigureStorageLayer {
         MainForm.btnBuildStorageCluster.setEnabled(false);
         String amiId=null;
         amiId = DatabaseConnection.getServiceAmi("cassandra");
-        if(amiId=="" || amiId ==null){
+        if("".equals(amiId) || amiId ==null){
             amiId = "ami-0e3a3de3cdd28fcd9";
         }
          

@@ -132,7 +132,7 @@ public class ConfigureIngestionLayer {
     }
 
     public static void createEC2Instances(AmazonEC2 ec2Client, String instType, int noOfBrokers) throws InterruptedException {
-        amiId = DatabaseConnection.getServiceAmi("kafka");
+        amiId = DatabaseConnection.getServiceAmi("kafka-broker");
         if (amiId == null || "".equals(amiId)) {
             amiId = ""; //set fixed value
         }
