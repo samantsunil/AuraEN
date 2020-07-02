@@ -1033,22 +1033,18 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         panProcessingLayout.setHorizontalGroup(
             panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panProcessingLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(panProcessingLayout.createSequentialGroup()
-                            .addContainerGap()
                             .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(272, 272, 272))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panProcessingLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(panProcessingLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 1092, Short.MAX_VALUE)
-                            .addComponent(progressBarProcessing, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 1092, Short.MAX_VALUE)
+                        .addComponent(progressBarProcessing, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panProcessingLayout.setVerticalGroup(
@@ -1606,15 +1602,15 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         tblSustainableQoSProfile.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Kafka", "t2.micro", "1, 20, 40", "1, 20, 36", "10, 14, 18"},
-                {"Kafka", "t2.small", "1, 30, 60", "1, 30, 55", "10, 12, 15"},
-                {"Kafka", "t2.medium", "1, 40, 80", "1, 40, 76", "8, 10, 15"},
-                {"Spark", "t2.micro", "1, 25, 50", "1, 25, 45", "45, 120, 950"},
-                {"Spark", "t2.small", "1, 35, 70", "1, 35, 64", "40, 110, 950"},
-                {"Spark", "t2.medium", "1, 40, 80", "1, 40, 78", "36, 90, 950"},
-                {"Cassandra", "t2.micro", "1, 20, 40", "1, 20, 36", "5, 8, 90"},
-                {"Cassandra", "t2.small", "1, 25, 50", "1, 25, 44", "5, 10, 80"},
-                {"Cassandra", "t2.medium", "1, 30, 60", "1, 30, 55", "5, 8, 65"}
+                {"Kafka", "t2.micro", "1, 10, 30", "1, 20, 30", "73, 75, 79"},
+                {"Kafka", "t2.small", "1, 10, 30, 50", "1, 10, 30, 50", "28, 35, 44, 45"},
+                {"Kafka", "t2.medium", "1, 10, 30, 50, 80, 90", "1, 10, 30, 50, 80, 90", "16, 25, 31, 33, 52, 60"},
+                {"Spark", "t2.micro", "1, 2, 3, 4", "1, 2, 3, 4", "300, 400, 700, 900"},
+                {"Spark", "t2.small", "1, 2, 3, 4", "1, 2, 3, 4", "300, 400, 700, 900"},
+                {"Spark", "t2.medium", "1, 2, 3, 4, 5, 6", "1, 2, 3, 4, 5, 6", "200, 400, 700, 800, 850, 900"},
+                {"Cassandra", "t2.micro", "1, 5, 10, 15, 18", "1, 5, 10, 15, 18", "15, 17, 20, 25, 51"},
+                {"Cassandra", "t2.small", "1, 5, 10, 15, 18", "1, 5, 10, 15, 18", "15, 16, 18, 25, 35"},
+                {"Cassandra", "t2.medium", "1, 5, 10, 15, 20, 25, 30", "1, 5, 10, 15, 20, 25, 30", "15, 15, 16, 17, 20, 25, 40"}
             },
             new String [] {
                 "Service Name", "Instance Type", "Input Workload(X1000/sec)", "Sustainable Workload(X1000/sec)", "Sustainable Latency(ms)"

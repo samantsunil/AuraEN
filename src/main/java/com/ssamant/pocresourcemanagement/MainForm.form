@@ -744,26 +744,20 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Group type="102" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jPanel10" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jPanel9" min="-2" pref="343" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="272" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jPanel8" max="32767" attributes="0"/>
-                              </Group>
+                              <Component id="jPanel8" alignment="0" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="102" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jScrollPane9" pref="1092" max="32767" attributes="0"/>
-                                  <Component id="progressBarProcessing" max="32767" attributes="0"/>
-                              </Group>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jScrollPane9" pref="1092" max="32767" attributes="0"/>
+                              <Component id="progressBarProcessing" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
@@ -2460,37 +2454,37 @@
                           <Data value="t2.medium"/>
                         </Column>
                         <Column editable="true" title="Input Workload(X1000/sec)" type="java.lang.Object">
-                          <Data value="1, 20, 40"/>
-                          <Data value="1, 30, 60"/>
-                          <Data value="1, 40, 80"/>
-                          <Data value="1, 25, 50"/>
-                          <Data value="1, 35, 70"/>
-                          <Data value="1, 40, 80"/>
-                          <Data value="1, 20, 40"/>
-                          <Data value="1, 25, 50"/>
-                          <Data value="1, 30, 60"/>
+                          <Data value="1, 10, 30"/>
+                          <Data value="1, 10, 30, 50"/>
+                          <Data value="1, 10, 30, 50, 80, 90"/>
+                          <Data value="1, 2, 3, 4"/>
+                          <Data value="1, 2, 3, 4"/>
+                          <Data value="1, 2, 3, 4, 5, 6"/>
+                          <Data value="1, 5, 10, 15, 18"/>
+                          <Data value="1, 5, 10, 15, 18"/>
+                          <Data value="1, 5, 10, 15, 20, 25, 30"/>
                         </Column>
                         <Column editable="true" title="Sustainable Workload(X1000/sec)" type="java.lang.Object">
-                          <Data value="1, 20, 36"/>
-                          <Data value="1, 30, 55"/>
-                          <Data value="1, 40, 76"/>
-                          <Data value="1, 25, 45"/>
-                          <Data value="1, 35, 64"/>
-                          <Data value="1, 40, 78"/>
-                          <Data value="1, 20, 36"/>
-                          <Data value="1, 25, 44"/>
-                          <Data value="1, 30, 55"/>
+                          <Data value="1, 20, 30"/>
+                          <Data value="1, 10, 30, 50"/>
+                          <Data value="1, 10, 30, 50, 80, 90"/>
+                          <Data value="1, 2, 3, 4"/>
+                          <Data value="1, 2, 3, 4"/>
+                          <Data value="1, 2, 3, 4, 5, 6"/>
+                          <Data value="1, 5, 10, 15, 18"/>
+                          <Data value="1, 5, 10, 15, 18"/>
+                          <Data value="1, 5, 10, 15, 20, 25, 30"/>
                         </Column>
                         <Column editable="true" title="Sustainable Latency(ms)" type="java.lang.Object">
-                          <Data value="10, 14, 18"/>
-                          <Data value="10, 12, 15"/>
-                          <Data value="8, 10, 15"/>
-                          <Data value="45, 120, 950"/>
-                          <Data value="40, 110, 950"/>
-                          <Data value="36, 90, 950"/>
-                          <Data value="5, 8, 90"/>
-                          <Data value="5, 10, 80"/>
-                          <Data value="5, 8, 65"/>
+                          <Data value="73, 75, 79"/>
+                          <Data value="28, 35, 44, 45"/>
+                          <Data value="16, 25, 31, 33, 52, 60"/>
+                          <Data value="300, 400, 700, 900"/>
+                          <Data value="300, 400, 700, 900"/>
+                          <Data value="200, 400, 700, 800, 850, 900"/>
+                          <Data value="15, 17, 20, 25, 51"/>
+                          <Data value="15, 16, 18, 25, 35"/>
+                          <Data value="15, 15, 16, 17, 20, 25, 40"/>
                         </Column>
                       </Table>
                     </Property>

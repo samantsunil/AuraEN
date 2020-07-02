@@ -38,19 +38,18 @@ public class ResourceOptimizer {
 
     public static String getResourceAllocation(int w1, int w2, int w3, int e2eQoS) {
         String e2eResourceAllocation = "";
-        int[][] S1_W = new int[][]{{1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}};
-        int[][] S2_W = new int[][]{{1, 5, 10, 20, 30, 40, 50, 51, 51, 51, 51, 51}, {1, 5, 10, 20, 30, 40, 50, 60, 61, 61, 61, 61}, {1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}};
-
-        int[][] S3_W = new int[][]{{1, 5, 10, 11, 11, 11, 11}, {1, 5, 10, 20, 30, 31, 31}, {1, 5, 10, 20, 30, 40, 50}};
-
-        int[][] S1_Q = new int[][]{{8, 11, 14, 22, 29}, {7, 9, 10, 13, 18}, {5, 7, 8, 10, 12}};
-
-        int[][] S2_Q = new int[][]{{45, 90, 200, 400, 600, 800, 900, 5000, 5000, 5000, 5000, 5000}, {30, 60, 200, 400, 500, 600, 800, 900, 5000, 5000, 5000, 5000}, {25, 50, 100, 200, 250, 350, 450, 500, 600, 700, 800, 900}};
-
-        int[][] S3_Q = new int[][]{{2, 20, 260, 5000, 5000, 5000, 5000}, {1, 2, 6, 40, 140, 5000, 5000}, {1, 1, 2, 4, 9, 25, 120}};
-        float[] price = new float[]{0.0292F, 0.0584F, 0.2336F};
-        int delta_A = 35;
-        int delta_B = 20;
+        //int[][] S1_W = new int[][]{{1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}}; //nectar 
+        int[][] S1_W = new int[][]{{1, 10, 30, 31, 31, 31}, {1, 10, 30, 50, 51, 51}, {1, 10, 30, 50, 80, 90}}; //aws - t2- micro, small, medium
+        //int[][] S2_W = new int[][]{{1, 5, 10, 20, 30, 40, 50, 51, 51, 51, 51, 51}, {1, 5, 10, 20, 30, 40, 50, 60, 61, 61, 61, 61}, {1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}};
+        int[][] S2_W = new int[][]{{1, 2, 3, 4, 5, 5}, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5, 6}};
+        int[][] S3_W = new int[][]{{1, 5, 10, 15, 18, 19, 19}, {1, 5, 10, 15, 18, 19, 19}, {1, 5, 10, 15, 20, 25, 30}};
+        
+        int[][] S1_Q = new int[][]{{73, 75, 79, 5000, 5000, 5000}, {28, 35, 44, 45, 5000, 5000}, {16, 25, 31, 33, 52, 60}};
+        int[][] S2_Q = new int[][]{{300, 400, 700, 900, 5000, 5000}, {300, 400, 700, 900, 5000, 5000}, {200, 400, 700, 800, 850, 900}};
+        int[][] S3_Q = new int[][]{{15, 17, 20, 25, 51, 5000, 5000}, {15, 16, 18, 25, 35, 5000, 5000}, {15, 15, 16, 17, 20, 25, 40}};
+        float[] price = new float[]{0.0146F, 0.0292F, 0.0584F}; //on-demand t2.micro, t2.small and t2.medium price in USD/hr
+        int delta_A = 100; //based on minimum latency required in layer 2
+        int delta_B = 15; //based on minimum latency required in layer 3
         float total_cost = 0.0F;
         int aggQoS = delta_A + delta_B;
         List<String> soln = new ArrayList<>();
@@ -71,22 +70,22 @@ public class ResourceOptimizer {
                         for (int j = 0; j < S1_W[0].length; j++) {
                             if ((aggQoS + S1_Q[i][j]) <= e2eQoS) {
                                 int z = 1;
-                                if (z * S1_Q[i][j] == w1) {
+                                if (z * S1_W[i][j] == w1) {
                                     z = 1;
                                 } else {
-                                    while ((z * S1_Q[i][j]) < w1) {
+                                    while ((z * S1_W[i][j]) < w1) {
                                         z++;
                                     }
                                 }
                                 switch (i) {
                                     case 0:
-                                        instance_type = "m2.small";
+                                        instance_type = "t2.micro";
                                         break;
                                     case 1:
-                                        instance_type = "m2.medium";
+                                        instance_type = "t2.small";
                                         break;
                                     default:
-                                        instance_type = "m2.large";
+                                        instance_type = "t2.medium";
                                         break;
                                 }
                                 soln.add(String.valueOf(z) + 'X' + instance_type);
@@ -141,10 +140,10 @@ public class ResourceOptimizer {
                         for (int j = 0; j < S2_W[0].length; j++) {
                             if ((aggQoS + S2_Q[i][j]) <= e2eQoS) {
                                 int z = 1;
-                                if (z * S2_Q[i][j] == w2) {
+                                if (z * S2_W[i][j] == w2) {
                                     z = 1;
                                 } else {
-                                    while ((z * S2_Q[i][j]) < w2) {
+                                    while ((z * S2_W[i][j]) < w2) {
                                         z++;
                                     }
                                 }
@@ -210,10 +209,10 @@ public class ResourceOptimizer {
                         for (int j = 0; j < S3_W[0].length; j++) {
                             if ((aggQoS + S3_Q[i][j]) <= e2eQoS) {
                                 int z = 1;
-                                if (z * S3_Q[i][j] == w3) {
+                                if (z * S3_W[i][j] == w3) {
                                     z = 1;
                                 } else {
-                                    while ((z * S3_Q[i][j]) < w3) {
+                                    while ((z * S3_W[i][j]) < w3) {
                                         z++;
                                     }
                                 }
