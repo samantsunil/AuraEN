@@ -486,7 +486,7 @@ public class ConfigureIngestionLayer {
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
             session.connect();
-            String command = "sudo bash configNewBroker.sh " + newBrokerId;
+            String command = "sudo bash configNewBroker.sh " + newBrokerId + " " + getZookeeperDns();
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
@@ -586,7 +586,7 @@ public class ConfigureIngestionLayer {
             //run commands
             deleteTopicFromZookeeper();
             sleep(5000);
-            String cmd = "sudo bash configKafkaTopic.sh 1 " + partitionsCount + " 1 1"; //command to configure kafka topic before starting the cluster - based on no of kafka nodes.
+            String cmd = "sudo bash configKafkaTopic.sh 1 " + partitionsCount + " 1 1 " + getZookeeperDns() +":2181"; //command to configure kafka topic before starting the cluster - based on no of kafka nodes.
             ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
             channel3.setCommand(cmd);
             channel3.setErrStream(System.err);
