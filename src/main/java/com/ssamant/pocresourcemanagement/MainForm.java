@@ -879,9 +879,11 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             }
         });
 
+        txtFieldMasterNodeDns.setEditable(false);
+
         jLabel40.setText("Master Node Dns:");
 
-        btnSparkSubmitApp.setText("Submit Job to DPP");
+        btnSparkSubmitApp.setText("Submit Job to Cluster");
         btnSparkSubmitApp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSparkSubmitAppActionPerformed(evt);
@@ -919,23 +921,17 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                                 .addComponent(jLabel31))
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
-                                .addComponent(jLabel40, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel40, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(comboBoxMasterNodeInstType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnCreateMasterNode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtFieldMasterNodeDns, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
-                        .addComponent(btnSparkSubmitApp, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(22, 22, 22))))
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblBuildProcessingCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap()
+                        .addComponent(lblBuildProcessingCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(comboBoxMasterNodeInstType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCreateMasterNode, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                    .addComponent(txtFieldMasterNodeDns, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnSparkSubmitApp, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -969,7 +965,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtFieldMasterNodeDns, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel40))
-                        .addGap(18, 18, 18))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSparkSubmitApp)
+                        .addGap(23, 23, 23))
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -979,9 +977,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addComponent(btnBuildProcessingCluster)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblBuildProcessingCluster)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(btnSparkSubmitApp)
-                .addContainerGap())
+                        .addContainerGap(40, Short.MAX_VALUE))))
         );
 
         jPanel11.add(txtFieldInstanceIdConfigure1);
@@ -2171,6 +2167,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private void btnCreateMasterNodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateMasterNodeActionPerformed
         // TODO add your handling code here:
         ConfigureProcessingLayer.createMasterNode(comboBoxMasterNodeInstType.getSelectedItem().toString());
+        txtFieldMasterNodeDns.setText(ConfigureProcessingLayer.getMasterNodeDns(true));
     }//GEN-LAST:event_btnCreateMasterNodeActionPerformed
 
     private void btnClearFieldsProcessingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearFieldsProcessingActionPerformed
@@ -2190,9 +2187,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
     private void btnSparkSubmitAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSparkSubmitAppActionPerformed
         // TODO add your handling code here:
-        if (!"".equals(txtFieldMasterNodeDns.getText().trim())) {
-
-        }
+        
+          ConfigureProcessingLayer.submitJobToSparkCluster("");
+        
     }//GEN-LAST:event_btnSparkSubmitAppActionPerformed
 
     private void btnClearAllDppLayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearAllDppLayersActionPerformed
