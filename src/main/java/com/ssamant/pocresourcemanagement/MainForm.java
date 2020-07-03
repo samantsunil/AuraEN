@@ -256,6 +256,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         jLabel12 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
         txtFieldCurrentWorkload = new javax.swing.JTextField();
+        jLabel41 = new javax.swing.JLabel();
+        comboBoxScalingStrategy = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
@@ -1399,6 +1401,12 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         jLabel27.setText("Current Workload:");
 
+        txtFieldCurrentWorkload.setEditable(false);
+
+        jLabel41.setText("Scaling Strategy:");
+
+        comboBoxScalingStrategy.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Scaling Strategy", "delta-scale optimization", "full-scale optimization" }));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -1418,13 +1426,17 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                                 .addComponent(txtFieldCurrentWorkload, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtFieldE2eLatency, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtFieldFutureWorkload, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(txtFieldFutureWorkload, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtFieldE2eLatency, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                                        .addComponent(comboBoxScalingStrategy, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -1442,9 +1454,13 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtFieldE2eLatency, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel41)
+                    .addComponent(comboBoxScalingStrategy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
                 .addComponent(btnScaleIngestionCluster)
-                .addGap(48, 48, 48))
+                .addContainerGap())
         );
 
         jLabel13.setText("Ingestion Layer Resources:");
@@ -1585,17 +1601,19 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panDPPLayersLayout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(11, 11, 11))
+                    .addGroup(panDPPLayersLayout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnClearAllDppLayers)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblTotalCost)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblE2eQoS))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(11, 11, 11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblE2eQoS)
+                        .addGap(28, 28, 28)))
                 .addComponent(lblErrorMsgCompResAllocation, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(13, Short.MAX_VALUE))
         );
@@ -1756,7 +1774,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 String zkDnsName = rss.getString("zk_dnsname");
                 int throughput = rss.getInt("throughput");
                 int latency = rss.getInt("latency");
-
+                String dataIngestionRate = rss.getString("data_ingestion_rate");
+                txtFieldCurrentWorkload.setText(dataIngestionRate);
                 //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
                 txtAreaIngestionDetails.append("No of Nodes: " + Integer.toString(noOfNodes) + "\n");
                 txtAreaIngestionDetails.append("Cluster Resources: " + clusterComposition + "\n");
@@ -1764,6 +1783,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 txtAreaIngestionDetails.append("Topic partitions: " + Integer.toString(partitionsCount) + "\n");
                 txtAreaIngestionDetails.append("Throughput: " + Integer.toString(throughput) + "\n");
                 txtAreaIngestionDetails.append("Latency: " + Integer.toString(latency) + "\n");
+                txtAreaIngestionDetails.append("Data Ingestion Rate: " + dataIngestionRate + "\n");
                 txtAreaIngestionDetails.append("-----------------------------------------------------------\n");
             }
             rss.close();
@@ -1776,13 +1796,37 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
      * @param evt
      */
     private void btnScaleIngestionClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScaleIngestionClusterActionPerformed
+
         if ("".equals(txtFieldFutureWorkload.getText()) || "".equals(txtFieldE2eLatency.getText())) {
             lblErrorMsgCompResAllocation.setText("Please enter appropriate values for future workload and e2e latency.");
         } else {
             //call resource optimizer algorithm -
+            Boolean foundAllocation;
             clearDppLayerTabFields();
-            int workload = Integer.parseInt(txtFieldFutureWorkload.getText().trim());
-            ResourceOptimizer.getResourceAllocation(workload, workload, workload, Integer.parseInt(txtFieldE2eLatency.getText().trim()));
+            int currentWorkload;
+            int futureWorkload = Integer.parseInt(txtFieldFutureWorkload.getText().trim());
+            int deltaWorkload;
+            String currentDIR = ConfigureIngestionLayer.getCurrentDataIngestionRate();
+            if (currentDIR != null) {
+                txtFieldCurrentWorkload.setText("currentDIR");
+                currentWorkload = Integer.parseInt(currentDIR);
+                if (comboBoxScalingStrategy.getSelectedIndex() == 1) {
+                    deltaWorkload = Math.abs(futureWorkload - currentWorkload);
+                    foundAllocation = ResourceOptimizer.getResourceAllocation(deltaWorkload, deltaWorkload, deltaWorkload, Integer.parseInt(txtFieldE2eLatency.getText().trim()));
+                    if (!foundAllocation) {
+                        txtAreaIngestionResources.setText("---No resource allocation found using the candidate resources---");
+                        txtAreaProcessingResources.setText("---No resource allocation found using the candidate resources---");
+                        txtAreaStorageResources.setText("---No resource allocation found using the candidate resources---");
+                    }
+                } else {
+                    foundAllocation = ResourceOptimizer.getResourceAllocation(futureWorkload, futureWorkload, futureWorkload, Integer.parseInt(txtFieldE2eLatency.getText().trim()));
+                    if (!foundAllocation) {
+                        txtAreaIngestionResources.setText("---No resource allocation found using the candidate resources---");
+                        txtAreaProcessingResources.setText("---No resource allocation found using the candidate resources---");
+                        txtAreaStorageResources.setText("---No resource allocation found using the candidate resources---");
+                    }
+                }
+            }
         }
     }//GEN-LAST:event_btnScaleIngestionClusterActionPerformed
 
@@ -1826,7 +1870,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         txtFieldStartInstId.setText("");
         txtFieldInstId.setText("");
         txtFieldPartitions.setText("");
-        txtFieldReplication.setText("");        
+        txtFieldReplication.setText("");
         lblErrDnsName.setText("");
         lblStartedInstance.setText("");
         lblStopInstance.setText("");
@@ -1992,24 +2036,24 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
     private void btnLoadStorageClusterDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadStorageClusterDetailsActionPerformed
         try {
-            // TODO add your handling code here:
-            //ConfigureStorageLayer.loadFromFileStorageClusterDetails(false);
-            ResultSet rs = ConfigureStorageLayer.loadStorageClusterInfoFromDatabase();
-            txtAreaCassandraResourcesInfo.setText("");
-            while (rs.next()) {
-                String instanceId = rs.getString("instance_id");
-                String instanceType = rs.getString("instance_type");
-                String az = rs.getString("availability_zone");
-                String publicDnsName = rs.getString("public_dnsname");
-                String publicIp = rs.getString("public_ip");
-                String privateIp = rs.getString("private_ip");
-                String status = rs.getString("status");
-                String nodeHostId = rs.getString("node_hostId");
-                //System.out.format("%s, %s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status, nodeHostId);
-                txtAreaCassandraResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", HostId: " + nodeHostId + ".\n");
-                txtAreaCassandraResourcesInfo.append("----------------------------------------------------------\n");
+            try ( // TODO add your handling code here:
+                    //ConfigureStorageLayer.loadFromFileStorageClusterDetails(false);
+                    ResultSet rs = ConfigureStorageLayer.loadStorageClusterInfoFromDatabase()) {
+                txtAreaCassandraResourcesInfo.setText("");
+                while (rs.next()) {
+                    String instanceId = rs.getString("instance_id");
+                    String instanceType = rs.getString("instance_type");
+                    String az = rs.getString("availability_zone");
+                    String publicDnsName = rs.getString("public_dnsname");
+                    String publicIp = rs.getString("public_ip");
+                    String privateIp = rs.getString("private_ip");
+                    String status = rs.getString("status");
+                    String nodeHostId = rs.getString("node_hostId");
+                    //System.out.format("%s, %s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status, nodeHostId);
+                    txtAreaCassandraResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", HostId: " + nodeHostId + ".\n");
+                    txtAreaCassandraResourcesInfo.append("----------------------------------------------------------\n");
+                }
             }
-            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2027,15 +2071,15 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 }
             }
             String query = "SELECT * FROM sustainable_qos_profile";
-            Statement st = DatabaseConnection.con.createStatement();
-            ResultSet rs = st.executeQuery(query);
-            while (rs.next()) {
-                String serviceName = rs.getString("service_name");
-                String instanceType = rs.getString("instance_type");
-                String jsonData = rs.getString("input_qos_values");
-                txtAreaSustainabelQoSInfo.append("Service: " + serviceName + ", Instance Type: " + instanceType + ", [sus. workload: sus. latency]" + jsonData + ".\n");
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
+                    String serviceName = rs.getString("service_name");
+                    String instanceType = rs.getString("instance_type");
+                    String jsonData = rs.getString("input_qos_values");
+                    txtAreaSustainabelQoSInfo.append("Service: " + serviceName + ", Instance Type: " + instanceType + ", [sus. workload: sus. latency]" + jsonData + ".\n");
+                }
             }
-            st.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2048,24 +2092,24 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
     private void btnLoadProcessingDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadProcessingDetailsActionPerformed
         try {
-            // TODO add your handling code here:
-            //ConfigureProcessingLayer.loadSparkClusterInfoFromFile();
-            ResultSet rs = ConfigureProcessingLayer.loadSparkClusterDetailsFromDb();
-            while (rs.next()) {
-                String instanceId = rs.getString("instance_id");
-                String instanceType = rs.getString("instance_type");
-                String az = rs.getString("availability_zone");
-                String publicDnsName = rs.getString("public_dnsname");
-                String publicIp = rs.getString("public_ip");
-                String privateIp = rs.getString("private_ip");
-                String status = rs.getString("status");
-                String nodeType = rs.getString("node_type");
-                //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status);
-                txtAreaSparkResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", Node type: " + nodeType + ".\n");
-                txtAreaSparkResourcesInfo.append("-----------------------------------------------------------------------\n");
+            try ( // TODO add your handling code here:
+                    //ConfigureProcessingLayer.loadSparkClusterInfoFromFile();
+                    ResultSet rs = ConfigureProcessingLayer.loadSparkClusterDetailsFromDb()) {
+                while (rs.next()) {
+                    String instanceId = rs.getString("instance_id");
+                    String instanceType = rs.getString("instance_type");
+                    String az = rs.getString("availability_zone");
+                    String publicDnsName = rs.getString("public_dnsname");
+                    String publicIp = rs.getString("public_ip");
+                    String privateIp = rs.getString("private_ip");
+                    String status = rs.getString("status");
+                    String nodeType = rs.getString("node_type");
+                    //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status);
+                    txtAreaSparkResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", Node type: " + nodeType + ".\n");
+                    txtAreaSparkResourcesInfo.append("-----------------------------------------------------------------------\n");
 
+                }
             }
-            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2137,23 +2181,22 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             txtAreaStorageDetails.setText("Current Allocation:");
             txtAreaStorageDetails.append("\n");
             txtAreaStorageDetails.append("---------------------------\n");
-            ResultSet rs = ConfigureStorageLayer.loadCurrentCassandraClusterInfo();
+            try (ResultSet rs = ConfigureStorageLayer.loadCurrentCassandraClusterInfo()) {
+                while (rs.next()) {
+                    int clusterID = rs.getInt("cluster_id");
+                    int noOfNodes = rs.getInt("no_of_nodes");
+                    String instanceTypes = rs.getString("instance_types");
+                    int throughput = rs.getInt("throughput");
+                    int latency = rs.getInt("latency");
 
-            while (rs.next()) {
-                int clusterID = rs.getInt("cluster_id");
-                int noOfNodes = rs.getInt("no_of_nodes");
-                String instanceTypes = rs.getString("instance_types");
-                int throughput = rs.getInt("throughput");
-                int latency = rs.getInt("latency");
-
-                //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
-                txtAreaStorageDetails.append("No Of Nodes: " + Integer.toString(noOfNodes) + ".\n");
-                txtAreaStorageDetails.append("Cluster Resources: " + instanceTypes + ".\n");
-                txtAreaStorageDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
-                txtAreaStorageDetails.append("Latency: " + Integer.toString(latency) + ".\n");
-                txtAreaStorageDetails.append("--------------------------------------------------------\n");
+                    //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
+                    txtAreaStorageDetails.append("No Of Nodes: " + Integer.toString(noOfNodes) + ".\n");
+                    txtAreaStorageDetails.append("Cluster Resources: " + instanceTypes + ".\n");
+                    txtAreaStorageDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
+                    txtAreaStorageDetails.append("Latency: " + Integer.toString(latency) + ".\n");
+                    txtAreaStorageDetails.append("--------------------------------------------------------\n");
+                }
             }
-            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2187,9 +2230,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
     private void btnSparkSubmitAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSparkSubmitAppActionPerformed
         // TODO add your handling code here:
-        
-          ConfigureProcessingLayer.submitJobToSparkCluster("");
-        
+
+        ConfigureProcessingLayer.submitJobToSparkCluster("");
+
     }//GEN-LAST:event_btnSparkSubmitAppActionPerformed
 
     private void btnClearAllDppLayersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearAllDppLayersActionPerformed
@@ -2302,6 +2345,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JComboBox<String> comboBoxNodeType;
     private javax.swing.JComboBox<String> comboBoxProcFrameworks;
     private javax.swing.JComboBox<String> comboBoxProcFrameworks1;
+    private javax.swing.JComboBox<String> comboBoxScalingStrategy;
     private javax.swing.JComboBox<String> comboBoxSparkInstType;
     private javax.swing.JComboBox<String> comboBoxSparkInstType1;
     private javax.swing.JComboBox<String> comboBoxZkInstType;
@@ -2345,6 +2389,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;

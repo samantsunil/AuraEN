@@ -432,6 +432,29 @@ public class ConfigureIngestionLayer {
         }
         return rs;
     }
+    public static String getCurrentDataIngestionRate(){
+        String dataIngestionRate=null;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT data_ingestion_rate FROM ingestion_cluster_info LIMIT 1";
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
+                    
+                    dataIngestionRate = rs.getString(1);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dataIngestionRate;
+    }
 
     public static void loadFromFileKafkaClusterDetails(boolean isDPP) {
 

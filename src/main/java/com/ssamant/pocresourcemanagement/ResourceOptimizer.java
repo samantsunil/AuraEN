@@ -36,253 +36,261 @@ public class ResourceOptimizer {
 
     }
 
-    public static String getResourceAllocation(int w1, int w2, int w3, int e2eQoS) {
-        String e2eResourceAllocation = "";
-        //int[][] S1_W = new int[][]{{1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}}; //nectar 
-        int[][] S1_W = new int[][]{{1, 10, 30, 31, 31, 31}, {1, 10, 30, 50, 51, 51}, {1, 10, 30, 50, 80, 90}}; //aws - t2- micro, small, medium
-        //int[][] S2_W = new int[][]{{1, 5, 10, 20, 30, 40, 50, 51, 51, 51, 51, 51}, {1, 5, 10, 20, 30, 40, 50, 60, 61, 61, 61, 61}, {1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}};
-        int[][] S2_W = new int[][]{{1, 2, 3, 4, 5, 5}, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5, 6}};
-        int[][] S3_W = new int[][]{{1, 5, 10, 15, 18, 19, 19}, {1, 5, 10, 15, 18, 19, 19}, {1, 5, 10, 15, 20, 25, 30}};
-        
-        int[][] S1_Q = new int[][]{{73, 75, 79, 5000, 5000, 5000}, {28, 35, 44, 45, 5000, 5000}, {16, 25, 31, 33, 52, 60}};
-        int[][] S2_Q = new int[][]{{300, 400, 700, 900, 5000, 5000}, {300, 400, 700, 900, 5000, 5000}, {200, 400, 700, 800, 850, 900}};
-        int[][] S3_Q = new int[][]{{15, 17, 20, 25, 51, 5000, 5000}, {15, 16, 18, 25, 35, 5000, 5000}, {15, 15, 16, 17, 20, 25, 40}};
-        float[] price = new float[]{0.0146F, 0.0292F, 0.0584F}; //on-demand t2.micro, t2.small and t2.medium price in USD/hr
-        int delta_A = 100; //based on minimum latency required in layer 2
-        int delta_B = 15; //based on minimum latency required in layer 3
-        float total_cost = 0.0F;
-        int aggQoS = delta_A + delta_B;
-        List<String> soln = new ArrayList<>();
-        List<Float> totCost = new ArrayList<>();
-        List<Integer> qos = new ArrayList<>();
-        List<String> soln2 = new ArrayList<>();
-        List<Float> totCost2 = new ArrayList<>();
-        List<Integer> qos2 = new ArrayList<>();
-        List<String> soln3 = new ArrayList<>();
-        List<Float> totCost3 = new ArrayList<>();
-        List<Integer> qos3 = new ArrayList<>();
+    public static Boolean getResourceAllocation(int w1, int w2, int w3, int e2eQoS) {
+        Boolean success = false;
+        try {
+            String e2eResourceAllocation = "";
+            //int[][] S1_W = new int[][]{{1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}}; //nectar 
+            int[][] S1_W = new int[][]{{1, 10, 30, 31, 31, 31}, {1, 10, 30, 50, 51, 51}, {1, 10, 30, 50, 80, 90}}; //aws - t2- micro, small, medium
+            //int[][] S2_W = new int[][]{{1, 5, 10, 20, 30, 40, 50, 51, 51, 51, 51, 51}, {1, 5, 10, 20, 30, 40, 50, 60, 61, 61, 61, 61}, {1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}};
+            int[][] S2_W = new int[][]{{1, 2, 3, 4, 5, 5}, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5, 6}};
+            int[][] S3_W = new int[][]{{1, 5, 10, 15, 18, 19, 19}, {1, 5, 10, 15, 18, 19, 19}, {1, 5, 10, 15, 20, 25, 30}};
 
-        for (int k = 1; k <= 3; k++) {
-            switch (k) {
-                case 1: {
-                    String instance_type = null;
-                    for (int i = 0; i < S1_W.length; i++) {
-                        for (int j = 0; j < S1_W[0].length; j++) {
-                            if ((aggQoS + S1_Q[i][j]) <= e2eQoS) {
-                                int z = 1;
-                                if (z * S1_W[i][j] == w1) {
-                                    z = 1;
-                                } else {
-                                    while ((z * S1_W[i][j]) < w1) {
-                                        z++;
+            int[][] S1_Q = new int[][]{{73, 75, 79, 5000, 5000, 5000}, {28, 35, 44, 45, 5000, 5000}, {16, 25, 31, 33, 52, 60}};
+            int[][] S2_Q = new int[][]{{300, 400, 700, 900, 5000, 5000}, {300, 400, 700, 900, 5000, 5000}, {200, 400, 700, 800, 850, 900}};
+            int[][] S3_Q = new int[][]{{15, 17, 20, 25, 51, 5000, 5000}, {15, 16, 18, 25, 35, 5000, 5000}, {15, 15, 16, 17, 20, 25, 40}};
+            float[] price = new float[]{0.0146F, 0.0292F, 0.0584F}; //on-demand t2.micro, t2.small and t2.medium price in USD/hr
+            int delta_A = 100; //based on minimum latency required in layer 2
+            int delta_B = 15; //based on minimum latency required in layer 3
+            float total_cost = 0.0F;
+            int aggQoS = delta_A + delta_B;
+            List<String> soln = new ArrayList<>();
+            List<Float> totCost = new ArrayList<>();
+            List<Integer> qos = new ArrayList<>();
+            List<String> soln2 = new ArrayList<>();
+            List<Float> totCost2 = new ArrayList<>();
+            List<Integer> qos2 = new ArrayList<>();
+            List<String> soln3 = new ArrayList<>();
+            List<Float> totCost3 = new ArrayList<>();
+            List<Integer> qos3 = new ArrayList<>();
+
+            for (int k = 1; k <= 3; k++) {
+                switch (k) {
+                    case 1: {
+                        String instance_type = null;
+                        for (int i = 0; i < S1_W.length; i++) {
+                            for (int j = 0; j < S1_W[0].length; j++) {
+                                if ((aggQoS + S1_Q[i][j]) <= e2eQoS) {
+                                    int z = 1;
+                                    if (z * S1_W[i][j] >= w1) {
+                                        z = 1;
+                                    } else {
+                                        while ((z * S1_W[i][j]) < w1) {
+                                            z++;
+                                        }
                                     }
-                                }
-                                switch (i) {
-                                    case 0:
-                                        instance_type = "t2.micro";
-                                        break;
-                                    case 1:
-                                        instance_type = "t2.small";
-                                        break;
-                                    default:
-                                        instance_type = "t2.medium";
-                                        break;
-                                }
-                                soln.add(String.valueOf(z) + 'X' + instance_type);
-                                totCost.add(z * price[i]);
-                                qos.add(S1_Q[i][j]);
-                            }
-
-                        }
-                    }
-                    String[] instS1 = soln.toArray(new String[0]);//((String[]) soln.toArray());
-                    Float[] costS1 = totCost.toArray(new Float[0]);//((Float[]) totCost.toArray());
-                    Integer[] qosS1 = qos.toArray(new Integer[0]);
-                    float tmp = 0.0F;
-                    String tmp_val = null;
-                    int tm_qos = 0;
-                    for (int i = 0; i < instS1.length; i++) {
-                        for (int j = i + 1; j < instS1.length; j++) {
-                            if (costS1[j] < costS1[i]) {
-                                tmp = costS1[i];
-                                tmp_val = instS1[i];
-                                tm_qos = qosS1[i];
-                                costS1[i] = costS1[j];
-                                instS1[i] = instS1[j];
-                                qosS1[i] = qosS1[j];
-                                costS1[j] = tmp;
-                                instS1[j] = tmp_val;
-                                qosS1[j] = tm_qos;
-                            }
-
-                        }
-                    }
-                    aggQoS = aggQoS + qosS1[0];
-                    total_cost = total_cost + costS1[0];
-                    System.out.println("For Service S1:");
-                    //foreach (String item in instS1) {
-                    MainForm.txtAreaIngestionResources.append("Instances required for ingestion layer: " + instS1[0] + "\n");
-                    System.out.print(instS1[0] + '\t');
-                    //}
-                    System.out.println();
-                    // foreach (float item in costS1) {
-                    // MainForm.txtAreaIngestionResources.append("")
-                    System.out.print(String.valueOf(costS1[0]) + '\t');
-                    // }
-                    System.out.println();
-                    System.out.println(String.valueOf(qosS1[0]));
-                    break;
-                }
-                case 2: {
-                    aggQoS = aggQoS - delta_A;
-                    String instance_type = null;
-                    for (int i = 0; i < S2_W.length; i++) {
-                        for (int j = 0; j < S2_W[0].length; j++) {
-                            if ((aggQoS + S2_Q[i][j]) <= e2eQoS) {
-                                int z = 1;
-                                if (z * S2_W[i][j] == w2) {
-                                    z = 1;
-                                } else {
-                                    while ((z * S2_W[i][j]) < w2) {
-                                        z++;
+                                    switch (i) {
+                                        case 0:
+                                            instance_type = "t2.micro";
+                                            break;
+                                        case 1:
+                                            instance_type = "t2.small";
+                                            break;
+                                        default:
+                                            instance_type = "t2.medium";
+                                            break;
                                     }
+                                    soln.add(String.valueOf(z) + 'X' + instance_type);
+                                    totCost.add(z * price[i]);
+                                    qos.add(S1_Q[i][j]);
                                 }
-                                switch (i) {
-                                    case 0:
-                                        instance_type = "t2.micro";
-                                        break;
-                                    case 1:
-                                        instance_type = "t2.small";
-                                        break;
-                                    default:
-                                        instance_type = "t2.medium";
-                                        break;
+
+                            }
+                        }
+                        String[] instS1 = soln.toArray(new String[0]);//((String[]) soln.toArray());
+                        Float[] costS1 = totCost.toArray(new Float[0]);//((Float[]) totCost.toArray());
+                        Integer[] qosS1 = qos.toArray(new Integer[0]);
+                        float tmp = 0.0F;
+                        String tmp_val = null;
+                        int tm_qos = 0;
+                        for (int i = 0; i < instS1.length; i++) {
+                            for (int j = i + 1; j < instS1.length; j++) {
+                                if (costS1[j] < costS1[i]) {
+                                    tmp = costS1[i];
+                                    tmp_val = instS1[i];
+                                    tm_qos = qosS1[i];
+                                    costS1[i] = costS1[j];
+                                    instS1[i] = instS1[j];
+                                    qosS1[i] = qosS1[j];
+                                    costS1[j] = tmp;
+                                    instS1[j] = tmp_val;
+                                    qosS1[j] = tm_qos;
                                 }
-                                soln2.add(String.valueOf(z) + 'X' + instance_type);
-                                totCost2.add(z * price[i]);
-                                qos2.add(S2_Q[i][j]);
-                            }
 
-                        }
-                    }
-                    String[] instS2 = soln2.toArray(new String[0]);
-                    Float[] costS2 = totCost2.toArray(new Float[0]);
-                    Integer[] qosS2 = qos2.toArray(new Integer[0]);
-                    float tmp = 0.0F;
-                    String tmp_val = null;
-                    int tm_qos = 0;
-                    for (int i = 0; i < instS2.length; i++) {
-                        for (int j = i + 1; j < instS2.length; j++) {
-                            if (costS2[j] < costS2[i]) {
-                                tmp = costS2[i];
-                                tmp_val = instS2[i];
-                                tm_qos = qosS2[i];
-                                costS2[i] = costS2[j];
-                                instS2[i] = instS2[j];
-                                qosS2[i] = qosS2[j];
-                                costS2[j] = tmp;
-                                instS2[j] = tmp_val;
-                                qosS2[j] = tm_qos;
                             }
-
                         }
+                        aggQoS = aggQoS + qosS1[0];
+                        total_cost = total_cost + costS1[0];
+                        System.out.println("For Service S1:");
+                        //foreach (String item in instS1) {
+                        MainForm.txtAreaIngestionResources.append("Instances required for ingestion layer: " + instS1[0] + "\n");
+                        System.out.print(instS1[0] + '\t');
+                        //}
+                        System.out.println();
+                        // foreach (float item in costS1) {
+                        // MainForm.txtAreaIngestionResources.append("")
+                        System.out.print(String.valueOf(costS1[0]) + '\t');
+                        // }
+                        System.out.println();
+                        System.out.println(String.valueOf(qosS1[0]));
+                        break;
                     }
-                    aggQoS = aggQoS + qosS2[0];
-                    total_cost = total_cost + costS2[0];
-                    System.out.println("For Service S2:");
-                    //foreach (String item in instS2) {
-                    MainForm.txtAreaProcessingResources.append("Instances required for processing layer: " + instS2[0] + "\n");
-                    System.out.print(instS2[0] + '\t');
-                    //}
-                    System.out.println();
-                    //foreach (float item in costS2) {
-                    System.out.print(String.valueOf(costS2[0]) + '\t');
-                    // }
-                    System.out.println();
-                    System.out.println(String.valueOf(qosS2[0]));
-                    break;
-                }
-                case 3: {
-                    aggQoS = aggQoS - delta_B;
-                    String instance_type = null;
-                    for (int i = 0; i < S3_W.length; i++) {
-                        for (int j = 0; j < S3_W[0].length; j++) {
-                            if ((aggQoS + S3_Q[i][j]) <= e2eQoS) {
-                                int z = 1;
-                                if (z * S3_W[i][j] == w3) {
-                                    z = 1;
-                                } else {
-                                    while ((z * S3_W[i][j]) < w3) {
-                                        z++;
+                    case 2: {
+                        aggQoS = aggQoS - delta_A;
+                        String instance_type = null;
+                        for (int i = 0; i < S2_W.length; i++) {
+                            for (int j = 0; j < S2_W[0].length; j++) {
+                                if ((aggQoS + S2_Q[i][j]) <= e2eQoS) {
+                                    int z = 1;
+                                    if (z * S2_W[i][j] >= w2) {
+                                        z = 1;
+                                    } else {
+                                        while ((z * S2_W[i][j]) < w2) {
+                                            z++;
+                                        }
                                     }
+                                    switch (i) {
+                                        case 0:
+                                            instance_type = "t2.micro";
+                                            break;
+                                        case 1:
+                                            instance_type = "t2.small";
+                                            break;
+                                        default:
+                                            instance_type = "t2.medium";
+                                            break;
+                                    }
+                                    soln2.add(String.valueOf(z) + 'X' + instance_type);
+                                    totCost2.add(z * price[i]);
+                                    qos2.add(S2_Q[i][j]);
                                 }
-                                switch (i) {
-                                    case 0:
-                                        instance_type = "t2.micro";
-                                        break;
-                                    case 1:
-                                        instance_type = "t2.small";
-                                        break;
-                                    default:
-                                        instance_type = "t2.medium";
-                                        break;
+
+                            }
+                        }
+                        String[] instS2 = soln2.toArray(new String[0]);
+                        Float[] costS2 = totCost2.toArray(new Float[0]);
+                        Integer[] qosS2 = qos2.toArray(new Integer[0]);
+                        float tmp = 0.0F;
+                        String tmp_val = null;
+                        int tm_qos = 0;
+                        for (int i = 0; i < instS2.length; i++) {
+                            for (int j = i + 1; j < instS2.length; j++) {
+                                if (costS2[j] < costS2[i]) {
+                                    tmp = costS2[i];
+                                    tmp_val = instS2[i];
+                                    tm_qos = qosS2[i];
+                                    costS2[i] = costS2[j];
+                                    instS2[i] = instS2[j];
+                                    qosS2[i] = qosS2[j];
+                                    costS2[j] = tmp;
+                                    instS2[j] = tmp_val;
+                                    qosS2[j] = tm_qos;
                                 }
-                                soln3.add(String.valueOf(z) + 'X' + instance_type);
-                                totCost3.add(z * price[i]);
-                                qos3.add(S3_Q[i][j]);
-                            }
 
-                        }
-                    }
-                    String[] instS3 = soln3.toArray(new String[0]);
-                    Float[] costS3 = totCost3.toArray(new Float[0]);
-                    Integer[] qosS3 = qos3.toArray(new Integer[0]);
-                    float tmp = 0.0F;
-                    String tmp_val = null;
-                    int tm_qos = 0;
-                    for (int i = 0; i < instS3.length; i++) {
-                        for (int j = i + 1; j < instS3.length; j++) {
-                            if (costS3[j] < costS3[i]) {
-                                tmp = costS3[i];
-                                tmp_val = instS3[i];
-                                tm_qos = qosS3[i];
-                                costS3[i] = costS3[j];
-                                instS3[i] = instS3[j];
-                                qosS3[i] = qosS3[j];
-                                costS3[j] = tmp;
-                                instS3[j] = tmp_val;
-                                qosS3[j] = tm_qos;
                             }
-
                         }
+                        aggQoS = aggQoS + qosS2[0];
+                        total_cost = total_cost + costS2[0];
+                        System.out.println("For Service S2:");
+                        //foreach (String item in instS2) {
+                        MainForm.txtAreaProcessingResources.append("Instances required for processing layer: " + instS2[0] + "\n");
+                        System.out.print(instS2[0] + '\t');
+                        //}
+                        System.out.println();
+                        //foreach (float item in costS2) {
+                        System.out.print(String.valueOf(costS2[0]) + '\t');
+                        // }
+                        System.out.println();
+                        System.out.println(String.valueOf(qosS2[0]));
+                        break;
                     }
-                    aggQoS = aggQoS + qosS3[0];
-                    total_cost = total_cost + costS3[0];
-                    System.out.println("For Service S3:");
-                    //foreach (String item in instS3) {
-                    MainForm.txtAreaStorageResources.append("Instances required for storage layer: " + instS3[0] + "\n");
-                    System.out.print(instS3[0] + '\t');
-                    // }
-                    System.out.println();
-                    // foreach (float item in costS3) {
-                    System.out.print(String.valueOf(costS3[0]) + '\t');
-                    // }
-                    System.out.println();
-                    System.out.println(String.valueOf(qosS3[0]));
-                    break;
+                    case 3: {
+                        aggQoS = aggQoS - delta_B;
+                        String instance_type = null;
+                        for (int i = 0; i < S3_W.length; i++) {
+                            for (int j = 0; j < S3_W[0].length; j++) {
+                                if ((aggQoS + S3_Q[i][j]) <= e2eQoS) {
+                                    int z = 1;
+                                    if (z * S3_W[i][j] >= w3) {
+                                        z = 1;
+                                    } else {
+                                        while ((z * S3_W[i][j]) < w3) {
+                                            z++;
+                                        }
+                                    }
+                                    switch (i) {
+                                        case 0:
+                                            instance_type = "t2.micro";
+                                            break;
+                                        case 1:
+                                            instance_type = "t2.small";
+                                            break;
+                                        default:
+                                            instance_type = "t2.medium";
+                                            break;
+                                    }
+                                    soln3.add(String.valueOf(z) + 'X' + instance_type);
+                                    totCost3.add(z * price[i]);
+                                    qos3.add(S3_Q[i][j]);
+                                }
+
+                            }
+                        }
+                        String[] instS3 = soln3.toArray(new String[0]);
+                        Float[] costS3 = totCost3.toArray(new Float[0]);
+                        Integer[] qosS3 = qos3.toArray(new Integer[0]);
+                        float tmp = 0.0F;
+                        String tmp_val = null;
+                        int tm_qos = 0;
+                        for (int i = 0; i < instS3.length; i++) {
+                            for (int j = i + 1; j < instS3.length; j++) {
+                                if (costS3[j] < costS3[i]) {
+                                    tmp = costS3[i];
+                                    tmp_val = instS3[i];
+                                    tm_qos = qosS3[i];
+                                    costS3[i] = costS3[j];
+                                    instS3[i] = instS3[j];
+                                    qosS3[i] = qosS3[j];
+                                    costS3[j] = tmp;
+                                    instS3[j] = tmp_val;
+                                    qosS3[j] = tm_qos;
+                                }
+
+                            }
+                        }
+                        aggQoS = aggQoS + qosS3[0];
+                        total_cost = total_cost + costS3[0];
+                        System.out.println("For Service S3:");
+                        //foreach (String item in instS3) {
+                        MainForm.txtAreaStorageResources.append("Instances required for storage layer: " + instS3[0] + "\n");
+                        System.out.print(instS3[0] + '\t');
+                        // }
+                        System.out.println();
+                        // foreach (float item in costS3) {
+                        System.out.print(String.valueOf(costS3[0]) + '\t');
+                        // }
+                        System.out.println();
+                        System.out.println(String.valueOf(qosS3[0]));
+                        break;
+                    }
+                    default:
+                        break;
                 }
-                default:
-                    break;
+
             }
+            System.out.println("Total cost: " + String.valueOf(total_cost));
+            System.out.println("total end-to-end QoS: " + String.valueOf(aggQoS));
+            MainForm.lblTotalCost.setText("");
+            MainForm.lblTotalCost.setText("Total cost: " + String.valueOf(total_cost));
+            MainForm.lblE2eQoS.setText("");
+            MainForm.lblE2eQoS.setText("Total end-to-end latency:" + String.valueOf(aggQoS));
+            success = true;
+
+        } catch (Exception ex) {
+            success = false;
 
         }
-        System.out.println("Total cost: " + String.valueOf(total_cost));
-        System.out.println("total end-to-end QoS: " + String.valueOf(aggQoS));
-        MainForm.lblTotalCost.setText("");
-        MainForm.lblTotalCost.setText("Total cost: " + String.valueOf(total_cost));
-        MainForm.lblE2eQoS.setText("");
-        MainForm.lblE2eQoS.setText("Total end-to-end latency:" + String.valueOf(aggQoS));
-        return e2eResourceAllocation;
+        return success;
 
     }
 
