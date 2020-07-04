@@ -400,7 +400,7 @@
                                   <Component id="txtFieldInstId" alignment="0" pref="157" max="32767" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="jPanel14" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -465,28 +465,22 @@
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="1" attributes="0">
-                                          <Group type="102" attributes="0">
-                                              <Component id="jLabel20" min="-2" max="-2" attributes="0"/>
-                                              <EmptySpace max="32767" attributes="0"/>
-                                              <Component id="txtFieldReplication" min="-2" pref="158" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" attributes="0">
-                                              <Component id="jLabel18" min="-2" pref="121" max="-2" attributes="0"/>
-                                              <EmptySpace pref="53" max="32767" attributes="0"/>
-                                              <Component id="txtFieldPartitions" min="-2" pref="158" max="-2" attributes="0"/>
-                                          </Group>
-                                      </Group>
-                                  </Group>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <EmptySpace max="32767" attributes="0"/>
-                                      <Component id="btnStartKafkaCluster" min="-2" pref="158" max="-2" attributes="0"/>
-                                  </Group>
+                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="jLabel18" max="32767" attributes="0"/>
+                                  <Component id="jLabel20" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="txtFieldPartitions" min="-2" pref="158" max="-2" attributes="0"/>
+                                  <Component id="txtFieldReplication" min="-2" pref="158" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace pref="60" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="btnStartKafkaCluster" min="-2" pref="181" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -614,31 +608,28 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jLabel16" min="-2" pref="144" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="txtFieldInstanceId" min="-2" pref="225" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="btnStopInstance" min="-2" pref="152" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="btnLoadIngestionClusterInfo" min="-2" pref="212" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="btnClearIngestionFormData" min="-2" pref="216" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jLabel17" min="-2" pref="144" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="jLabel17" min="-2" pref="87" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="txtFieldStartInstId" min="-2" pref="225" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="btnStartInstance" min="-2" pref="152" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jLabel16" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                                  <Component id="txtFieldInstanceId" min="-2" pref="225" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
-                                          <EmptySpace min="-2" pref="125" max="-2" attributes="0"/>
-                                          <Component id="btnStartIngestionService" min="-2" pref="195" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                                          <Component id="btnStartInstance" min="-2" pref="152" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="147" max="-2" attributes="0"/>
                                           <Component id="btnDeleteIngestionCluster" min="-2" pref="258" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <Component id="btnStopInstance" min="-2" pref="152" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                                          <Component id="btnLoadIngestionClusterInfo" min="-2" pref="212" max="-2" attributes="0"/>
+                                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                                          <Component id="btnClearIngestionFormData" min="-2" pref="216" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -659,7 +650,7 @@
                               <Component id="btnClearIngestionFormData" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
+                              <Group type="102" attributes="0">
                                   <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jLabel17" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -669,12 +660,10 @@
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="btnStartIngestionService" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnDeleteIngestionCluster" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="51" max="32767" attributes="0"/>
+                          <EmptySpace pref="72" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -682,12 +671,12 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabel16">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Enter instance Id to stop:"/>
+                    <Property name="text" type="java.lang.String" value="Instance Id:"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel17">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Enter instance Id to start:"/>
+                    <Property name="text" type="java.lang.String" value="Instance Id:"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtFieldInstanceId">
@@ -696,7 +685,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnStopInstance">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Stop Instance"/>
+                    <Property name="text" type="java.lang.String" value="Stop"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStopInstanceActionPerformed"/>
@@ -704,7 +693,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnStartInstance">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Start Instance"/>
+                    <Property name="text" type="java.lang.String" value="Restart"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStartInstanceActionPerformed"/>
@@ -717,11 +706,6 @@
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLoadIngestionClusterInfoActionPerformed"/>
                   </Events>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnStartIngestionService">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Start Ingestion Service"/>
-                  </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnClearIngestionFormData">
                   <Properties>
@@ -836,7 +820,10 @@
                               <Group type="102" attributes="0">
                                   <Component id="jLabel5" min="-2" pref="78" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="txtFieldStartRestartInstId" min="-2" pref="199" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="chkBoxMasterNode" max="32767" attributes="0"/>
+                                      <Component id="txtFieldStartRestartInstId" pref="199" max="32767" attributes="0"/>
+                                  </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="btnStopInstanceProc" min="-2" pref="75" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -863,27 +850,27 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="txtFieldStartRestartInstId" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="btnStopInstanceProc" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="btnRestartInstanceProc" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="btnClearFieldsProcessing" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="btnLoadProcessingDetails" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="btnDeleteCluster" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="btnClearFieldsProcessing" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnLoadProcessingDetails" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="btnDeleteCluster" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                           <Component id="lblStopRestartStatus" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="txtFieldStartRestartInstId" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnStopInstanceProc" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnRestartInstanceProc" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="chkBoxMasterNode" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -940,6 +927,11 @@
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteClusterActionPerformed"/>
                   </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="chkBoxMasterNode">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Master Node"/>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
@@ -1054,29 +1046,27 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="164" max="-2" attributes="0"/>
-                                  <Component id="btnBuildProcessingCluster" min="-2" pref="152" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel4" min="-2" pref="140" max="-2" attributes="0"/>
                                       <Component id="jLabel7" alignment="0" min="-2" pref="99" max="-2" attributes="0"/>
-                                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                          <Component id="jLabel38" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="jLabel6" alignment="0" min="-2" pref="78" max="-2" attributes="0"/>
-                                      </Group>
+                                      <Component id="jLabel6" alignment="0" min="-2" pref="78" max="-2" attributes="0"/>
                                       <Component id="jLabel39" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="comboBoxClusterType" max="32767" attributes="0"/>
-                                      <Component id="comboBoxNoSparkNodes" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="comboBoxSparkInstType" alignment="0" pref="204" max="32767" attributes="0"/>
-                                      <Component id="comboBoxProcFrameworks" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="txtFieldAmiId" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                                          <Component id="btnBuildProcessingCluster" min="-2" pref="152" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                          <Component id="comboBoxClusterType" max="32767" attributes="0"/>
+                                          <Component id="comboBoxNoSparkNodes" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="comboBoxSparkInstType" alignment="0" pref="204" max="32767" attributes="0"/>
+                                          <Component id="comboBoxProcFrameworks" alignment="0" max="32767" attributes="0"/>
+                                      </Group>
                                   </Group>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
@@ -1089,10 +1079,7 @@
                                       </Group>
                                   </Group>
                               </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="lblBuildProcessingCluster" min="-2" pref="306" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="lblBuildProcessingCluster" alignment="0" min="-2" pref="306" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -1151,13 +1138,8 @@
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="txtFieldAmiId" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jLabel38" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnBuildProcessingCluster" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                                   <Component id="lblBuildProcessingCluster" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace pref="40" max="32767" attributes="0"/>
                               </Group>
@@ -1239,13 +1221,6 @@
                 <Component class="javax.swing.JLabel" name="jLabel6">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="No of Nodes:"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="txtFieldAmiId">
-                </Component>
-                <Component class="javax.swing.JLabel" name="jLabel38">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="AMI Id:"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel31">
@@ -1762,7 +1737,7 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnLoadStorageClusterDetails" min="-2" pref="167" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="btnStartCluster" min="-2" pref="173" max="-2" attributes="0"/>
+                                  <Component id="btnDeleteStorageCluster" min="-2" pref="173" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -1778,7 +1753,7 @@
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="btnClearAllStorage" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnLoadStorageClusterDetails" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="btnStartCluster" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnDeleteStorageCluster" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
@@ -1802,10 +1777,13 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLoadStorageClusterDetailsActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnStartCluster">
+                <Component class="javax.swing.JButton" name="btnDeleteStorageCluster">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Start Cluster"/>
+                    <Property name="text" type="java.lang.String" value="Delete Cluster"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteStorageClusterActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="lblInstanceStatus">
                   <AuxValues>

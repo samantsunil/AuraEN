@@ -224,7 +224,7 @@ public class ConfigureProcessingLayer {
             String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_types = CONCAT(instance_types, ?) WHERE cluster_id = ?";
             try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
                 update.setInt(1, i);
-                update.setString(2, "1X" + instanceType + ",");
+                update.setString(2, "1X" + instanceType + " ");
                 update.setInt(3, 100); //clusterId= 100 fixed
                 update.executeUpdate();
             }
@@ -337,7 +337,7 @@ public class ConfigureProcessingLayer {
         }
     }
 
-    public static void stopSparkNode(String instanceId) {
+    public static void stopSparkNode(String instanceId, Boolean isMasterNode) {
         if (instanceId != null) {
             try {
                 DryRunSupportedRequest<StopInstancesRequest> dryRequest
@@ -363,11 +363,15 @@ public class ConfigureProcessingLayer {
                 System.out.printf("Successfully stopped the instance: %s", instanceId);
                 //lblInstanceStopMsg.setText("Successfully stop the instance: " + instanceId + ".");
                 if (curInstance != null) {
-                    MainForm.lblStopRestartStatus.setText("Successfully stop the instance: " + instanceId + ".");
+                    MainForm.lblStopRestartStatus.setText("Successfully stopped the instance: " + instanceId + ".");
                     //data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + curInstance.getPlacement().getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
                     //       + ", PublicIP:" + curInstance.getPublicIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
-                    updateSparkRestartNodeDetails(curInstance.getInstanceId(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName());
-                    updateSparkClusterNodeRemoveInfo(curInstance.getInstanceType());
+                    if (!isMasterNode) {
+                        updateSparkRestartNodeDetails(curInstance.getInstanceId(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName());
+                        updateSparkClusterNodeRemoveInfo(curInstance.getInstanceType());
+                    } else {
+                        updateSparkMasterNodeInfo(curInstance.getInstanceId(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress());
+                    }
                 } else {
                     System.out.println("Instances are not running.");
                 }
@@ -377,6 +381,30 @@ public class ConfigureProcessingLayer {
         } else {
             MainForm.lblStopRestartStatus.setText("");
             MainForm.lblStopRestartStatus.setText("Enter the valid instance ID.");
+        }
+    }
+
+    public static void updateSparkMasterNodeInfo(String instanceId, String pubDns, String pubIp, String privIp) {
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE processing_cluster_info SET master_instance_id = ?, master_public_dnsname = ?, master_public_ip = ?, master_private_ip = ? WHERE cluster_id = ?";
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, instanceId);
+                update.setString(2, pubDns);
+                update.setString(3, pubIp);
+                update.setString(4, privIp);
+                update.setInt(5, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+                update.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -527,20 +555,15 @@ public class ConfigureProcessingLayer {
             try (PreparedStatement st = DatabaseConnection.con.prepareStatement(query)) {
                 st.setInt(1, 100);
                 ResultSet rs = st.executeQuery();
-                int i = 0;
                 while (rs.next()) {
-
                     masterUrl = rs.getString(1);
-
                 }
                 st.close();
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (isSubmit) {
-masterUrl=masterUrl;
-        } else {
+        if (!isSubmit) {
             masterUrl = "spark://" + masterUrl + ":7077";
         }
         return masterUrl;
@@ -557,7 +580,7 @@ masterUrl=masterUrl;
                 Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
                 session.connect(60000);
                 //run commands
-                String command = "sudo bash updateConfigParamsSpark.sh " + brokerId + " " + cassandraSeedIp + "";         //script file must be available in the instance home directory
+                String command = "sudo bash updateConfigParamsSpark.sh " + brokerId + " " + cassandraSeedIp + "";  //script file must be available in the instance home directory
                 ChannelExec channel = (ChannelExec) session.openChannel("exec");
                 channel.setCommand(command);
                 channel.setErrStream(System.err);
