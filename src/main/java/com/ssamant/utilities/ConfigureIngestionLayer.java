@@ -232,7 +232,7 @@ public class ConfigureIngestionLayer {
         }
     }
 
-    public static void stopKafkaBrokerNode(String instanceId) throws InterruptedException {
+    public static void stopKafkaBrokerNode(String instanceId, Boolean isZookeeper) throws InterruptedException {
         if (instanceId != null) {
             DryRunSupportedRequest<StopInstancesRequest> dryRequest
                     = () -> {
@@ -257,16 +257,42 @@ public class ConfigureIngestionLayer {
             System.out.printf("Successfully stop instance: %s", instanceId);
             //lblInstanceStopMsg.setText("Successfully stop the instance: " + instanceId + ".");
             if (curInstance != null) {
-                lblStopInstance.setText("Successfully stop the instance: " + instanceId + ".");
+                lblStopInstance.setText("Successfully stopped the instance: " + instanceId + ".");
                 // WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
-                updateInstanceInfoDbKafka(curInstance.getInstanceId(), curInstance.getState().getName());
-                updateIngestionClusterRemoveNode(curInstance.getInstanceType());
+                if (!isZookeeper) {
+                    updateInstanceInfoDbKafka(curInstance.getInstanceId(), curInstance.getState().getName());
+                    updateIngestionClusterRemoveNode(curInstance.getInstanceType());
+                } else {
+                    updateClusterInfoDb(curInstance.getPublicDnsName());
+                }
             } else {
                 System.out.println("Instances are not running.");
             }
         } else {
             lblStopInstance.setText("");
             lblStopInstance.setText("Enter the valid instance ID.");
+        }
+    }
+
+    public static void updateClusterInfoDb(String pubDns) {
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE ingestion_cluster_info SET zk_dnsname = ? WHERE cluster_id = ?";
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, pubDns);
+
+                update.setInt(2, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+                update.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -318,7 +344,7 @@ public class ConfigureIngestionLayer {
         }
     }
 
-    public static void restartKafkaBrokerNode(String instId) throws InterruptedException {
+    public static void restartKafkaBrokerNode(String instId, Boolean isZookeeper) throws InterruptedException {
 
         AmazonEC2 ec2Client = CloudLogin.getEC2Client();
         // WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
@@ -326,10 +352,36 @@ public class ConfigureIngestionLayer {
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
         Instance inst = waitForRunningState(ec2Client, instId);
         if (inst != null) {
-            lblInstanceStopMsg.setText("Instance with Id: " + instId + " starts running.");
-            lblStartedInstance.setText("Instance with Id: " + instId + " starts running successfully.");
-            updateRestartedInstanceInfoIngestion(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getState().getName());
-            updateIngestionClusterInfo(inst.getInstanceType());
+            lblInstanceStopMsg.setText("Instance with Id: " + instId + " started running.");
+            lblStartedInstance.setText("Instance with Id: " + instId + " started running successfully.");
+            if (!isZookeeper) {
+                updateRestartedInstanceInfoIngestion(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getState().getName());
+                updateIngestionClusterInfo(inst.getInstanceType());
+            } else {
+                updateIngestionCluster(inst.getPublicDnsName(), inst.getInstanceId());
+            }
+        }
+    }
+
+    public static void updateIngestionCluster(String pubDns, String instanceId) {
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE ingestion_cluster_info SET zk_dnsname = ? WHERE cluster_id = ?";
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+
+                update.setString(1, pubDns);
+                update.setInt(2, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+                update.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -366,11 +418,11 @@ public class ConfigureIngestionLayer {
                     Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            String query = "UPDATE ingestion_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_type = CONCAT(instance_type, ?), replication_factor = replication_factor + ?, partitions_count = partitions_count + ? WHERE cluster_id = ?";
+            String query = "UPDATE ingestion_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_type = CONCAT(instance_type, ?), replication_factor = ?, partitions_count = partitions_count + ? WHERE cluster_id = ?";
             try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
                 update.setInt(1, i);
                 update.setString(2, "1X" + instanceType);
-                update.setInt(3, i);
+                update.setInt(3, 1);
                 update.setInt(4, i);
                 update.setInt(5, 100); //clusterId= 100 fixed
                 update.executeUpdate();
@@ -432,8 +484,9 @@ public class ConfigureIngestionLayer {
         }
         return rs;
     }
-    public static String getCurrentDataIngestionRate(){
-        String dataIngestionRate=null;
+
+    public static String getCurrentDataIngestionRate() {
+        String dataIngestionRate = null;
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -446,7 +499,7 @@ public class ConfigureIngestionLayer {
             try (Statement st = DatabaseConnection.con.createStatement()) {
                 ResultSet rs = st.executeQuery(query);
                 while (rs.next()) {
-                    
+
                     dataIngestionRate = rs.getString(1);
                 }
             }

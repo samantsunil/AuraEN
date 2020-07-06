@@ -454,7 +454,7 @@ public class ConfigureProcessingLayer {
         }
     }
 
-    public static void restartedSparkProcessingNode(String instId) {
+    public static void restartedSparkProcessingNode(String instId, Boolean isMaster) {
         if ("".equals(instId)) {
             return;
         }
@@ -466,11 +466,37 @@ public class ConfigureProcessingLayer {
             Instance inst = ConfigureIngestionLayer.waitForRunningState(ec2Client, instId);
             if (inst != null) {
                 MainForm.lblStopRestartStatus.setText("Instance with Id: " + instId + " starts running successfully.");
-                updateRestartedInstanceInfoSpark(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getState().getName());
-                updateSparkClusterInfo(inst.getInstanceType());
+                if (!isMaster) {
+                    updateRestartedInstanceInfoSpark(inst.getInstanceId(), inst.getPublicDnsName(), inst.getPublicIpAddress(), inst.getState().getName());
+                    updateSparkClusterInfo(inst.getInstanceType());
+                } else {
+                    updateClusterInfoDb(inst.getPublicDnsName(), inst.getPublicIpAddress());
+                }
             }
         } catch (InterruptedException ex) {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void updateClusterInfoDb(String masterDns, String masterPubIp) {
+
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE processing_cluster_info SET master_public_dnsname = ?, master_public_ip = ? WHERE cluster_id = ?";
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, masterDns);
+                update.setString(2, masterPubIp);
+                update.setInt(3, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

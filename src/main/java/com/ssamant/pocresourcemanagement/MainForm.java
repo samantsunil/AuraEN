@@ -29,6 +29,7 @@ import com.ssamant.utilities.ConfigureIngestionLayer;
 import com.ssamant.utilities.ConfigureProcessingLayer;
 import com.ssamant.utilities.ConfigureStorageLayer;
 import com.ssamant.utilities.DatabaseConnection;
+import com.ssamant.utilities.UsageGuideForm;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -135,14 +136,13 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         progressBarIngestion = new javax.swing.JProgressBar();
         jPanel16 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
         txtFieldInstanceId = new javax.swing.JTextField();
-        txtFieldStartInstId = new javax.swing.JTextField();
         btnStopInstance = new javax.swing.JButton();
         btnStartInstance = new javax.swing.JButton();
         btnLoadIngestionClusterInfo = new javax.swing.JButton();
         javax.swing.JButton btnClearIngestionFormData = new javax.swing.JButton();
         btnDeleteIngestionCluster = new javax.swing.JButton();
+        chkBoxZookeeperNode = new javax.swing.JCheckBox();
         panProcessing = new javax.swing.JPanel();
         jScrollPane9 = new javax.swing.JScrollPane();
         txtAreaSparkResourcesInfo = new javax.swing.JTextArea();
@@ -278,6 +278,10 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         btnUpdateQoSProfile = new javax.swing.JButton();
         jScrollPane11 = new javax.swing.JScrollPane();
         txtAreaSustainabelQoSInfo = new javax.swing.JTextArea();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenuAboutApp = new javax.swing.JMenu();
+        menuItemUsage = new javax.swing.JMenuItem();
+        menuItemAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Resource Management Framework [Data Processing Pipeline]");
@@ -502,8 +506,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         jLabel16.setText("Instance Id:");
 
-        jLabel17.setText("Instance Id:");
-
         btnStopInstance.setText("Stop");
         btnStopInstance.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -539,33 +541,32 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             }
         });
 
+        chkBoxZookeeperNode.setText("Zookeeper Node");
+
         javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
         jPanel16.setLayout(jPanel16Layout);
         jPanel16Layout.setHorizontalGroup(
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtFieldInstanceId, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkBoxZookeeperNode, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel16Layout.createSequentialGroup()
-                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtFieldStartInstId, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(299, 299, 299)
+                        .addComponent(btnDeleteIngestionCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel16Layout.createSequentialGroup()
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(33, 33, 33)
-                        .addComponent(txtFieldInstanceId, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel16Layout.createSequentialGroup()
-                                .addComponent(btnStartInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(147, 147, 147)
-                                .addComponent(btnDeleteIngestionCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel16Layout.createSequentialGroup()
-                                .addComponent(btnStopInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(63, 63, 63)
-                                .addComponent(btnLoadIngestionClusterInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnClearIngestionFormData, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addComponent(btnStopInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnStartInstance, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(59, 59, 59)
+                        .addComponent(btnLoadIngestionClusterInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnClearIngestionFormData, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(54, Short.MAX_VALUE))
         );
         jPanel16Layout.setVerticalGroup(
@@ -577,18 +578,13 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     .addComponent(txtFieldInstanceId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnStopInstance)
                     .addComponent(btnLoadIngestionClusterInfo)
-                    .addComponent(btnClearIngestionFormData))
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel16Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel17)
-                            .addComponent(txtFieldStartInstId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnStartInstance)))
-                    .addGroup(jPanel16Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnDeleteIngestionCluster)))
-                .addContainerGap(72, Short.MAX_VALUE))
+                    .addComponent(btnClearIngestionFormData)
+                    .addComponent(btnStartInstance))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDeleteIngestionCluster)
+                    .addComponent(chkBoxZookeeperNode))
+                .addContainerGap(80, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panIngestionLayout = new javax.swing.GroupLayout(panIngestion);
@@ -1261,12 +1257,12 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panStorageLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panStorageLayout.createSequentialGroup()
+                .addGroup(panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panStorageLayout.createSequentialGroup()
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panStorageLayout.createSequentialGroup()
                             .addGroup(panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(panStorageLayout.createSequentialGroup()
@@ -1281,11 +1277,11 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                                         .addComponent(comboBoxNoNodes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(comboBoxDbInstType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addComponent(lblBuildClusterstatus, javax.swing.GroupLayout.PREFERRED_SIZE, 327, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
                             .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(progressBarStorage, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 1011, Short.MAX_VALUE)))
-                .addContainerGap(84, Short.MAX_VALUE))
+                        .addComponent(progressBarStorage, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 1064, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
         panStorageLayout.setVerticalGroup(
             panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1684,6 +1680,46 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         dppLayersTab.addTab("View QoS Profile", panQoSProfile);
 
+        jMenuAboutApp.setText("Help");
+        jMenuAboutApp.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
+            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
+                jMenuAboutAppMenuKeyPressed(evt);
+            }
+            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
+            }
+            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
+            }
+        });
+        jMenuAboutApp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuAboutAppActionPerformed(evt);
+            }
+        });
+
+        menuItemUsage.setText("How to Use");
+        menuItemUsage.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
+            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
+                menuItemUsageMenuKeyPressed(evt);
+            }
+            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
+            }
+            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
+            }
+        });
+        menuItemUsage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemUsageActionPerformed(evt);
+            }
+        });
+        jMenuAboutApp.add(menuItemUsage);
+
+        menuItemAbout.setText("About");
+        jMenuAboutApp.add(menuItemAbout);
+
+        jMenuBar1.add(jMenuAboutApp);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1828,8 +1864,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     }//GEN-LAST:event_comboBoxIngestionServicesActionPerformed
 
     private void btnStopInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStopInstanceActionPerformed
+        Boolean isZookeeperNode = chkBoxZookeeperNode.isSelected();
         try {
-            ConfigureIngestionLayer.stopKafkaBrokerNode(txtFieldInstanceId.getText().trim());
+            ConfigureIngestionLayer.stopKafkaBrokerNode(txtFieldInstanceId.getText().trim(), isZookeeperNode);
 
         } catch (InterruptedException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -1845,7 +1882,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         txtAreaClusterInfo.setText(null);
         //getAllActiveBrokerIds();
         //Stop all the broker Id one by one.
-               btnDeleteIngestionCluster.setEnabled(true);
+        btnDeleteIngestionCluster.setEnabled(true);
         btnBuildIngestionCluster.setEnabled(true);
         progressBarIngestion.setIndeterminate(false);
     }//GEN-LAST:event_btnDeleteIngestionClusterActionPerformed
@@ -1860,7 +1897,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         txtAreaClusterInfo.setText(null);
         btnBuildIngestionCluster.setText("Build Cluster");
         txtFieldInstanceId.setText("");
-        txtFieldStartInstId.setText("");
         //txtFieldInstId.setText("");
         txtFieldPartitions.setText("");
         txtFieldReplication.setText("");
@@ -1933,12 +1969,12 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
     private void btnStartInstanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartInstanceActionPerformed
         try {
-            String instId = txtFieldStartInstId.getText().trim();
+            String instId = txtFieldInstanceId.getText().trim();
             if (!"".equals(instId)) {
-                ConfigureIngestionLayer.restartKafkaBrokerNode(instId);
+                ConfigureIngestionLayer.restartKafkaBrokerNode(instId, chkBoxZookeeperNode.isSelected());
             } else {
                 lblStartedInstance.setText("Enter the valid Instance ID.");
-                txtFieldStartInstId.setText("");
+                txtFieldInstanceId.setText("");
             }
         } catch (InterruptedException ex) {
             System.out.printf("Error in instance creation " + ex.getMessage());
@@ -2203,7 +2239,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
     private void btnRestartInstanceProcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRestartInstanceProcActionPerformed
         // TODO add your handling code here:
-        ConfigureProcessingLayer.restartedSparkProcessingNode(txtFieldStartRestartInstId.getText().trim());
+        ConfigureProcessingLayer.restartedSparkProcessingNode(txtFieldStartRestartInstId.getText().trim(), chkBoxMasterNode.isSelected());
     }//GEN-LAST:event_btnRestartInstanceProcActionPerformed
 
     private void btnCreateMasterNodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateMasterNodeActionPerformed
@@ -2245,6 +2281,26 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         //stop all the instances one by one and update table
         //update processing_cluster_info table as well.
     }//GEN-LAST:event_btnDeleteStorageClusterActionPerformed
+
+    private void jMenuAboutAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAboutAppActionPerformed
+        // TODO add your handling code here:
+             
+    }//GEN-LAST:event_jMenuAboutAppActionPerformed
+
+    private void jMenuAboutAppMenuKeyPressed(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_jMenuAboutAppMenuKeyPressed
+        // TODO add your handling code here:
+       // new UsageGuideForm().setVisible(true);   
+    }//GEN-LAST:event_jMenuAboutAppMenuKeyPressed
+
+    private void menuItemUsageMenuKeyPressed(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_menuItemUsageMenuKeyPressed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_menuItemUsageMenuKeyPressed
+
+    private void menuItemUsageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemUsageActionPerformed
+        // TODO add your handling code here:
+        new UsageGuideForm().setVisible(true); 
+    }//GEN-LAST:event_menuItemUsageActionPerformed
     public void clearDppLayerTabFields() {
         txtAreaIngestionResources.setText("");
         txtAreaProcessingResources.setText("");
@@ -2338,6 +2394,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JButton btnUpdateQoSProfile;
     private javax.swing.JButton btnViewQoSProfile;
     private javax.swing.JCheckBox chkBoxMasterNode;
+    private javax.swing.JCheckBox chkBoxZookeeperNode;
     private javax.swing.JComboBox<String> comboBoxBrokersNo;
     private javax.swing.JComboBox<String> comboBoxClusterType;
     private javax.swing.JComboBox<String> comboBoxDbInstType;
@@ -2368,7 +2425,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
@@ -2400,6 +2456,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenuAboutApp;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -2443,6 +2501,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     public static javax.swing.JLabel lblStopInstance;
     public static javax.swing.JLabel lblStopRestartStatus;
     public static javax.swing.JLabel lblTotalCost;
+    private javax.swing.JMenuItem menuItemAbout;
+    private javax.swing.JMenuItem menuItemUsage;
     private javax.swing.JPanel panDPPLayers;
     private javax.swing.JPanel panIngestion;
     private javax.swing.JPanel panProcessing;
@@ -2480,7 +2540,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JTextField txtFieldPartitions;
     private javax.swing.JTextField txtFieldReplication;
     private javax.swing.JTextField txtFieldSeedIp;
-    private javax.swing.JTextField txtFieldStartInstId;
     private javax.swing.JTextField txtFieldStartRestartInstId;
     private javax.swing.JTextField txtFieldStorageInstId;
     // End of variables declaration//GEN-END:variables

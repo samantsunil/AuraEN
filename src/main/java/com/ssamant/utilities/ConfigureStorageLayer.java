@@ -87,6 +87,7 @@ public class ConfigureStorageLayer {
                 }
 
                 stopCassandraNode(dnsName); //call to remove the node as decommission from the cluster and then stop the service on the node.
+                sleep(5000);
                 StopInstancesRequest request = new StopInstancesRequest()
                         .withInstanceIds(instanceId);
 
