@@ -23,6 +23,14 @@
  */
 package com.ssamant.utilities;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+
 /**
  *
  * @author Sunil
@@ -35,10 +43,52 @@ public class UsageGuideForm extends javax.swing.JFrame {
     public UsageGuideForm() {
         initComponents();
         displayUsageGuidelines();
+        setWindowSize();
     }
-    public final void displayUsageGuidelines(){
-        txtPaneUsageGuide.setText("How to use poc!!!");
+
+    private void setWindowSize() {
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
+
+    public final void displayUsageGuidelines() {
+        //txtPaneUsageGuide.setText("The application usage guidelines step-by-step !!!");
+        StyledDocument doc = txtPaneUsageGuide.getStyledDocument();
+            SimpleAttributeSet defaultSetting = new SimpleAttributeSet();
+        StyleConstants.setForeground(defaultSetting, Color.BLACK);
+        StyleConstants.setBackground(defaultSetting, Color.WHITE);
+        StyleConstants.setBold(defaultSetting, true);
+        SimpleAttributeSet keyWord = new SimpleAttributeSet();
+        StyleConstants.setForeground(keyWord, Color.RED);
+        StyleConstants.setBackground(keyWord, Color.YELLOW);
+        StyleConstants.setBold(keyWord, true);
+        SimpleAttributeSet keyWordIngestion = new SimpleAttributeSet();
+        StyleConstants.setForeground(keyWordIngestion, Color.GREEN);
+        StyleConstants.setBackground(keyWordIngestion, Color.DARK_GRAY);
+        StyleConstants.setBold(keyWordIngestion, true);
+        SimpleAttributeSet keyWordProcessing = new SimpleAttributeSet();
+        StyleConstants.setForeground(keyWordProcessing, Color.RED);
+        StyleConstants.setBackground(keyWordProcessing, Color.YELLOW);
+        StyleConstants.setBold(keyWordProcessing, true);
+        SimpleAttributeSet keyWordStorage = new SimpleAttributeSet();
+        StyleConstants.setForeground(keyWordStorage, Color.RED);
+        StyleConstants.setBackground(keyWordStorage, Color.YELLOW);
+        StyleConstants.setBold(keyWordStorage, true);
+        try {
+            doc.insertString(0, "-----------------The application usage guidelines step-by-step !!!-----------\n", keyWord);
+            doc.insertString(doc.getLength(), "If the application is allocating the resources for the first time for the pipeline then go to"
+                    + "DPP resource allocation details & scaling tab/module\n to find the intial resource allocation required for the pipeline"
+                    + "by setting the value in the future workload and end-to-end latency with full-scale optimization(default)"
+                    + "strategy.\n After getting the info about what what resources are required at each layer then start building the resource cluster for each"
+                    + "layer starting from ingestion layer, then storage layer and finally for processing layer", defaultSetting);
+            doc.insertString(doc.getLength(), "------------------INGESTION LAYER--------------------\n", keyWordIngestion);
+            txtPaneUsageGuide.setText("1.");
+
+        } catch (BadLocationException e) {
+            System.out.println(e);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -51,8 +101,9 @@ public class UsageGuideForm extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtPaneUsageGuide = new javax.swing.JTextPane();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("The Application Usage Guidelines");
+        setLocation(new java.awt.Point(0, 0));
 
         txtPaneUsageGuide.setEditable(false);
         jScrollPane1.setViewportView(txtPaneUsageGuide);
@@ -63,7 +114,7 @@ public class UsageGuideForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
