@@ -2080,7 +2080,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     String nodeHostId = rs.getString("node_hostId");
                     //System.out.format("%s, %s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status, nodeHostId);
                     txtAreaCassandraResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", HostId: " + nodeHostId + ".\n");
-                    txtAreaCassandraResourcesInfo.append("----------------------------------------------------------\n");
+                    txtAreaCassandraResourcesInfo.append("-----------------------------------------------------------------------------------\n");
                 }
             }
         } catch (SQLException ex) {
