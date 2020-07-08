@@ -52,15 +52,15 @@ public class DatabaseConnection {
                 System.out.println("Failed to connect to database.");
             }
         } catch (SQLException | ClassNotFoundException ex) {
-            System.out.println("MySQL connection failed.");            
-            ex.printStackTrace();
+            System.out.println("MySQL connection failed.");
         }
         return con;
 
     }
+
     public static String getServiceAmi(String serviceName) {
-        String ami_id="";
-                try {
+        String ami_id = "";
+        try {
             if (con == null) {
                 try {
                     con = getConnection();
@@ -70,17 +70,85 @@ public class DatabaseConnection {
             }
 
             String query = "SELECT ami_id FROM dpp_resources.ami_info WHERE service_name = ? limit 1";
-            PreparedStatement pst = con.prepareStatement(query);
-            pst.setString(1, serviceName);
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
+            try (PreparedStatement pst = con.prepareStatement(query)) {
+                pst.setString(1, serviceName);
+                ResultSet rs = pst.executeQuery();
+                while (rs.next()) {
 
-                ami_id = rs.getString(1);
+                    ami_id = rs.getString(1);
+                }
             }
-            pst.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return ami_id;
+    }
+
+    public static int getCurrentInstanceCount(String serviceName) {
+        int instanceCount = 0;
+        try {
+            if (con == null) {
+                try {
+                    con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = null;
+            if ("ingestion".equals(serviceName)) {
+                query = "SELECT COUNT(*) FROM dpp_resources.ingestion_nodes_info WHERE status = ?";
+            }
+            if ("processing".equals(serviceName)) {
+                query = "SELECT COUNT(*) FROM dpp_resources.processing_nodes_info WHERE status = ?";
+            }
+            if ("storage".equals(serviceName)) {
+                query = "SELECT COUNT(*) FROM dpp_resources.storage_nodes_info WHERE status = ?";
+            }
+            try (PreparedStatement pst = con.prepareStatement(query)) {
+                pst.setString(1, "running");
+                ResultSet rs = pst.executeQuery();
+                while (rs.next()) {
+
+                    instanceCount = rs.getInt(1);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return instanceCount;
+    }
+
+    public static String getCurrentInstanceType(String serviceName) {
+        String instanceType = "";
+        try {
+            if (con == null) {
+                try {
+                    con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = null;
+            if ("ingestion".equals(serviceName)) {
+                query = "SELECT instance_type FROM dpp_resources.ingestion_nodes_info WHERE status = ? LIMIT 1";
+            }
+            if ("processing".equals(serviceName)) {
+                query = "SELECT instance_type FROM dpp_resources.processing_nodes_info WHERE status = ? LIMIT 1";
+            }
+            if ("storage".equals(serviceName)) {
+                query = "SELECT instance_type FROM dpp_resources.storage_nodes_info WHERE status = ? LIMIT 1";
+            }
+            try (PreparedStatement pst = con.prepareStatement(query)) {
+                pst.setString(1, "running");
+                ResultSet rs = pst.executeQuery();
+                while (rs.next()) {
+
+                    instanceType = rs.getString(1);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return instanceType;
     }
 }

@@ -53,6 +53,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import logincredentials.CloudLogin;
@@ -68,9 +70,9 @@ public class ConfigureProcessingLayer {
     }
     public static String ami_id_spark = "";
 
-    public static void buildProcessingLayerCluster(int noOfNodes, String instanceType, String ami_id, String clusterType) {
+    public static void buildProcessingLayerCluster(int noOfNodes, String instanceType, String ami_id, String clusterType, Boolean fromDPPScaling) {
         AmazonEC2 ec2Client = CloudLogin.getEC2Client();
-        createEC2NodeForProcessingLayer(noOfNodes, instanceType, ec2Client, ami_id, clusterType);
+        createEC2NodeForProcessingLayer(noOfNodes, instanceType, ec2Client, ami_id, clusterType, fromDPPScaling);
     }
 
     public static void createMasterNode(String instanceType) {
@@ -136,7 +138,7 @@ public class ConfigureProcessingLayer {
         }
     }
 
-    public static void createEC2NodeForProcessingLayer(int noOfNodes, String instanceType, AmazonEC2 ec2Client, String amiId, String clusterType) {
+    public static void createEC2NodeForProcessingLayer(int noOfNodes, String instanceType, AmazonEC2 ec2Client, String amiId, String clusterType, Boolean fromDPPScaling) {
         String nodeType = "";
         String tagValue = "";
         String serviceName = "";
@@ -176,6 +178,10 @@ public class ConfigureProcessingLayer {
             }
         }
         int i = 1;
+        int noOfWorkers=DatabaseConnection.getCurrentInstanceCount("processing");
+        if(noOfWorkers>0){
+            i = noOfWorkers;
+        }
         for (Instance inst : runResponse.getReservation().getInstances()) {
             System.out.println("EC2 Instance Id: " + inst.getInstanceId());
             // instanceIds.add(inst.getInstanceId());
@@ -186,12 +192,12 @@ public class ConfigureProcessingLayer {
                     .withResources(inst.getInstanceId())
                     .withTags(tag);
             CreateTagsResult tag_response = ec2Client.createTags(createTagsRequest);
-            startInstanceForProcessingCluster(ec2Client, inst, inst.getPlacement(), nodeType);
+            startInstanceForProcessingCluster(ec2Client, inst, inst.getPlacement(), nodeType, fromDPPScaling);
             i++;
         }
     }
 
-    public static void startInstanceForProcessingCluster(AmazonEC2 ec2Client, Instance inst, Placement az, String nodeType) {
+    public static void startInstanceForProcessingCluster(AmazonEC2 ec2Client, Instance inst, Placement az, String nodeType, Boolean fromDPPScaling) {
         try {
             StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
             StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
@@ -202,6 +208,10 @@ public class ConfigureProcessingLayer {
                 MainForm.txtAreaSparkResourcesInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: " + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".\n");
                 dbInsertSpakInstanceDetail(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getState().getName(), nodeType);
                 updateSparkClusterInfo(curInstance.getInstanceType());
+                if(fromDPPScaling){
+                    updateMasterNode();
+                    configureNewlyCreatedSparkNode(curInstance.getPublicDnsName(),"worker");                    
+                }
             } else {
                 System.out.println("Instances are not running.");
             }
@@ -224,7 +234,7 @@ public class ConfigureProcessingLayer {
             String query = "UPDATE processing_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_types = CONCAT(instance_types, ?) WHERE cluster_id = ?";
             try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
                 update.setInt(1, i);
-                update.setString(2, "1X" + instanceType + " ");
+                update.setString(2, "1X" + instanceType + "");
                 update.setInt(3, 100); //clusterId= 100 fixed
                 update.executeUpdate();
             }
@@ -595,7 +605,7 @@ public class ConfigureProcessingLayer {
         return masterUrl;
     }
 
-    public static void configureNewlyCreatedSparkNode(String instanceId, String pubDnsName, String nodeType) {
+    public static void configureNewlyCreatedSparkNode(String pubDnsName, String nodeType) {
         JSch jschClient = new JSch();
         if ("local".equals(nodeType)) {
             String brokerId = getCurrentBrokerIds();
@@ -678,6 +688,31 @@ public class ConfigureProcessingLayer {
         privIps = privIps.trim();
         return privIps;
     }
+    public static void updateMasterNode(){
+        String masterDns = getMasterNodeDns(true);
+        String brokerId = getCurrentBrokerIds();
+        String cassandraSeedIp = getCurrentCassandraSeedIps();
+        String workerIps = getSparkWorkerIps();
+        JSch jschClient = new JSch();
+        try {
+            jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+            JSch.setConfig("StrictHostKeyChecking", "no");
+            Session session = jschClient.getSession("ubuntu", masterDns, 22);
+            session.connect(60000);
+            //run commands
+            String command = "sudo bash upd8SparkClusterConfig.sh " + brokerId + " " + cassandraSeedIp + " " + workerIps;         //script file must be available in the instance home directory
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand(command);
+            channel.setErrStream(System.err);
+            channel.connect(60000);
+            readInputStreamFromSshSession(channel);
+            sleep(5000);
+            session.disconnect();           
+        } catch (JSchException | InterruptedException ex) {
+
+        }
+        
+    }
 
     public static Boolean configureAndRunMasterNode(String pubDnsName) {
         Boolean success = false;
@@ -713,7 +748,7 @@ public class ConfigureProcessingLayer {
         return success;
     }
 
-    public static void submitJobToSparkCluster(String pubDns) {
+    public static void submitJobToSparkCluster() {
         String masterDns = getMasterNodeDns(true);
         JSch jschClient = new JSch();
         try {
@@ -732,6 +767,30 @@ public class ConfigureProcessingLayer {
         } catch (JSchException | InterruptedException ex) {
 
         }
+    }
+    public static List<String> getWorkerInstanceIds(String limit){
+                 List<String> instanceIds = new ArrayList<>();
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT instance_id FROM dpp_resources.processing_nodes_info WHERE status = 'running' AND node_type = 'worker' LIMIT " + limit;
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
+
+                    instanceIds.add(rs.getString(1));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return instanceIds;
     }
 
 }

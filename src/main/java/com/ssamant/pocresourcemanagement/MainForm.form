@@ -1998,14 +1998,10 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <EmptySpace min="-2" pref="122" max="-2" attributes="0"/>
-                              <Component id="lblErrorMsgCompResAllocation" min="-2" pref="290" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jScrollPane2" min="-2" pref="334" max="-2" attributes="0"/>
                                   <Component id="btnIngestion" min="-2" pref="320" max="-2" attributes="0"/>
@@ -2040,6 +2036,10 @@
                                       <Component id="jPanel2" min="-2" pref="738" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="132" max="-2" attributes="0"/>
+                              <Component id="lblErrorMsgCompResAllocation" min="-2" pref="722" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -2207,7 +2207,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  <Component id="btnScaleIngestionCluster" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnComputeDPPResAllocation" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -2260,7 +2260,7 @@
                               <Component id="comboBoxScalingStrategy" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                          <Component id="btnScaleIngestionCluster" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnComputeDPPResAllocation" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -2276,12 +2276,12 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtFieldE2eLatency">
                 </Component>
-                <Component class="javax.swing.JButton" name="btnScaleIngestionCluster">
+                <Component class="javax.swing.JButton" name="btnComputeDPPResAllocation">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Compute Resource Allocation"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnScaleIngestionClusterActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnComputeDPPResAllocationActionPerformed"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel12">
@@ -2475,6 +2475,9 @@
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Scale DPP Resources"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnScaleDppResourcesActionPerformed"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

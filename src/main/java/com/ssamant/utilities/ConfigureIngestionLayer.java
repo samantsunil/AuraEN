@@ -60,6 +60,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import logincredentials.CloudLogin;
@@ -156,6 +159,10 @@ public class ConfigureIngestionLayer {
             }
         }
         int i = 1;
+        int latestBrokerId=getLatestBrokerId();
+        if(latestBrokerId>0){
+            i=latestBrokerId+2;
+        }
         for (Instance inst : runResponse.getReservation().getInstances()) {
             System.out.println("EC2 Instance Id: " + inst.getInstanceId());
             // instanceIds.add(inst.getInstanceId());
@@ -170,7 +177,30 @@ public class ConfigureIngestionLayer {
             i++;
         }
     }
+   public static int getLatestBrokerId(){
+         List<Integer> brokerIds = new ArrayList<>();
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT broker_id FROM dpp_resources.ingestion_nodes_info";
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
 
+                    brokerIds.add(rs.getInt(1));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Collections.sort(brokerIds);
+        return brokerIds.get(brokerIds.size()-1);
+   }
     public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, int brokerId) throws InterruptedException {
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
@@ -226,7 +256,7 @@ public class ConfigureIngestionLayer {
             preparedStmt.setString(4, pubDnsName);
             preparedStmt.setString(5, publicIp);
             preparedStmt.setString(6, status);
-            preparedStmt.setString(7, String.valueOf(brokerId - 1));
+            preparedStmt.setInt(7, (brokerId - 1));
             preparedStmt.execute();
             preparedStmt.close();
         }
@@ -623,6 +653,30 @@ public class ConfigureIngestionLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return brokerDns;
+    }
+    public static List<String> getBrokerInstanceIds(String limit){
+                 List<String> instanceIds = new ArrayList<>();
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT instance_id FROM dpp_resources.ingestion_nodes_info WHERE status = 'running' LIMIT " + limit;
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
+
+                    instanceIds.add(rs.getString(1));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return instanceIds;
     }
 
     public static String getZookeeperDns() {

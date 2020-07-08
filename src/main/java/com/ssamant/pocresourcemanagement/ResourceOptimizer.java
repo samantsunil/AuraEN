@@ -35,9 +35,13 @@ public class ResourceOptimizer {
     public ResourceOptimizer() {
 
     }
+    public static int[] dppResourcesCount = new int[3];
+    public static String[] dppInstanceType = new String[3];
 
     public static Boolean getResourceAllocation(int w1, int w2, int w3, int e2eQoS) {
+        @SuppressWarnings("UnusedAssignment")
         Boolean success = false;
+
         try {
             String e2eResourceAllocation = "";
             //int[][] S1_W = new int[][]{{1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}}; //nectar 
@@ -124,7 +128,15 @@ public class ResourceOptimizer {
                         System.out.println("For Service S1:");
                         //foreach (String item in instS1) {
                         MainForm.txtAreaIngestionResources.append("Instances required for ingestion layer: " + instS1[0] + "\n");
-                        System.out.print(instS1[0] + '\t');
+                        //int xInd = instS1[0].indexOf("X");
+                        String[] split = instS1[0].split("X");
+                        //String subString = null;
+                       // if (xInd != -1) {
+                        //    subString = instS1[0].substring(0, xInd);
+                        //}
+                        dppResourcesCount[0] = Integer.parseInt(split[0]);
+                        dppInstanceType[0] = split[1];
+                        // System.out.print(instS1[0] + '\t');
                         //}
                         System.out.println();
                         // foreach (float item in costS1) {
@@ -195,6 +207,13 @@ public class ResourceOptimizer {
                         //foreach (String item in instS2) {
                         MainForm.txtAreaProcessingResources.append("Instances required for processing layer: " + instS2[0] + "\n");
                         System.out.print(instS2[0] + '\t');
+                        String[] split = instS2[0].split("X");
+                       // String subString = null;
+                       // if (xInd != -1) {
+                        //    subString = instS1[0].substring(0, xInd);
+                        //}
+                        dppResourcesCount[1] = Integer.parseInt(split[0]);
+                        dppInstanceType[1] = split[1];
                         //}
                         System.out.println();
                         //foreach (float item in costS2) {
@@ -264,6 +283,13 @@ public class ResourceOptimizer {
                         //foreach (String item in instS3) {
                         MainForm.txtAreaStorageResources.append("Instances required for storage layer: " + instS3[0] + "\n");
                         System.out.print(instS3[0] + '\t');
+                        String[] split = instS3[0].split("X");
+                        //String subString = null;
+                       // if (xInd != -1) {
+                        //    subString = instS1[0].substring(0, xInd);
+                        //}
+                        dppResourcesCount[2] = Integer.parseInt(split[0]);
+                        dppInstanceType[2] = split[1];
                         // }
                         System.out.println();
                         // foreach (float item in costS3) {
