@@ -2447,15 +2447,29 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         txtAreaStorageResources.append("Scaling-out resources for storage layer...\n");
                         try {
                             ConfigureStorageLayer.buildNoSqlStorageCluster(ResourceOptimizer.dppResourcesCount[2], ResourceOptimizer.dppInstanceType[2], true);
-                            
+                            txtAreaStorageResources.append("Resources scaled-out successfully for handling the future workload.\n");
                         } catch (SQLException ex) {
                             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        
+                        }                       
                         
                     }
                     if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) > Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
                         //scale-in
+                        txtAreaStorageResources.append("Scaling in resources for storage cluster.\n");
+                        List<String> instanceIds = ConfigureStorageLayer.getNonSeedNodesInstanceIds(String.valueOf(ResourceOptimizer.dppResourcesCount[2]));
+                        List<String> dnsNames = ConfigureStorageLayer.getPubDnsName(String.valueOf(ResourceOptimizer.dppResourcesCount[2]));
+                        int i=0;
+                        if (instanceIds.size() > 0) {
+                         for(String instanceId: instanceIds){
+                                try {
+                                    ConfigureStorageLayer.stopInstanceStorageLayer(instanceId, dnsNames.get(i));                                    
+                                    sleep(5000);
+                                } catch (InterruptedException | IOException ex) {
+                                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                i++;
+                            }
+                        }
                         
                     }
                 }

@@ -54,6 +54,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import logincredentials.CloudLogin;
@@ -522,6 +524,55 @@ public static void updateNodeTypeStatus(String instanceId) {
             updateCassandraNodeHostId(hostId, instanceId);
         }
         
+    }
+    public static List<String> getPubDnsName(String limit) {
+      List<String> instanceIds = new ArrayList<>();
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT instance_id FROM dpp_resources.storage_nodes_info WHERE status = 'running' AND node_type = 'non-seed' LIMIT " + limit;
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
+
+                    instanceIds.add(rs.getString(1));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return instanceIds;  
+    }
+    public static List<String> getNonSeedNodesInstanceIds(String limit){
+         List<String> pubDnsNames = new ArrayList<>();
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT public_dnsname FROM dpp_resources.storage_nodes_info WHERE status = 'running' AND node_type = 'non-seed' LIMIT " + limit;
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
+
+                    pubDnsNames.add(rs.getString(1));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return pubDnsNames;
+    
     }
 
     public static String getSeedIpForNewNode(){
