@@ -54,7 +54,7 @@ public class ResourceOptimizer {
             int[][] S2_Q = new int[][]{{300, 400, 700, 900, 5000, 5000}, {300, 400, 700, 900, 5000, 5000}, {200, 400, 700, 800, 850, 900}};
             int[][] S3_Q = new int[][]{{15, 17, 20, 25, 51, 5000, 5000}, {15, 16, 18, 25, 35, 5000, 5000}, {15, 15, 16, 17, 20, 25, 40}};
             float[] price = new float[]{0.0146F, 0.0292F, 0.0584F}; //on-demand t2.micro, t2.small and t2.medium price in USD/hr
-            int delta_A = 100; //based on minimum latency required in layer 2
+            int delta_A = 150; //100 old based on minimum latency required in layer 2
             int delta_B = 15; //based on minimum latency required in layer 3
             float total_cost = 0.0F;
             int aggQoS = delta_A + delta_B;

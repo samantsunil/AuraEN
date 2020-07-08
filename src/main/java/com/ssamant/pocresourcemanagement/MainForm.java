@@ -1859,7 +1859,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         if ("".equals(txtFieldFutureWorkload.getText().trim()) && "".equals(txtFieldE2eLatency.getText().trim())) {
             lblErrorMsgCompResAllocation.setText("Enter the values for predicted workload and end-to-end latency.");
         } else if (txtFieldCurrentWorkload.getText().trim().equals(txtFieldFutureWorkload.getText().trim())) {
-            lblErrorMsgCompResAllocation.setText("NO computation required for same value of current and future workload!");
+            lblErrorMsgCompResAllocation.setText("NO computation for resource allocation is required for same value of current and future workload!");
         } else {
             //call resource optimizer algorithm -
             Boolean foundAllocation;
@@ -1868,7 +1868,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             int currentWorkload = Integer.parseInt(txtFieldCurrentWorkload.getText().trim());
             int futureWorkload = Integer.parseInt(txtFieldFutureWorkload.getText().trim());
             int deltaWorkload;
-            //String currentDIR = ConfigureIngestionLayer.getCurrentDataIngestionRate();
+            
             if (currentWorkload > 0) {
                 //txtFieldCurrentWorkload.setText(currentDIR);
                 //currentWorkload = Integer.parseInt(currentDIR);
@@ -2364,7 +2364,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             txtAreaIngestionResources.append("Please allocate resources through Ingestion Layer module for initial deployment of service.\n");
             txtAreaProcessingResources.append("Please allocate resources through Processing Layer module for initial deployment of service.\n");
             txtAreaStorageResources.append("Please allocate resources through Storage Layer module for initial deployment of service.\n");
-            btnScaleDppResources.setEnabled(false);
+            
+            btnScaleDppResources.setEnabled(false); 
+            ConfigureIngestionLayer.updateCurrentWorkload(txtFieldFutureWorkload.getText().trim());
         } else {
             int currInstanceCountIngestion = DatabaseConnection.getCurrentInstanceCount("ingestion");
             String currInstanceTypeIngestion = DatabaseConnection.getCurrentInstanceType("ingestion");
@@ -2480,6 +2482,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         + " for storage service using above set of resources, update the storage cluster info in the processing layer then restart the service before restarting the processing service.\n");
                 
             }
+            ConfigureIngestionLayer.updateCurrentWorkload(txtFieldFutureWorkload.getText().trim());
         }
         
 

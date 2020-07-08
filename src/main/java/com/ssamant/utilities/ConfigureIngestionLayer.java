@@ -538,49 +538,27 @@ public class ConfigureIngestionLayer {
         }
         return dataIngestionRate;
     }
-
-    public static void loadFromFileKafkaClusterDetails(boolean isDPP) {
-
-        String fileName = "C:\\Code\\KafkaClusterDetails.txt";
-        if (!isDPP) {
-            txtAreaClusterInfo.setText("");
-            try {
-                if (new File("C:\\Code\\KafkaClusterDetails.txt").exists()) {
-                    FileReader file = new FileReader(fileName);
-                    try (BufferedReader rdr = new BufferedReader(file)) {
-                        String aLine;
-                        while ((aLine = rdr.readLine()) != null) {
-                            txtAreaClusterInfo.append(aLine);
-                            txtAreaClusterInfo.append("\n");
-                        }
-                    }
-                } else {
-                    System.out.println("File does not exist. No existing cluster info present.");
+    public static void updateCurrentWorkload(String workload){
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
             }
-        } else {
-            txtAreaIngestionDetails.setText("");
-            try {
-                if (new File("C:\\Code\\KafkaClusterDetails.txt").exists()) {
-                    FileReader file = new FileReader(fileName);
-                    try (BufferedReader rdr = new BufferedReader(file)) {
-                        String aLine;
-                        while ((aLine = rdr.readLine()) != null) {
-                            txtAreaIngestionDetails.append(aLine);
-                            txtAreaIngestionDetails.append("\n");
-                        }
-                    }
-                } else {
-                    System.out.println("File does not exist. No existing cluster info present.");
-                }
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
+            String query = "UPDATE ingestion_cluster_info SET data_ingestion_rate = ? WHERE cluster_id = ?";
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, workload);
+                update.setInt(2, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+                update.close();
             }
-        }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }
-
+    
     /**
      * This function configures the server.properties for new kafka broker and
      * starts the server [assumes that zookeeper server is up and running]
