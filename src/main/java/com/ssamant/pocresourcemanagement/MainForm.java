@@ -33,6 +33,7 @@ import com.ssamant.utilities.UsageGuideForm;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import static java.lang.Thread.sleep;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -2010,7 +2011,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         lblBuildClusterstatus.setText("Start creating resources for Cassandra cluster...");
         if ((comboBoxNoSQLDb.getSelectedIndex() != 0) && (comboBoxNoNodes.getSelectedIndex() != 0) && (comboBoxDbInstType.getSelectedIndex() != 0)) {
             try {
-                ConfigureStorageLayer.buildNoSqlStorageCluster(Integer.parseInt(String.valueOf(comboBoxNoNodes.getSelectedItem())), String.valueOf(comboBoxDbInstType.getSelectedItem()));
+                ConfigureStorageLayer.buildNoSqlStorageCluster(Integer.parseInt(String.valueOf(comboBoxNoNodes.getSelectedItem())), String.valueOf(comboBoxDbInstType.getSelectedItem()),false);
             } catch (SQLException ex) {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -2386,6 +2387,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                             instanceIds.forEach((instanceId) -> {
                                 try {
                                     ConfigureIngestionLayer.stopKafkaBrokerNode(instanceId, false);
+                                    sleep(10000);
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -2417,10 +2419,14 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         List<String> instanceIds = ConfigureProcessingLayer.getWorkerInstanceIds(String.valueOf(ResourceOptimizer.dppResourcesCount[1]));
                         if (instanceIds.size() > 0) {
                             instanceIds.forEach((instanceId) -> {
-                                ConfigureProcessingLayer.stopSparkNode(instanceId, false);
+                                try {
+                                    ConfigureProcessingLayer.stopSparkNode(instanceId, false);
+                                    sleep(10000);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             });
-                        }
-                        
+                        }                        
                     }
                 }
             } else {
@@ -2433,14 +2439,24 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             String currInstanceTypeStorage = DatabaseConnection.getCurrentInstanceType("storage");
             if (currInstanceTypeStorage.equalsIgnoreCase(ResourceOptimizer.dppInstanceType[2])) {
                 if ((currentInstanceCountStorage == ResourceOptimizer.dppResourcesCount[2]) && !isDeltaScaleStrategy) {
-                    txtAreaProcessingResources.append("Current resource allocation for storage layer remains same for the future predicted workload.");
+                    txtAreaStorageResources.append("Current resource allocation for storage layer remains same for the future predicted workload.");
                 }
                 if (isDeltaScaleStrategy) {
                     if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) < Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
                         //scale-out 
+                        txtAreaStorageResources.append("Scaling-out resources for storage layer...\n");
+                        try {
+                            ConfigureStorageLayer.buildNoSqlStorageCluster(ResourceOptimizer.dppResourcesCount[2], ResourceOptimizer.dppInstanceType[2], true);
+                            
+                        } catch (SQLException ex) {
+                            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                        
                     }
                     if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) > Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
                         //scale-in
+                        
                     }
                 }
             } else {

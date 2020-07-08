@@ -303,6 +303,8 @@ public class ConfigureStorageLayer {
             session.connect(60000);
             String command = "";
             if (isNewNode && !"".equals(seedIp)) {
+                updateNodeTypeStatus(InstanceId);
+                sleep(10000);
                 command = "sudo service cassandra stop;sudo bash clearCassandraLogs.sh;sudo bash configureCassandraNewNode.sh " + seedIp;
             } else {
                 command = "sudo service cassandra stop;sudo bash configureCassandraNode.sh;sudo bash clearCassandraLogs.sh";
@@ -349,7 +351,25 @@ public class ConfigureStorageLayer {
         }
         return hostId;
     }
-
+public static void updateNodeTypeStatus(String instanceId) {
+           try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE storage_nodes_info SET node_type = ? WHERE instance_id = ?";
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, "non-seed");
+                update.setString(2, instanceId);
+                update.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+}
     public static void updateCassandraNodeHostId(String hostId, String instanceId) {
         try {
             if (DatabaseConnection.con == null) {
@@ -370,22 +390,22 @@ public class ConfigureStorageLayer {
         }
     }
 
-    public static void buildNoSqlStorageCluster(int noOfNodes, String instanceType) throws SQLException {
+    public static void buildNoSqlStorageCluster(int noOfNodes, String instanceType, Boolean dppScaling) throws SQLException {
         MainForm.btnBuildStorageCluster.setEnabled(false);
         String amiId=null;
         amiId = DatabaseConnection.getServiceAmi("cassandra");
         if("".equals(amiId) || amiId ==null){
-            amiId = "ami-08743c551f55bbdbd";
+            return;
         }
          
         AmazonEC2 ec2Client = CloudLogin.getEC2Client();
-        createEC2Instances(ec2Client, amiId, instanceType, noOfNodes);
+        createEC2Instances(ec2Client, amiId, instanceType, noOfNodes, dppScaling);
         MainForm.btnBuildStorageCluster.setEnabled(true);
         MainForm.progressBarStorage.setIndeterminate(false);
         MainForm.progressBarStorage.setValue(100);
     }
 
-    public static void createEC2Instances(AmazonEC2 ec2Client, String amiId, String instanceType, int noOfNodes) {
+    public static void createEC2Instances(AmazonEC2 ec2Client, String amiId, String instanceType, int noOfNodes, Boolean dppScaling) {
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                 .withInstanceType(instanceType) //free -tier instance type used
@@ -417,7 +437,7 @@ public class ConfigureStorageLayer {
                         .withResources(inst.getInstanceId())
                         .withTags(tag);
                 CreateTagsResult tag_response = ec2Client.createTags(createTagsRequest);
-                startEC2Instance(ec2Client, inst, inst.getPlacement());
+                startEC2Instance(ec2Client, inst, inst.getPlacement(), dppScaling);
                 i++;
             } catch (InterruptedException | SQLException ex) {
                 Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
@@ -427,7 +447,7 @@ public class ConfigureStorageLayer {
 
     }
 
-    public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az) throws InterruptedException, SQLException {
+    public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, Boolean dppScaling) throws InterruptedException, SQLException {
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
         Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
@@ -438,13 +458,105 @@ public class ConfigureStorageLayer {
             MainForm.txtAreaCassandraResourcesInfo.append("---------------------------------------------------------------\n");
             //data.writeToFile("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: " + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName()
             //        + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
-            dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getState().getName(), "");
+            dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getState().getName(), "", dppScaling);
             updateStorageClusterAddNodeInfo(curInstance.getInstanceType());
+            if(dppScaling){
+                configureNoSqlNonSeedNode(curInstance.getPublicDnsName(), curInstance.getInstanceId());
+            }
         } else {
             System.out.println("Instances are not running.");
         }
     }
+    public static void configureNoSqlNonSeedNode(String pubDns, String instanceId){
+        JSch jschClient = new JSch();
+        String seedIp = getSeedIpForNewNode();
+        String hostId = "";
+        //String seedIp = "172.31.34.236";
+        try {
+            jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
+            JSch.setConfig("StrictHostKeyChecking", "no");
+            Session session = jschClient.getSession("ubuntu", pubDns, 22);
+            session.connect(60000);
+            
+            String command = "sudo service cassandra stop;sudo bash clearCassandraLogs.sh;sudo bash configureCassandraNewNode.sh " + seedIp;
+             
+            ChannelExec channel = (ChannelExec) session.openChannel("exec");
+            channel.setCommand(command);
+            channel.setErrStream(System.err);
+            channel.connect(60000);
+            try {
+                readInputStreamFromSshSession(channel);
+            } catch (IOException ex) {
+                Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            sleep(5000);
+            String command1 = "sudo bash restartCassandra.sh"; //command to start new cassandra node
+            ChannelExec channel1 = (ChannelExec) session.openChannel("exec");
+            channel1.setCommand(command1);
+            channel1.setErrStream(System.err);
+            channel1.connect(60000);
+            try {
+                readInputStreamFromSshSession(channel1);
+            } catch (IOException ex) {
+                Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            sleep(5000);
+            String command3 = "sudo bash returnNodeHostId.sh"; 
+            ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
+            channel3.setCommand(command3);
+            channel3.setErrStream(System.err);
+            channel3.connect(60000);
+            try {
+                hostId = readInputStreamFromSshSession(channel3);
+            } catch (IOException ex) {
+                Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            sleep(5000);
+            session.disconnect();
+        } catch (JSchException ex) {
+            System.out.println(ex.getMessage());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (!"".equals(hostId)) {
+            updateCassandraNodeHostId(hostId, instanceId);
+        }
+        
+    }
 
+    public static String getSeedIpForNewNode(){
+        String cassandraSeeds = null;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT private_ip FROM dpp_resources.storage_nodes_info WHERE status = ? AND node_type = ?";
+            try (PreparedStatement st = DatabaseConnection.con.prepareStatement(query)) {
+                st.setString(1, "running");
+                st.setString(2, "seed");
+                ResultSet rs = st.executeQuery();
+                int i = 0;
+                while (rs.next()) {
+
+                    String cassSeedIp = rs.getString(1);
+                    if (i == 0) {
+                        cassandraSeeds = cassSeedIp;
+                    } else {
+                        cassandraSeeds = cassandraSeeds + "," + cassSeedIp;
+                    }
+                    i++;
+                }
+                st.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return cassandraSeeds;
+    }
     public static void updateStorageClusterAddNodeInfo(String instanceType) {
         int i = 1;
         try {
@@ -458,7 +570,7 @@ public class ConfigureStorageLayer {
             String query = "UPDATE storage_cluster_info SET no_of_nodes = no_of_nodes + ?, instance_types = CONCAT(instance_types, ?) WHERE cluster_id = ?";
             try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
                 update.setInt(1, i);
-                update.setString(2, "1X" + instanceType + ",");
+                update.setString(2, "1X" + instanceType + "");
                 update.setInt(3, 100); //clusterId= 100 fixed
                 update.executeUpdate();
                 update.close();
@@ -468,9 +580,16 @@ public class ConfigureStorageLayer {
         }
     }
 
-    public static void dbInsertInstanceInfo(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status, String nodeHostId) throws SQLException {
-        String query = "INSERT INTO storage_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status, node_hostId)"
-                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public static void dbInsertInstanceInfo(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status, String nodeHostId, Boolean dppScaling) throws SQLException {
+        String node_type = null;
+        if(dppScaling){
+            node_type = "non-seed";
+        }
+        else {
+           node_type = "seed"; 
+        }
+        String query = "INSERT INTO storage_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status, node_hostId, node_type)"
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement preparedStmt = DatabaseConnection.con.prepareStatement(query)) {
             preparedStmt.setString(1, instanceId);
             preparedStmt.setString(2, instanceType);
@@ -480,6 +599,7 @@ public class ConfigureStorageLayer {
             preparedStmt.setString(6, privateIp);
             preparedStmt.setString(7, status);
             preparedStmt.setString(8, nodeHostId);
+            preparedStmt.setString(9, node_type);
             preparedStmt.execute();
             preparedStmt.close();
         }
