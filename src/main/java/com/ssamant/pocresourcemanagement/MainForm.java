@@ -2398,8 +2398,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     }
                 }
             } else {
-                txtAreaIngestionResources.append("The instance type differs from currently allocated resource type therefore existing resources has to be replaced with new set of resources.\n");
-                txtAreaIngestionResources.append("This needs temporary stopping of ingestion service as well as processing service to reflect changes due to new resource cluster.\n");
+                txtAreaIngestionResources.append("The instance type may differ from the currently allocated instance type if that is the case then existing resources has to be replaced with new set of resources.\n");
+                txtAreaIngestionResources.append("This incurs a short interval stopping of ingestion service as well as processing service to reflect changes due to new resource cluster.\n");
             }
             int currInstanceCountProcessing = DatabaseConnection.getCurrentInstanceCount("processing");
             String currInstanceTypeProcessing = DatabaseConnection.getCurrentInstanceType("processing");
