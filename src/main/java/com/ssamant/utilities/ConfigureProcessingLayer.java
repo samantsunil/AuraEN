@@ -179,8 +179,11 @@ public class ConfigureProcessingLayer {
         }
         int i = 1;
         int noOfWorkers = DatabaseConnection.getCurrentInstanceCount("processing");
-        if (noOfWorkers > 0) {
-            i = noOfWorkers;
+        if (noOfWorkers == 0) {
+            i = 1;
+        }
+        if(noOfWorkers>0){
+            i = noOfWorkers +1;
         }
         for (Instance inst : runResponse.getReservation().getInstances()) {
             System.out.println("EC2 Instance Id: " + inst.getInstanceId());

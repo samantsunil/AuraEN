@@ -428,6 +428,13 @@ public static void updateNodeTypeStatus(String instanceId) {
             }
         }
         int i = 1;
+        int nodeCount = DatabaseConnection.getCurrentInstanceCount("storage");
+        if(nodeCount==0){
+            i=1;
+        }
+        if(nodeCount>0){
+            i = nodeCount +1;
+        }
         for (Instance inst : runResponse.getReservation().getInstances()) {
             try {
                 System.out.println("EC2 Instance Id: " + inst.getInstanceId());

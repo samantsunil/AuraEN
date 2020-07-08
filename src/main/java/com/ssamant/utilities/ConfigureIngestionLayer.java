@@ -119,6 +119,7 @@ public class ConfigureIngestionLayer {
             }
             if (curInstance != null) {
                 try {
+                    sleep(6000);
                     dbUpdateZkServerInfo(curInstance.getPublicDnsName());
                     sleep(10000);
                     startZookeeperServer(curInstance.getPublicDnsName());
@@ -159,8 +160,8 @@ public class ConfigureIngestionLayer {
             }
         }
         int i = 1;
-        int latestBrokerId=getLatestBrokerId();
-        if(latestBrokerId>0){
+        int latestBrokerId=getLatestBrokerId();        
+        if(latestBrokerId>=0){
             i=latestBrokerId+2;
         }
         for (Instance inst : runResponse.getReservation().getInstances()) {
@@ -199,7 +200,10 @@ public class ConfigureIngestionLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
         Collections.sort(brokerIds);
-        return brokerIds.get(brokerIds.size()-1);
+        if(!brokerIds.isEmpty()){
+        return brokerIds.get(brokerIds.size()-1);}
+        else
+            return -1;
    }
     public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, int brokerId) throws InterruptedException {
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
@@ -208,7 +212,7 @@ public class ConfigureIngestionLayer {
         if (curInstance != null) {
             System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
             txtAreaClusterInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP:" + curInstance.getPublicIpAddress()
-                    + ", InstanceStatus: " + curInstance.getState().getName() + ", BrokerId: " + brokerId + ".\n");
+                    + ", InstanceStatus: " + curInstance.getState().getName() + ", BrokerId: " + (brokerId-1) + ".\n");
             txtAreaClusterInfo.append("-------------------------------------------------------------------------------------------------------\n");
             try {
                 dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName(), brokerId);
