@@ -298,6 +298,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         lblStartedInstance.setForeground(new java.awt.Color(51, 153, 0));
         lblStartedInstance.setToolTipText("");
 
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 153)));
+
         btnBuildIngestionCluster.setText("Build Cluster");
         btnBuildIngestionCluster.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -373,6 +375,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel13.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 0, 102)));
+
         jLabel19.setText("Service:");
 
         jLabel21.setText("Instance Type:");
@@ -387,6 +391,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 btnBuildZkServerActionPerformed(evt);
             }
         });
+
+        jPanel14.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 102, 102)));
 
         txtFieldPartitions.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -418,7 +424,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtFieldPartitions, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtFieldReplication, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnStartKafkaCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -457,8 +463,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addComponent(comboBoxZkInstType, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtFieldInstId, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -503,6 +508,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        jPanel16.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 0, 102)));
 
         jLabel16.setText("Instance Id:");
 
@@ -567,7 +574,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addComponent(btnLoadIngestionClusterInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnClearIngestionFormData, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
         jPanel16Layout.setVerticalGroup(
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -614,7 +621,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addContainerGap()
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(89, 89, 89)
                         .addComponent(filler3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -677,6 +684,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         txtAreaSparkResourcesInfo.setRows(5);
         jScrollPane9.setViewportView(txtAreaSparkResourcesInfo);
 
+        jPanel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel8.setPreferredSize(new java.awt.Dimension(1000, 91));
+
         jLabel5.setText("Instance Id:");
 
         btnStopInstanceProc.setText("Stop");
@@ -728,8 +738,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(chkBoxMasterNode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtFieldStartRestartInstId, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
+                            .addComponent(chkBoxMasterNode, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                            .addComponent(txtFieldStartRestartInstId))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnStopInstanceProc, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -744,7 +754,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                                 .addGap(155, 155, 155)
                                 .addComponent(btnDeleteCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(8, 8, 8)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(142, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -768,6 +778,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addComponent(chkBoxMasterNode)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jPanel9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 0, 0)));
 
         jLabel28.setText("Instance Id:");
 
@@ -828,6 +840,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addContainerGap(34, Short.MAX_VALUE))
         );
 
+        jPanel10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel10.setName(""); // NOI18N
 
         btnBuildProcessingCluster.setText("Build Cluster");
@@ -899,9 +912,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                                 .addGap(10, 10, 10)
                                 .addComponent(btnBuildProcessingCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(comboBoxClusterType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(comboBoxClusterType, 0, 204, Short.MAX_VALUE)
                                 .addComponent(comboBoxNoSparkNodes, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(comboBoxSparkInstType, javax.swing.GroupLayout.Alignment.LEADING, 0, 204, Short.MAX_VALUE)
+                                .addComponent(comboBoxSparkInstType, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(comboBoxProcFrameworks, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel10Layout.createSequentialGroup()
@@ -914,9 +927,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(comboBoxMasterNodeInstType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCreateMasterNode, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                    .addComponent(btnCreateMasterNode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtFieldMasterNodeDns, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnSparkSubmitApp, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE))
+                    .addComponent(btnSparkSubmitApp, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
@@ -1017,17 +1030,16 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             .addGroup(panProcessingLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(panProcessingLayout.createSequentialGroup()
-                            .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(272, 272, 272))
-                        .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 1092, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panProcessingLayout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 1092, Short.MAX_VALUE)
                         .addComponent(progressBarProcessing, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         panProcessingLayout.setVerticalGroup(
             panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1041,9 +1053,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addComponent(progressBarProcessing, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(4, 4, 4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(402, 402, 402))
+                .addGap(395, 395, 395))
         );
 
         dppLayersTab.addTab("Processing Layer", panProcessing);
@@ -1070,6 +1082,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         txtAreaCassandraResourcesInfo.setColumns(20);
         txtAreaCassandraResourcesInfo.setRows(5);
         jScrollPane8.setViewportView(txtAreaCassandraResourcesInfo);
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 0, 51)));
 
         jLabel23.setText("DNS Name:");
 
@@ -1139,6 +1153,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 204)));
+
         btnClearAllStorage.setText("Clear All");
         btnClearAllStorage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1192,6 +1208,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         );
 
         lblBuildClusterstatus.setText(":");
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 0, 102)));
 
         jLabel22.setText("Instance Id:");
 
@@ -1306,7 +1324,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addComponent(lblBuildClusterstatus)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panStorageLayout.createSequentialGroup()
-                        .addContainerGap(22, Short.MAX_VALUE)
+                        .addContainerGap(21, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)))
                 .addComponent(progressBarStorage, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1316,7 +1334,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addGroup(panStorageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         dppLayersTab.addTab("Storage Layer", panStorage);
@@ -1373,6 +1391,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         txtAreaProcessingDetails.setEnabled(false);
         jScrollPane4.setViewportView(txtAreaProcessingDetails);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 0, 51)));
+
         jLabel11.setText("Future Workload [DIR]:");
 
         btnScaleIngestionCluster.setText("Compute Resource Allocation");
@@ -1399,35 +1419,31 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 120, Short.MAX_VALUE)
-                        .addComponent(btnScaleIngestionCluster)
-                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnScaleIngestionCluster))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtFieldCurrentWorkload, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtFieldFutureWorkload, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtFieldE2eLatency, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
-                                        .addComponent(comboBoxScalingStrategy, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(11, 11, 11))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(26, 26, 26)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtFieldCurrentWorkload)
+                            .addComponent(txtFieldFutureWorkload)
+                            .addComponent(comboBoxScalingStrategy, 0, 177, Short.MAX_VALUE)
+                            .addComponent(txtFieldE2eLatency))))
+                .addGap(14, 14, 14))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(16, 16, 16)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel27)
                     .addComponent(txtFieldCurrentWorkload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1447,6 +1463,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addComponent(btnScaleIngestionCluster)
                 .addContainerGap())
         );
+
+        jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
         jLabel13.setText("Ingestion Layer Resources:");
 
@@ -1475,24 +1493,27 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(13, 13, 13)
-                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(13, 13, 13)
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
                     .addComponent(jScrollPane5)
-                    .addComponent(jScrollPane7)
-                    .addComponent(jScrollPane6))
+                    .addComponent(jScrollPane7))
                 .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(284, 284, 284)
                 .addComponent(btnScaleDppResources, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1511,7 +1532,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addGap(73, 73, 73)
                         .addComponent(jLabel15)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1542,17 +1563,21 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addContainerGap()
                 .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panDPPLayersLayout.createSequentialGroup()
+                        .addGap(122, 122, 122)
+                        .addComponent(lblErrorMsgCompResAllocation, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panDPPLayersLayout.createSequentialGroup()
                         .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnIngestion, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnClearAllDppLayers, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblE2eQoS, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblTotalCost, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblTotalCost, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panDPPLayersLayout.createSequentialGroup()
                                 .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(panDPPLayersLayout.createSequentialGroup()
-                                        .addGap(31, 31, 31)
+                                        .addGap(13, 13, 13)
                                         .addComponent(btnProcessing, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(panDPPLayersLayout.createSequentialGroup()
                                         .addGap(18, 18, 18)
@@ -1563,14 +1588,10 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panDPPLayersLayout.createSequentialGroup()
                                         .addComponent(btnStorage, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(38, 38, 38))))
-                            .addGroup(panDPPLayersLayout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panDPPLayersLayout.createSequentialGroup()
                                 .addGap(18, 18, 18)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panDPPLayersLayout.createSequentialGroup()
-                        .addGap(122, 122, 122)
-                        .addComponent(lblErrorMsgCompResAllocation, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(21, Short.MAX_VALUE))
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 738, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         panDPPLayersLayout.setVerticalGroup(
             panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1600,7 +1621,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addComponent(lblE2eQoS)
                         .addGap(28, 28, 28)))
                 .addComponent(lblErrorMsgCompResAllocation, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         dppLayersTab.addTab("DPP Resource Allocation Details & Scaling ", panDPPLayers);
@@ -1650,32 +1671,27 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         panQoSProfileLayout.setHorizontalGroup(
             panQoSProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panQoSProfileLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 665, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
-                .addGroup(panQoSProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnViewQoSProfile, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
-                    .addComponent(btnUpdateQoSProfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(panQoSProfileLayout.createSequentialGroup()
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 958, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 163, Short.MAX_VALUE))
+                .addGroup(panQoSProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 1111, Short.MAX_VALUE)
+                    .addGroup(panQoSProfileLayout.createSequentialGroup()
+                        .addComponent(btnViewQoSProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnUpdateQoSProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane11, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
         panQoSProfileLayout.setVerticalGroup(
             panQoSProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panQoSProfileLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(11, 11, 11)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panQoSProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panQoSProfileLayout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(btnViewQoSProfile)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnUpdateQoSProfile))
-                    .addGroup(panQoSProfileLayout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(141, Short.MAX_VALUE))
+                    .addComponent(btnViewQoSProfile)
+                    .addComponent(btnUpdateQoSProfile))
+                .addContainerGap(107, Short.MAX_VALUE))
         );
 
         dppLayersTab.addTab("View QoS Profile", panQoSProfile);
@@ -2181,28 +2197,28 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             txtAreaProcessingDetails.setText("Current Allocation:");
             txtAreaProcessingDetails.append("\n");
             txtAreaProcessingDetails.append("-----------------------------\n");
-            ResultSet rs = ConfigureProcessingLayer.loadCurrentSparkClusterInfo();
-            while (rs.next()) {
-                int clusterID = rs.getInt("cluster_id");
-                int noOfNodes = rs.getInt("no_of_nodes");
-                String instanceTypes = rs.getString("instance_types");
-                String masterNodeId = rs.getString("master_instance_id");
-                String masterNodeDns = rs.getString("master_public_dnsname");
-                String masterNodeIp = rs.getString("master_public_ip");
-                String masterNodePrivIp = rs.getString("master_private_ip");
-                int throughput = rs.getInt("throughput");
-                int latency = rs.getInt("latency");
-                int batchInterval = rs.getInt("batch_interval");
-
-                //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
-                txtAreaProcessingDetails.append("NoOfNodes: " + Integer.toString(noOfNodes) + ".\n");
-                txtAreaProcessingDetails.append("Cluster Resources: " + instanceTypes + ".\n");
-                txtAreaProcessingDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
-                txtAreaProcessingDetails.append("Latency: " + Integer.toString(latency) + ".\n");
-                txtAreaProcessingDetails.append("Batch Interval: " + Integer.toString(batchInterval) + ".\n");
-                txtAreaProcessingDetails.append("----------------------------------------------------------\n");
+            try (ResultSet rs = ConfigureProcessingLayer.loadCurrentSparkClusterInfo()) {
+                while (rs.next()) {
+                    int clusterID = rs.getInt("cluster_id");
+                    int noOfNodes = rs.getInt("no_of_nodes");
+                    String instanceTypes = rs.getString("instance_types");
+                    String masterNodeId = rs.getString("master_instance_id");
+                    String masterNodeDns = rs.getString("master_public_dnsname");
+                    String masterNodeIp = rs.getString("master_public_ip");
+                    String masterNodePrivIp = rs.getString("master_private_ip");
+                    int throughput = rs.getInt("throughput");
+                    int latency = rs.getInt("latency");
+                    int batchInterval = rs.getInt("batch_interval");
+                    
+                    //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
+                    txtAreaProcessingDetails.append("NoOfNodes: " + Integer.toString(noOfNodes) + ".\n");
+                    txtAreaProcessingDetails.append("Cluster Resources: " + instanceTypes + ".\n");
+                    txtAreaProcessingDetails.append("Throughput: " + Integer.toString(throughput) + ".\n");
+                    txtAreaProcessingDetails.append("Latency: " + Integer.toString(latency) + ".\n");
+                    txtAreaProcessingDetails.append("Batch Interval: " + Integer.toString(batchInterval) + ".\n");
+                    txtAreaProcessingDetails.append("----------------------------------------------------------\n");
+                }
             }
-            rs.close();
 
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -2223,7 +2239,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     String instanceTypes = rs.getString("instance_types");
                     int throughput = rs.getInt("throughput");
                     int latency = rs.getInt("latency");
-
                     //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, status, brokerId);
                     txtAreaStorageDetails.append("No Of Nodes: " + Integer.toString(noOfNodes) + ".\n");
                     txtAreaStorageDetails.append("Cluster Resources: " + instanceTypes + ".\n");
