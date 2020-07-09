@@ -79,12 +79,12 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     }
     public static Boolean isInitialDeployment = true;
     public static Boolean isDeltaScaleStrategy = false;
-    
+
     private void setWindowSize() {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
-    
+
     private void setCurrentWorkload() {
         String currWorkload = ConfigureIngestionLayer.getCurrentDataIngestionRate();
         if (currWorkload == null || "".equals(currWorkload)) {
@@ -93,7 +93,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             txtFieldCurrentWorkload.setText(currWorkload);
         }
     }
-    
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("progress".equals(evt.getPropertyName())) {
@@ -1796,7 +1796,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 progressBarIngestion.setValue(100);
             }
         } else {
-            
+
         }
     }//GEN-LAST:event_btnBuildIngestionClusterActionPerformed
     /**
@@ -1855,7 +1855,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
      * @param evt
      */
     private void btnComputeDPPResAllocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComputeDPPResAllocationActionPerformed
-        
+
         if ("".equals(txtFieldFutureWorkload.getText().trim()) && "".equals(txtFieldE2eLatency.getText().trim())) {
             lblErrorMsgCompResAllocation.setText("Enter the values for predicted workload and end-to-end latency.");
         } else if (txtFieldCurrentWorkload.getText().trim().equals(txtFieldFutureWorkload.getText().trim())) {
@@ -1868,7 +1868,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             int currentWorkload = Integer.parseInt(txtFieldCurrentWorkload.getText().trim());
             int futureWorkload = Integer.parseInt(txtFieldFutureWorkload.getText().trim());
             int deltaWorkload;
-            
+
             if (currentWorkload > 0) {
                 //txtFieldCurrentWorkload.setText(currentDIR);
                 //currentWorkload = Integer.parseInt(currentDIR);
@@ -1902,12 +1902,12 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     txtAreaProcessingResources.setText("---No resource allocation found using the candidate resources---");
                     txtAreaStorageResources.setText("---No resource allocation found using the candidate resources---");
                     btnScaleDppResources.setEnabled(false);
-                    
+
                 }
             }
         }
     }//GEN-LAST:event_btnComputeDPPResAllocationActionPerformed
-    
+
     public void computeE2eDppResourceAllocation() {
         //call external api to compute e2e resource allocation based on future workload, current workload and e2e latency.
     }
@@ -1920,7 +1920,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         Boolean isZookeeperNode = chkBoxZookeeperNode.isSelected();
         try {
             ConfigureIngestionLayer.stopKafkaBrokerNode(txtFieldInstanceId.getText().trim(), isZookeeperNode);
-            
+
         } catch (InterruptedException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1965,7 +1965,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
      * @param evt
      */
     private void btnLoadIngestionClusterInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadIngestionClusterInfoActionPerformed
-        
+
         try {
             txtAreaClusterInfo.setText("");
             txtAreaClusterInfo.append("");
@@ -1989,7 +1989,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     }//GEN-LAST:event_btnLoadIngestionClusterInfoActionPerformed
 
     private void btnBuildProcessingClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuildProcessingClusterActionPerformed
-        
+
         lblBuildProcessingCluster.setText("Start creating resources for Spark cluster...");
         btnBuildProcessingCluster.setEnabled(false);
         //function call to build spark cluster ... ConfigureProcessingLayer.createEc2Instances();
@@ -2011,7 +2011,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         lblBuildClusterstatus.setText("Start creating resources for Cassandra cluster...");
         if ((comboBoxNoSQLDb.getSelectedIndex() != 0) && (comboBoxNoNodes.getSelectedIndex() != 0) && (comboBoxDbInstType.getSelectedIndex() != 0)) {
             try {
-                ConfigureStorageLayer.buildNoSqlStorageCluster(Integer.parseInt(String.valueOf(comboBoxNoNodes.getSelectedItem())), String.valueOf(comboBoxDbInstType.getSelectedItem()),false);
+                ConfigureStorageLayer.buildNoSqlStorageCluster(Integer.parseInt(String.valueOf(comboBoxNoNodes.getSelectedItem())), String.valueOf(comboBoxDbInstType.getSelectedItem()), false);
             } catch (SQLException ex) {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -2053,7 +2053,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 lblErrDnsName.setText("Please enter valid pubilc DNS name of the running instance.");
             }
         }
-        
+
 
     }//GEN-LAST:event_btnBuildZkServerActionPerformed
 
@@ -2082,7 +2082,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         // TODO add your handling code here:
         clearStorageLayerFields();
     }//GEN-LAST:event_btnClearAllStorageActionPerformed
-    
+
     private void clearStorageLayerFields() {
         txtFieldStorageInstId.setText("");
         lblBuildClusterstatus.setText(":");
@@ -2193,13 +2193,13 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status);
                     txtAreaSparkResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", Node type: " + nodeType + ".\n");
                     txtAreaSparkResourcesInfo.append("-----------------------------------------------------------------------\n");
-                    
+
                 }
             }
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
 
     }//GEN-LAST:event_btnLoadProcessingDetailsActionPerformed
 
@@ -2223,7 +2223,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         // TODO add your handling code here:
         if (!"".equals(txtFieldPartitions.getText().trim())) {
             ConfigureIngestionLayer.configureKafkaTopic(txtFieldPartitions.getText().trim());
-            
+
         }
     }//GEN-LAST:event_btnStartKafkaClusterActionPerformed
 
@@ -2256,7 +2256,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     txtAreaProcessingDetails.append("----------------------------------------------------------\n");
                 }
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2358,14 +2358,15 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
      *
      * @param evt
      */
+    @SuppressWarnings("SleepWhileInLoop")
     private void btnScaleDppResourcesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScaleDppResourcesActionPerformed
         // TODO add your handling code here:
         if (isInitialDeployment) {
             txtAreaIngestionResources.append("Please allocate resources through Ingestion Layer module for initial deployment of service.\n");
             txtAreaProcessingResources.append("Please allocate resources through Processing Layer module for initial deployment of service.\n");
             txtAreaStorageResources.append("Please allocate resources through Storage Layer module for initial deployment of service.\n");
-            
-            btnScaleDppResources.setEnabled(false); 
+
+            btnScaleDppResources.setEnabled(false);
             ConfigureIngestionLayer.updateCurrentWorkload(txtFieldFutureWorkload.getText().trim());
         } else {
             int currInstanceCountIngestion = DatabaseConnection.getCurrentInstanceCount("ingestion");
@@ -2376,66 +2377,85 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 }
                 if (isDeltaScaleStrategy) {
                     if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) < Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
-                        //scale-out 
+                        //scale-out        
+
                         txtAreaIngestionResources.append("\nScaling out resources for ingestion layer...\n");
                         ConfigureIngestionLayer.buildIngestionLayerCluster(ResourceOptimizer.dppResourcesCount[0], ResourceOptimizer.dppInstanceType[0]);
                         txtAreaIngestionResources.append("Resources scaled-out successfully for handling future workload.\n");
+
                     }
                     if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) > Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
                         //scale-in
-                        txtAreaIngestionResources.append("\nScaling in resources for ingestion layer...\n");
-                        List<String> instanceIds = ConfigureIngestionLayer.getBrokerInstanceIds(String.valueOf(ResourceOptimizer.dppResourcesCount[0]));
-                        if (instanceIds.size() > 0) {
-                            instanceIds.forEach((instanceId) -> {
-                                try {
-                                    ConfigureIngestionLayer.stopKafkaBrokerNode(instanceId, false);
-                                    sleep(10000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            });
+                        if (currInstanceCountIngestion == ResourceOptimizer.dppResourcesCount[0]) {
+                            txtAreaIngestionResources.append("No scale-in is required for future workload.\n");
+                        }
+                        if (currInstanceCountIngestion > ResourceOptimizer.dppResourcesCount[0]) {
+                            txtAreaIngestionResources.append("\nScaling in resources for ingestion layer...\n");
+                            List<String> instanceIds = ConfigureIngestionLayer.getBrokerInstanceIds(String.valueOf(ResourceOptimizer.dppResourcesCount[0]));
+                            if (instanceIds.size() > 0) {
+                                instanceIds.forEach((instanceId) -> {
+                                    try {
+                                        ConfigureIngestionLayer.stopKafkaBrokerNode(instanceId, false);
+                                        sleep(10000);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                        txtAreaIngestionResources.append("Failed to scale-in resources successfully...\n");
+                                    }
+                                });
+                            }
                         }
                     }
+
                 }
             } else {
-                txtAreaIngestionResources.append("The instance type may differ from the currently allocated instance type if that is the case then existing resources has to be replaced with new set of resources.\n");
-                txtAreaIngestionResources.append("This incurs a short interval stopping of ingestion service as well as processing service to reflect changes due to new resource cluster.\n");
+                txtAreaIngestionResources.append("The instance type needed for scaling is different than the currently allocated instance type, therefore scaling is require to perform from ingestion layer module.\n");
+                txtAreaIngestionResources.append("This incurs a disruption in ingestion service as well as processing service when workload is transferred to the new resource cluster.\n");
             }
             int currInstanceCountProcessing = DatabaseConnection.getCurrentInstanceCount("processing");
             String currInstanceTypeProcessing = DatabaseConnection.getCurrentInstanceType("processing");
             if (currInstanceTypeProcessing.equalsIgnoreCase(ResourceOptimizer.dppInstanceType[1])) {
                 if ((currInstanceCountProcessing == ResourceOptimizer.dppResourcesCount[1]) && !isDeltaScaleStrategy) {
-                    txtAreaProcessingResources.append("Current resource allocation for processing layer remains same for the future predicted workload.");
+                    txtAreaProcessingResources.append("Current resource allocation for processing layer can handle the future predicted workload.\n");
                 }
                 if (isDeltaScaleStrategy) {
                     if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) < Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
-                        //scale-out 
-                        txtAreaProcessingResources.append("Scaling out resources for the processing layer...\n");
-                        ConfigureProcessingLayer.buildProcessingLayerCluster(ResourceOptimizer.dppResourcesCount[1], ResourceOptimizer.dppInstanceType[1], "", "Multi-node", true);
-                        ConfigureProcessingLayer.submitJobToSparkCluster();
-                        txtAreaProcessingResources.append("Resources scaled-out successfully for handling future workload.\n");
+                        try {
+                            //scale-out
+                            txtAreaProcessingResources.append("Scaling out resources for the processing layer...\n");
+                            ConfigureProcessingLayer.buildProcessingLayerCluster(ResourceOptimizer.dppResourcesCount[1], ResourceOptimizer.dppInstanceType[1], "", "Multi-node", true);
+                            sleep(20000);
+                            ConfigureProcessingLayer.submitJobToSparkCluster();
+                            txtAreaProcessingResources.append("Resources scaled-out successfully for handling future workload.\n");
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                            txtAreaProcessingResources.append("Fail to scale out resources successfully.\n");
+                        }
                     }
                     if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) > Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
                         //scale-in
-                        txtAreaProcessingResources.append("Scaling in resources for processing layer...");
-                        List<String> instanceIds = ConfigureProcessingLayer.getWorkerInstanceIds(String.valueOf(ResourceOptimizer.dppResourcesCount[1]));
-                        if (instanceIds.size() > 0) {
-                            instanceIds.forEach((instanceId) -> {
-                                try {
-                                    ConfigureProcessingLayer.stopSparkNode(instanceId, false);
-                                    sleep(10000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            });
-                        }                        
+                        if (currInstanceCountProcessing == ResourceOptimizer.dppResourcesCount[1]) {
+                            txtAreaProcessingResources.append("No scale-in is required for future workload.\n");
+                        }
+                        if (currInstanceCountProcessing > ResourceOptimizer.dppResourcesCount[1]) {
+                            txtAreaProcessingResources.append("Scaling in resources for processing layer...\n");
+                            List<String> instanceIds = ConfigureProcessingLayer.getWorkerInstanceIds(String.valueOf(ResourceOptimizer.dppResourcesCount[1]));
+                            if (instanceIds.size() > 0) {
+                                instanceIds.forEach((instanceId) -> {
+                                    try {
+                                        ConfigureProcessingLayer.stopSparkNode(instanceId, false);
+                                        sleep(10000);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                        txtAreaProcessingResources.append("Faile to Scale-in resources for processing layer...\n");
+                                    }
+                                });
+                            }
+                        }
                     }
                 }
             } else {
-                txtAreaProcessingResources.append("The instance type differs from currently allocated resource type therefore existing resources has to be replaced with new set of resources.\n");
-                txtAreaProcessingResources.append("This needs temporary stopping of processing service to restart the service in a new resource cluster.\n");
-                txtAreaProcessingResources.append("Please go to processing layer module, stop the service, delete current resource cluster"
-                        + ", build new cluster with above set of resources and submit job to the cluster\n");
+                txtAreaProcessingResources.append("The required instance type for scaling is different than the currently allocated instance type therefore scaling should be performed from processing layer module.\n");
+                txtAreaProcessingResources.append("This incurs temporary disruption in processing layer service due to transfer of workload to the newly build cluster.\n");
             }
             int currentInstanceCountStorage = DatabaseConnection.getCurrentInstanceCount("storage");
             String currInstanceTypeStorage = DatabaseConnection.getCurrentInstanceType("storage");
@@ -2449,42 +2469,48 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         txtAreaStorageResources.append("Scaling-out resources for storage layer...\n");
                         try {
                             ConfigureStorageLayer.buildNoSqlStorageCluster(ResourceOptimizer.dppResourcesCount[2], ResourceOptimizer.dppInstanceType[2], true);
-                            txtAreaStorageResources.append("Resources scaled-out successfully for handling the future workload.\n");
+                            txtAreaStorageResources.append("Resources scaled-out successfully for the storage layer.\n");
                         } catch (SQLException ex) {
                             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                        }                       
-                        
+                            txtAreaStorageResources.append("Fail to scale-out resourcess successfully.\n");
+
+                        }
+
                     }
                     if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) > Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
                         //scale-in
-                        txtAreaStorageResources.append("Scaling in resources for storage cluster.\n");
-                        List<String> instanceIds = ConfigureStorageLayer.getNonSeedNodesInstanceIds(String.valueOf(ResourceOptimizer.dppResourcesCount[2]));
-                        List<String> dnsNames = ConfigureStorageLayer.getPubDnsName(String.valueOf(ResourceOptimizer.dppResourcesCount[2]));
-                        int i=0;
-                        if (instanceIds.size() > 0) {
-                         for(String instanceId: instanceIds){
-                                try {
-                                    ConfigureStorageLayer.stopInstanceStorageLayer(instanceId, dnsNames.get(i));                                    
-                                    sleep(5000);
-                                } catch (InterruptedException | IOException ex) {
-                                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                        if (currentInstanceCountStorage == ResourceOptimizer.dppResourcesCount[2]) {
+                            txtAreaStorageResources.append("No scale-in is required for the future workload.\n");
+                        }
+                        if (currentInstanceCountStorage > ResourceOptimizer.dppResourcesCount[2]) {
+                            txtAreaStorageResources.append("Scaling in resources for storage cluster.\n");
+                            List<String> instanceIds = ConfigureStorageLayer.getNonSeedNodesInstanceIds(String.valueOf(ResourceOptimizer.dppResourcesCount[2]));
+                            List<String> dnsNames = ConfigureStorageLayer.getPubDnsName(String.valueOf(ResourceOptimizer.dppResourcesCount[2]));
+                            int i = 0;
+                            if (instanceIds.size() > 0) {
+                                for (String instanceId : instanceIds) {
+                                    try {
+                                        ConfigureStorageLayer.stopInstanceStorageLayer(instanceId, dnsNames.get(i));
+                                        sleep(10000);
+                                    } catch (InterruptedException | IOException ex) {
+                                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                        txtAreaStorageResources.append("Fail to scale-in resources for storage layer..\n");
+                                    }
+                                    i++;
                                 }
-                                i++;
                             }
                         }
-                        
+
                     }
                 }
             } else {
-                txtAreaStorageResources.append("The instance type differs from currently allocated resource type therefore existing resources has to be replaced with new set of resources.\n");
-                txtAreaStorageResources.append("This needs temporary stopping of storage service as well as processing service to reflect changes due to new resource cluster.\n");
-                txtAreaStorageResources.append("Go to the processing layer module stop the service and then delete the current cluster in the Storage Layer module and build new resource cluster"
-                        + " for storage service using above set of resources, update the storage cluster info in the processing layer then restart the service before restarting the processing service.\n");
+                txtAreaStorageResources.append("The instance type required for scaling is different from the currently allocated instance type therefore scaling is performed from the storage layer module.\n");
+                txtAreaStorageResources.append("This incurs a disruption in the storage layer service as well as processing layer service while transferring workload to the new resource cluster.\n");
                 
             }
             ConfigureIngestionLayer.updateCurrentWorkload(txtFieldFutureWorkload.getText().trim());
         }
-        
+
 
     }//GEN-LAST:event_btnScaleDppResourcesActionPerformed
     public void clearDppLayerTabFields() {
@@ -2493,9 +2519,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         txtAreaStorageResources.setText("");
         lblErrorMsgCompResAllocation.setText("");
         btnScaleDppResources.setEnabled(false);
-        
+
     }
-    
+
     public void clearFormFieldsProcessingTab() {
         txtFieldStartRestartInstId.setText("");
         comboBoxProcFrameworks.setSelectedIndex(0);
@@ -2506,7 +2532,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         txtAreaSparkResourcesInfo.setText("");
         txtFieldInstanceIdConfigure.setText("");
         txtFieldDnsNameConfigure.setText("");
-        
+
         lblStopRestartStatus.setText("");
         lblBuildProcessingCluster.setText("");
         comboBoxNoSparkNodes.setEnabled(true);
