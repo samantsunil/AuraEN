@@ -347,8 +347,6 @@ public class ConfigureStorageLayer {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (!"".equals(hostId)) {
-           // WriteFile data = new WriteFile("C:\\Code\\CassandraClusterDetails.txt", true);
-            //data.writeToFile("InstanceID: " + InstanceId + ", HostID: " + hostId + ".");
             updateCassandraNodeHostId(hostId, InstanceId);
         }
         return hostId;
