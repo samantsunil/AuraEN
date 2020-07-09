@@ -795,8 +795,8 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jPanel8" min="-2" pref="1092" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
@@ -810,7 +810,7 @@
                               <Component id="progressBarProcessing" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="13" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -889,21 +889,20 @@
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="btnRestartInstanceProc" min="-2" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" attributes="0">
-                                          <EmptySpace min="-2" pref="91" max="-2" attributes="0"/>
-                                          <Component id="btnClearFieldsProcessing" min="-2" pref="182" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="btnLoadProcessingDetails" min="-2" pref="187" max="-2" attributes="0"/>
-                                      </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="155" max="-2" attributes="0"/>
                                           <Component id="btnDeleteCluster" min="-2" pref="210" max="-2" attributes="0"/>
                                       </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="-2" pref="91" max="-2" attributes="0"/>
+                                          <Component id="btnClearFieldsProcessing" min="-2" pref="182" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="btnLoadProcessingDetails" min="-2" pref="204" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
-                                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="142" max="32767" attributes="0"/>
+                          <EmptySpace pref="133" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -974,7 +973,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnLoadProcessingDetails">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Load Cluster Info"/>
+                    <Property name="text" type="java.lang.String" value="Load Current Cluster Details"/>
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLoadProcessingDetailsActionPerformed"/>
@@ -1159,8 +1158,8 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="comboBoxMasterNodeInstType" max="32767" attributes="0"/>
                               <Component id="btnCreateMasterNode" max="32767" attributes="0"/>
-                              <Component id="txtFieldMasterNodeDns" alignment="1" max="32767" attributes="0"/>
                               <Component id="btnSparkSubmitApp" alignment="0" pref="236" max="32767" attributes="0"/>
+                              <Component id="txtFieldMasterNodeDns" alignment="1" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -1203,7 +1202,7 @@
                               <Group type="102" attributes="0">
                                   <EmptySpace max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="txtFieldMasterNodeDns" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="txtFieldMasterNodeDns" alignment="3" max="-2" attributes="0"/>
                                       <Component id="jLabel40" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>

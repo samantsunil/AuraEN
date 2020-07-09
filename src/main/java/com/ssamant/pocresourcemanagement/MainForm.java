@@ -724,7 +724,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             }
         });
 
-        btnLoadProcessingDetails.setText("Load Cluster Info");
+        btnLoadProcessingDetails.setText("Load Current Cluster Details");
         btnLoadProcessingDetails.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoadProcessingDetailsActionPerformed(evt);
@@ -760,15 +760,14 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addComponent(btnRestartInstanceProc)
                         .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addGap(155, 155, 155)
+                                .addComponent(btnDeleteCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel8Layout.createSequentialGroup()
                                 .addGap(91, 91, 91)
                                 .addComponent(btnClearFieldsProcessing, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnLoadProcessingDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addGap(155, 155, 155)
-                                .addComponent(btnDeleteCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(8, 8, 8)))
-                .addContainerGap(142, Short.MAX_VALUE))
+                                .addComponent(btnLoadProcessingDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -942,8 +941,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(comboBoxMasterNodeInstType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnCreateMasterNode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtFieldMasterNodeDns, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnSparkSubmitApp, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE))
+                    .addComponent(btnSparkSubmitApp, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                    .addComponent(txtFieldMasterNodeDns, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
@@ -976,7 +975,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtFieldMasterNodeDns, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFieldMasterNodeDns, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel40))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSparkSubmitApp)
@@ -1041,8 +1040,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         panProcessing.setLayout(panProcessingLayout);
         panProcessingLayout.setHorizontalGroup(
             panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panProcessingLayout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panProcessingLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 1092, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panProcessingLayout.createSequentialGroup()
@@ -1053,7 +1052,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 1092, Short.MAX_VALUE)
                         .addComponent(progressBarProcessing, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addGap(13, 13, 13))
         );
         panProcessingLayout.setVerticalGroup(
             panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1545,18 +1544,17 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addGap(44, 44, 44)
                         .addComponent(jLabel13)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGap(41, 41, 41)
                         .addComponent(jLabel14)
                         .addGap(73, 73, 73)
-                        .addComponent(jLabel15)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jLabel15))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 6, Short.MAX_VALUE)
                 .addComponent(btnScaleDppResources))
         );
 
@@ -2176,26 +2174,43 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     }//GEN-LAST:event_btnStopInstanceProcActionPerformed
 
     private void btnLoadProcessingDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadProcessingDetailsActionPerformed
-        txtAreaSparkResourcesInfo.setText("");
-        try {
-            try ( // TODO add your handling code here:
-                    //ConfigureProcessingLayer.loadSparkClusterInfoFromFile();
-                    ResultSet rs = ConfigureProcessingLayer.loadSparkClusterDetailsFromDb()) {
-                while (rs.next()) {
-                    String instanceId = rs.getString("instance_id");
-                    String instanceType = rs.getString("instance_type");
-                    String az = rs.getString("availability_zone");
-                    String publicDnsName = rs.getString("public_dnsname");
-                    String publicIp = rs.getString("public_ip");
-                    String privateIp = rs.getString("private_ip");
-                    String status = rs.getString("status");
-                    String nodeType = rs.getString("node_type");
-                    //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status);
-                    txtAreaSparkResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", Node type: " + nodeType + ".\n");
-                    txtAreaSparkResourcesInfo.append("-----------------------------------------------------------------------\n");
-
+        try {                                                         
+            txtAreaSparkResourcesInfo.setText("");
+            ResultSet rss = ConfigureProcessingLayer.loadMasterNodeDetails();
+            while(rss.next()){
+                try {
+                    String minstanceId = rss.getString("master_instance_id");
+                    String mpublicDnsName = rss.getString("master_public_dnsname");
+                    txtAreaSparkResourcesInfo.append("Master node Insatnce Id: " + minstanceId + ", master node DNS: " + mpublicDnsName +"\n");
+                    txtAreaSparkResourcesInfo.append("-------------------------------------------------------------\n");
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            try {
+                try ( // TODO add your handling code here:
+                        //ConfigureProcessingLayer.loadSparkClusterInfoFromFile();
+                        ResultSet rs = ConfigureProcessingLayer.loadSparkClusterDetailsFromDb()) {
+                    while (rs.next()) {
+                        String instanceId = rs.getString("instance_id");
+                        String instanceType = rs.getString("instance_type");
+                        String az = rs.getString("availability_zone");
+                        String publicDnsName = rs.getString("public_dnsname");
+                        String publicIp = rs.getString("public_ip");
+                        String privateIp = rs.getString("private_ip");
+                        String status = rs.getString("status");
+                        String nodeType = rs.getString("node_type");
+                        //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status);
+                        txtAreaSparkResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", Node type: " + nodeType + ".\n");
+                        txtAreaSparkResourcesInfo.append("-----------------------------------------------------------------------\n");
+                        
+                    }
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }

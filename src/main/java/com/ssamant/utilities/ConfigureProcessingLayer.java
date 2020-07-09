@@ -285,6 +285,25 @@ public class ConfigureProcessingLayer {
         }
         return rs;
     }
+    public static ResultSet loadMasterNodeDetails(){
+                ResultSet rs = null;
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT master_instance_id, master_public_dnsname FROM processing_cluster_info";
+            Statement st = DatabaseConnection.con.createStatement();
+            rs = st.executeQuery(query);
+            //st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return rs;
+    }
 
     public static ResultSet loadCurrentSparkClusterInfo() {
         ResultSet rs = null;
