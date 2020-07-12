@@ -474,10 +474,11 @@ public static void updateNodeTypeStatus(String instanceId) {
             System.out.println("Instances are not running.");
         }
     }
-    public static void configureNoSqlNonSeedNode(String pubDns, String instanceId){
+    public static void configureNoSqlNonSeedNode(String pubDns, String instanceId) throws InterruptedException{
         JSch jschClient = new JSch();
         String seedIp = getSeedIpForNewNode();
         String hostId = "";
+        sleep(15000);
         //String seedIp = "172.31.34.236";
         try {
             jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
