@@ -897,7 +897,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         txtFieldMasterNodeDns.setEditable(false);
 
-        jLabel40.setText("Master Node Dns:");
+        jLabel40.setText("Master DNS:");
 
         btnSparkSubmitApp.setText("Submit Job to Cluster");
         btnSparkSubmitApp.addActionListener(new java.awt.event.ActionListener() {
@@ -923,69 +923,75 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addGap(10, 10, 10)
-                                .addComponent(btnBuildProcessingCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(comboBoxClusterType, 0, 204, Short.MAX_VALUE)
-                                .addComponent(comboBoxNoSparkNodes, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(comboBoxSparkInstType, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(comboBoxProcFrameworks, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(btnBuildProcessingCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel10Layout.createSequentialGroup()
+                                        .addGap(144, 144, 144)
+                                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(comboBoxMasterNodeInstType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(btnCreateMasterNode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(txtFieldMasterNodeDns)))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnSparkSubmitApp, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(38, 38, 38))))
                             .addGroup(jPanel10Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel31))
-                            .addGroup(jPanel10Layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addComponent(jLabel40, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(lblBuildProcessingCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboBoxMasterNodeInstType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCreateMasterNode, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSparkSubmitApp, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
-                    .addComponent(txtFieldMasterNodeDns, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(comboBoxClusterType, 0, 204, Short.MAX_VALUE)
+                                    .addComponent(comboBoxNoSparkNodes, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(comboBoxSparkInstType, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(comboBoxProcFrameworks, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel10Layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel31))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel40, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 284, Short.MAX_VALUE))))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(lblBuildProcessingCluster, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboBoxProcFrameworks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel31)
-                    .addComponent(comboBoxMasterNodeInstType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addContainerGap()
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(comboBoxSparkInstType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(comboBoxProcFrameworks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel31)
+                            .addComponent(comboBoxMasterNodeInstType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel10Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(comboBoxSparkInstType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel39)
+                                    .addComponent(comboBoxClusterType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel10Layout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addComponent(btnCreateMasterNode)))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel39)
-                            .addComponent(comboBoxClusterType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addComponent(btnCreateMasterNode)))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboBoxNoSparkNodes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
+                            .addComponent(comboBoxNoSparkNodes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel40)
+                            .addComponent(txtFieldMasterNodeDns, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtFieldMasterNodeDns, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel40))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSparkSubmitApp)
-                        .addGap(23, 23, 23))
-                    .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBuildProcessingCluster)
-                        .addGap(26, 26, 26)
-                        .addComponent(lblBuildProcessingCluster)
-                        .addContainerGap(40, Short.MAX_VALUE))))
+                        .addGap(26, 26, 26))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSparkSubmitApp)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addComponent(lblBuildProcessingCluster))
         );
 
         jPanel11.add(txtFieldInstanceIdConfigure1);
@@ -1042,26 +1048,27 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panProcessingLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 1092, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panProcessingLayout.createSequentialGroup()
+                        .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 1092, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 1092, Short.MAX_VALUE)
+                                .addComponent(progressBarProcessing, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(13, 13, 13))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panProcessingLayout.createSequentialGroup()
                         .addGap(8, 8, 8)
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 1092, Short.MAX_VALUE)
-                        .addComponent(progressBarProcessing, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(13, 13, 13))
+                        .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(41, 41, 41))))
         );
         panProcessingLayout.setVerticalGroup(
             panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panProcessingLayout.createSequentialGroup()
-                .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panProcessingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panProcessingLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(progressBarProcessing, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -2174,14 +2181,14 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     }//GEN-LAST:event_btnStopInstanceProcActionPerformed
 
     private void btnLoadProcessingDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadProcessingDetailsActionPerformed
-        try {                                                         
+        try {
             txtAreaSparkResourcesInfo.setText("");
             ResultSet rss = ConfigureProcessingLayer.loadMasterNodeDetails();
-            while(rss.next()){
+            while (rss.next()) {
                 try {
                     String minstanceId = rss.getString("master_instance_id");
                     String mpublicDnsName = rss.getString("master_public_dnsname");
-                    txtAreaSparkResourcesInfo.append("Master node Insatnce Id: " + minstanceId + ", master node DNS: " + mpublicDnsName +"\n");
+                    txtAreaSparkResourcesInfo.append("Master node Insatnce Id: " + minstanceId + ", master node DNS: " + mpublicDnsName + "\n");
                     txtAreaSparkResourcesInfo.append("-------------------------------------------------------------\n");
                 } catch (SQLException ex) {
                     Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -2203,14 +2210,13 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         //System.out.format("%s, %s, %s, %s, %s, %s, %s\n", instanceId, instanceType, az, publicDnsName, publicIp, privateIp, status);
                         txtAreaSparkResourcesInfo.append("InstanceID: " + instanceId + ", InstanceType: " + instanceType + ", AvailabilityZone: " + az + ", PublicDns: " + publicDnsName + ", PublicIp: " + publicIp + ", PrivateIp: " + privateIp + ", Status: " + status + ", Node type: " + nodeType + ".\n");
                         txtAreaSparkResourcesInfo.append("-----------------------------------------------------------------------\n");
-                        
+
                     }
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2383,8 +2389,13 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
             btnScaleDppResources.setEnabled(false);
             ConfigureIngestionLayer.updateCurrentWorkload(txtFieldFutureWorkload.getText().trim());
+
         } else {
             int currInstanceCountIngestion = DatabaseConnection.getCurrentInstanceCount("ingestion");
+            if (currInstanceCountIngestion <= 0) {
+                txtAreaIngestionResources.append("No existing allocation for ingestion layer. Please allocate resources from ingestion module.\n");
+                return;
+            }
             String currInstanceTypeIngestion = DatabaseConnection.getCurrentInstanceType("ingestion");
             if (currInstanceTypeIngestion.equals(ResourceOptimizer.dppInstanceType[0])) {
                 if ((currInstanceCountIngestion == ResourceOptimizer.dppResourcesCount[0]) && !isDeltaScaleStrategy) {
@@ -2425,52 +2436,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             } else {
                 txtAreaIngestionResources.append("The instance type needed for scaling is different than the currently allocated instance type, therefore scaling is require to perform from ingestion layer module.\n");
                 txtAreaIngestionResources.append("This incurs a disruption in ingestion service as well as processing service when workload is transferred to the new resource cluster.\n");
-            }
-            int currInstanceCountProcessing = DatabaseConnection.getCurrentInstanceCount("processing");
-            String currInstanceTypeProcessing = DatabaseConnection.getCurrentInstanceType("processing");
-            if (currInstanceTypeProcessing.equalsIgnoreCase(ResourceOptimizer.dppInstanceType[1])) {
-                if ((currInstanceCountProcessing == ResourceOptimizer.dppResourcesCount[1]) && !isDeltaScaleStrategy) {
-                    txtAreaProcessingResources.append("Current resource allocation for processing layer can handle the future predicted workload.\n");
-                }
-                if (isDeltaScaleStrategy) {
-                    if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) < Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
-                        try {
-                            //scale-out
-                            txtAreaProcessingResources.append("Scaling out resources for the processing layer...\n");
-                            ConfigureProcessingLayer.buildProcessingLayerCluster(ResourceOptimizer.dppResourcesCount[1], ResourceOptimizer.dppInstanceType[1], "", "Multi-node", true);
-                            sleep(20000);
-                            ConfigureProcessingLayer.submitJobToSparkCluster();
-                            txtAreaProcessingResources.append("Resources scaled-out successfully for handling future workload.\n");
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                            txtAreaProcessingResources.append("Fail to scale out resources successfully.\n");
-                        }
-                    }
-                    if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) > Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
-                        //scale-in
-                        if (currInstanceCountProcessing == ResourceOptimizer.dppResourcesCount[1]) {
-                            txtAreaProcessingResources.append("No scale-in is required for future workload.\n");
-                        }
-                        if (currInstanceCountProcessing > ResourceOptimizer.dppResourcesCount[1]) {
-                            txtAreaProcessingResources.append("Scaling in resources for processing layer...\n");
-                            List<String> instanceIds = ConfigureProcessingLayer.getWorkerInstanceIds(String.valueOf(ResourceOptimizer.dppResourcesCount[1]));
-                            if (instanceIds.size() > 0) {
-                                instanceIds.forEach((instanceId) -> {
-                                    try {
-                                        ConfigureProcessingLayer.stopSparkNode(instanceId, false);
-                                        sleep(10000);
-                                    } catch (InterruptedException ex) {
-                                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                                        txtAreaProcessingResources.append("Faile to Scale-in resources for processing layer...\n");
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }
-            } else {
-                txtAreaProcessingResources.append("The required instance type for scaling is different than the currently allocated instance type therefore scaling should be performed from processing layer module.\n");
-                txtAreaProcessingResources.append("This incurs temporary disruption in processing layer service due to transfer of workload to the newly build cluster.\n");
             }
             int currentInstanceCountStorage = DatabaseConnection.getCurrentInstanceCount("storage");
             String currInstanceTypeStorage = DatabaseConnection.getCurrentInstanceType("storage");
@@ -2521,7 +2486,58 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             } else {
                 txtAreaStorageResources.append("The instance type required for scaling is different from the currently allocated instance type therefore scaling is performed from the storage layer module.\n");
                 txtAreaStorageResources.append("This incurs a disruption in the storage layer service as well as processing layer service while transferring workload to the new resource cluster.\n");
-                
+
+            }
+            int currInstanceCountProcessing = DatabaseConnection.getCurrentInstanceCount("processing");
+            String currInstanceTypeProcessing = DatabaseConnection.getCurrentInstanceType("processing");
+            if (currInstanceTypeProcessing.equalsIgnoreCase(ResourceOptimizer.dppInstanceType[1])) {
+                if ((currInstanceCountProcessing == ResourceOptimizer.dppResourcesCount[1]) && !isDeltaScaleStrategy) {
+                    txtAreaProcessingResources.append("Current resource allocation for processing layer can handle the future predicted workload.\n");
+                }
+                if (isDeltaScaleStrategy) {
+                    if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) < Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
+                        try {
+                            //scale-out
+                            txtAreaProcessingResources.append("Scaling out resources for the processing layer...\n");
+                            List<String> dnsNames = ConfigureProcessingLayer.buildProcessingLayerCluster(ResourceOptimizer.dppResourcesCount[1], ResourceOptimizer.dppInstanceType[1], "", "Multi-node", true);
+                            sleep(20000);
+                            ConfigureProcessingLayer.updateMasterNode(true);
+                            dnsNames.forEach((dnsName) -> {
+                                ConfigureProcessingLayer.configureNewlyCreatedSparkNode(dnsName, "worker");
+                            });
+
+                            ConfigureProcessingLayer.submitJobToSparkCluster();
+                            txtAreaProcessingResources.append("Resources scaled-out successfully for handling future workload.\n");
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                            txtAreaProcessingResources.append("Fail to scale out resources successfully.\n");
+                        }
+                    }
+                    if (Integer.parseInt(txtFieldCurrentWorkload.getText().trim()) > Integer.parseInt(txtFieldFutureWorkload.getText().trim())) {
+                        //scale-in
+                        if (currInstanceCountProcessing == ResourceOptimizer.dppResourcesCount[1]) {
+                            txtAreaProcessingResources.append("No scale-in is required for future workload.\n");
+                        }
+                        if (currInstanceCountProcessing > ResourceOptimizer.dppResourcesCount[1]) {
+                            txtAreaProcessingResources.append("Scaling in resources for processing layer...\n");
+                            List<String> instanceIds = ConfigureProcessingLayer.getWorkerInstanceIds(String.valueOf(ResourceOptimizer.dppResourcesCount[1]));
+                            if (instanceIds.size() > 0) {
+                                instanceIds.forEach((instanceId) -> {
+                                    try {
+                                        ConfigureProcessingLayer.stopSparkNode(instanceId, false);
+                                        sleep(10000);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                        txtAreaProcessingResources.append("Faile to Scale-in resources for processing layer...\n");
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            } else {
+                txtAreaProcessingResources.append("The required instance type for scaling is different than the currently allocated instance type therefore scaling should be performed from processing layer module.\n");
+                txtAreaProcessingResources.append("This incurs temporary disruption in processing layer service due to transfer of workload to the newly build cluster.\n");
             }
             ConfigureIngestionLayer.updateCurrentWorkload(txtFieldFutureWorkload.getText().trim());
         }
