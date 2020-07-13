@@ -28,6 +28,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,8 +45,14 @@ public class DatabaseConnection {
 
     public static Connection getConnection() throws SQLException {
         try {
+            Properties prop = PropertyFileReader.readPropertyFile();
+            String mysqlHost = prop.getProperty("com.ssamant.utilities.mysql.hostUrl");            
+            String mysqlDb = prop.getProperty("com.ssamant.utilities.mysql.database");
+            String mysqlUsr = prop.getProperty("com.ssamant.utilities.mysql.user");
+            String mysqlPwd = prop.getProperty("com.ssamant.utilities.mysql.password");
             Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://136.186.108.219:3306/dpp_resources", "root", "dpp2020*");
+            //con = DriverManager.getConnection("jdbc:mysql://136.186.108.219:3306/dpp_resources", "root", "dpp2020*");
+            con = DriverManager.getConnection(mysqlHost+"/"+mysqlDb, mysqlUsr, mysqlPwd);
             if (con != null) {
                 System.out.println("Database connection successful.");
             } else {
@@ -53,6 +60,8 @@ public class DatabaseConnection {
             }
         } catch (SQLException | ClassNotFoundException ex) {
             System.out.println("MySQL connection failed.");
+        } catch (Exception ex) {
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return con;
 
