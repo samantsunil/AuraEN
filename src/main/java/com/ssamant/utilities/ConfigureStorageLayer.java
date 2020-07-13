@@ -481,7 +481,8 @@ public static void updateNodeTypeStatus(String instanceId) {
         sleep(15000);
         //String seedIp = "172.31.34.236";
         try {
-            jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
+            //jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
+            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDns, 22);
             session.connect(60000);
