@@ -268,6 +268,7 @@ public class ConfigureStorageLayer {
         JSch jschClient = new JSch();
         String msg = null;
         try {
+            sleep(5000);
             jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
@@ -290,6 +291,8 @@ public class ConfigureStorageLayer {
             }
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

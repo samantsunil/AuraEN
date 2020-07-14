@@ -1850,7 +1850,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         isBuild = true;
         progressBarIngestion.setIndeterminate(true);
         btnBuildIngestionCluster.setEnabled(false);
-        btnDeleteIngestionCluster.setEnabled(false);
+        //btnDeleteIngestionCluster.setEnabled(false);
         txtAreaClusterInfo.setText("");
         if (Integer.parseInt(String.valueOf(comboBoxBrokersNo.getSelectedItem())) <= 5) {
             String no = String.valueOf(comboBoxBrokersNo.getSelectedItem());
@@ -2625,6 +2625,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         int option = JOptionPane.showConfirmDialog(null, "Are you sure to Scale the DPP resource now?", "Confirm Action", JOptionPane.YES_NO_OPTION);
         if (option == 0) {
             progressBarDppScaling.setIndeterminate(true);
+            btnScaleDppResources.setEnabled(false);
             ScaleTask task = new ScaleTask();
             task.addPropertyChangeListener(this);
             task.execute();

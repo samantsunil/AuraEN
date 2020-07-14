@@ -577,9 +577,11 @@ public class ConfigureIngestionLayer {
         if ("".equals(newBrokerId)) {
             newBrokerId = "0";
         }
+        
         JSch jschClient = new JSch();
         try {
             //jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
+            sleep(5000);
              jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
