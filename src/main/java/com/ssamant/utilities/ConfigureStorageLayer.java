@@ -30,7 +30,6 @@ import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DryRunResult;
 import com.amazonaws.services.ec2.model.DryRunSupportedRequest;
 import com.amazonaws.services.ec2.model.Instance;
-import com.amazonaws.services.ec2.model.InstanceType;
 import com.amazonaws.services.ec2.model.Placement;
 import com.amazonaws.services.ec2.model.RunInstancesRequest;
 import com.amazonaws.services.ec2.model.RunInstancesResult;
@@ -409,8 +408,8 @@ public static void updateNodeTypeStatus(String instanceId) {
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                 .withInstanceType(instanceType) //free -tier instance type used
-                .withKeyName("mySSHkey") //keypair name
-                .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
+                .withKeyName(ReadSSHKeyLocation.getSshKeyName()) //keypair name
+                .withSecurityGroupIds(ReadSSHKeyLocation.getSecurityGroups())
                 .withMaxCount(noOfNodes)
                 .withMinCount(1);
 

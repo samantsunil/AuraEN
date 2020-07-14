@@ -23,6 +23,9 @@
  */
 package com.ssamant.utilities;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,14 +35,47 @@ import java.util.logging.Logger;
  * @author Sunil
  */
 public class ReadSSHKeyLocation {
-    public static String getSshKeyLocation(){
+
+    public static String getSshKeyLocation() {
         Properties prop = null;
+        String sshKeyLoc = "";
         try {
             prop = PropertyFileReader.readPropertyFile();
+            sshKeyLoc = prop.getProperty("com.ssamant.utilities.ssh.keylocation");
         } catch (Exception ex) {
             Logger.getLogger(ReadSSHKeyLocation.class.getName()).log(Level.SEVERE, null, ex);
         }
-            String sshKeyLoc = prop.getProperty("com.ssamant.utilities.ssh.keylocation");
-            return sshKeyLoc;
+
+        return sshKeyLoc;
+    }
+
+    public static String getSshKeyName() {
+        Properties prop = null;
+        String sshKeyName = "";
+        try {
+            prop = PropertyFileReader.readPropertyFile();
+            sshKeyName = prop.getProperty("com.ssamant.utilities.ssh.key");
+        } catch (Exception ex) {
+            Logger.getLogger(ReadSSHKeyLocation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return sshKeyName;
+    }
+
+    public static List<String> getSecurityGroups() {
+        Properties prop = null;
+        String securtiyGroups = "";
+        String[] secGroups = null;
+        List<String> secGroupIds = new ArrayList<>();
+        try {
+            prop = PropertyFileReader.readPropertyFile();
+            securtiyGroups = prop.getProperty("com.ssamant.utilities.securitygroups");
+
+            secGroups = securtiyGroups.split(",");
+            secGroupIds = Arrays.asList(secGroups);
+
+        } catch (Exception ex) {
+            Logger.getLogger(ReadSSHKeyLocation.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return secGroupIds;
     }
 }

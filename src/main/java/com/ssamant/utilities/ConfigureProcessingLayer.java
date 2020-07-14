@@ -81,8 +81,8 @@ public class ConfigureProcessingLayer {
             RunInstancesRequest runRequest = new RunInstancesRequest()
                     .withImageId(ami_id_spark)
                     .withInstanceType(instanceType) //free -tier instance type used
-                    .withKeyName("mySSHkey") //keypair name
-                    .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
+                    .withKeyName(ReadSSHKeyLocation.getSshKeyName()) //keypair name
+                    .withSecurityGroupIds(ReadSSHKeyLocation.getSecurityGroups())
                     .withMaxCount(1)
                     .withMinCount(1);
             RunInstancesResult runResponse = ec2Client.runInstances(runRequest);
@@ -112,30 +112,8 @@ public class ConfigureProcessingLayer {
         } catch (InterruptedException ex) {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }   
     
-    public static void dbUpdateMasterNodeInfo(String pubDns, String pubIp, String privIp, String instId) {
-        try {
-            if (DatabaseConnection.con == null) {
-                try {
-                    DatabaseConnection.con = getConnection();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            String query = "UPDATE processing_cluster_info SET master_instance_id = ?, master_public_dnsname = ?, master_public_ip = ?, master_private_ip = ? WHERE cluster_id = ?";
-            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
-                update.setString(1, instId);
-                update.setString(2, pubDns);
-                update.setString(3, pubIp);
-                update.setString(4, privIp);
-                update.setInt(5, 100); //clusterId= 100 fixed
-                update.executeUpdate();
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     
     public static List<String> createEC2NodeForProcessingLayer(int noOfNodes, String instanceType, AmazonEC2 ec2Client, String amiId, String clusterType, Boolean fromDPPScaling) {
         String nodeType = "";
@@ -160,8 +138,9 @@ public class ConfigureProcessingLayer {
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                 .withInstanceType(instanceType) //free -tier instance type used
-                .withKeyName("mySSHkey") //keypair name
-                .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
+                .withKeyName(ReadSSHKeyLocation.getSshKeyName()) //keypair name
+                //.withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae") 
+                .withSecurityGroupIds(ReadSSHKeyLocation.getSecurityGroups())
                 .withMaxCount(noOfNodes)
                 .withMinCount(1);
         
@@ -252,6 +231,29 @@ public class ConfigureProcessingLayer {
         }
     }
     
+    public static void dbUpdateMasterNodeInfo(String pubDns, String pubIp, String privIp, String instId) {
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "UPDATE processing_cluster_info SET master_instance_id = ?, master_public_dnsname = ?, master_public_ip = ?, master_private_ip = ? WHERE cluster_id = ?";
+            try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
+                update.setString(1, instId);
+                update.setString(2, pubDns);
+                update.setString(3, pubIp);
+                update.setString(4, privIp);
+                update.setInt(5, 100); //clusterId= 100 fixed
+                update.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public static void dbInsertSpakInstanceDetail(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status, String nodeType, String scaleType) {
         try {
             String query = "INSERT INTO processing_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status, node_type, alloc_type)"
@@ -334,27 +336,7 @@ public class ConfigureProcessingLayer {
         
     }
     
-    public static void loadSparkClusterInfoFromFile() {
-        MainForm.txtAreaSparkResourcesInfo.setText("");
-        String fileName = "C:\\Code\\SparkClusterDetails.txt";
-        try {
-            if (new File("C:\\Code\\KafkaClusterDetails.txt").exists()) {
-                FileReader file = new FileReader(fileName);
-                try (BufferedReader rdr = new BufferedReader(file)) {
-                    String aLine;
-                    while ((aLine = rdr.readLine()) != null) {
-                        MainForm.txtAreaSparkResourcesInfo.append(aLine);
-                        MainForm.txtAreaSparkResourcesInfo.append("\n");
-                    }
-                }
-            } else {
-                System.out.println("File does not exist. No existing cluster info present.");
-            }
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-    
+      
     public static void updateSparkRestartNodeDetails(String instanceId, String pubDns, String pubIp, String status) {
         try {
             if (DatabaseConnection.con == null) {

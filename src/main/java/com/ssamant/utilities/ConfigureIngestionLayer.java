@@ -30,7 +30,6 @@ import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DryRunResult;
 import com.amazonaws.services.ec2.model.DryRunSupportedRequest;
 import com.amazonaws.services.ec2.model.Instance;
-import com.amazonaws.services.ec2.model.InstanceType;
 import com.amazonaws.services.ec2.model.Placement;
 import com.amazonaws.services.ec2.model.RunInstancesRequest;
 import com.amazonaws.services.ec2.model.RunInstancesResult;
@@ -43,16 +42,11 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.ssamant.pocresourcemanagement.MainForm;
-import static com.ssamant.pocresourcemanagement.MainForm.lblClusterStatus;
 import static com.ssamant.pocresourcemanagement.MainForm.lblInstanceStopMsg;
 import static com.ssamant.pocresourcemanagement.MainForm.lblStartedInstance;
 import static com.ssamant.pocresourcemanagement.MainForm.lblStopInstance;
 import static com.ssamant.pocresourcemanagement.MainForm.txtAreaClusterInfo;
-import static com.ssamant.pocresourcemanagement.MainForm.txtAreaIngestionDetails;
 import static com.ssamant.utilities.DatabaseConnection.getConnection;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.Thread.sleep;
@@ -96,8 +90,8 @@ public class ConfigureIngestionLayer {
             RunInstancesRequest runRequest = new RunInstancesRequest()
                     .withImageId(zkAmi) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                     .withInstanceType(instanceType) //free -tier instance type t2.micro
-                    .withKeyName("mySSHkey") //keypair name
-                    .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
+                    .withKeyName(ReadSSHKeyLocation.getSshKeyName()) //keypair name
+                    .withSecurityGroupIds(ReadSSHKeyLocation.getSecurityGroups())
                     .withMaxCount(1)
                     .withMinCount(1);
             RunInstancesResult runResponse = ec2Client.runInstances(runRequest);
@@ -143,8 +137,8 @@ public class ConfigureIngestionLayer {
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                 .withInstanceType(instType) //free -tier instance type t2.micro
-                .withKeyName("mySSHkey") //keypair name
-                .withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae")
+                .withKeyName(ReadSSHKeyLocation.getSshKeyName()) //keypair name
+                .withSecurityGroupIds(ReadSSHKeyLocation.getSecurityGroups())
                 .withMaxCount(noOfBrokers)
                 .withMinCount(1);
 
