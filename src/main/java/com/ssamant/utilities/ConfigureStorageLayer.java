@@ -268,7 +268,7 @@ public class ConfigureStorageLayer {
         JSch jschClient = new JSch();
         String msg = null;
         try {
-            jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
+            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
             session.connect(60000);
@@ -298,7 +298,7 @@ public class ConfigureStorageLayer {
         String hostId = "";
         //String seedIp = "172.31.34.236";
         try {
-            jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
+            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
             session.connect(60000);
@@ -388,7 +388,58 @@ public static void updateNodeTypeStatus(String instanceId) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public static List<String> getAllStorageClusterInstances(){
+                List<String> instanceIds = new ArrayList<>();
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT instance_id FROM dpp_resources.storage_nodes_info";
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
 
+                    instanceIds.add(rs.getString(1));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return instanceIds;
+    }
+    public static void deleteClusterDbInfo(){
+                try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "DELETE FROM dpp_resources.storage_nodes_info";
+            String qry = "UPDATE dpp_resources.storage_cluster_info SET instance_types='', no_of_nodes = 0";
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                st.executeUpdate(query);  
+                st.executeUpdate(qry);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public static void deleteStorageCluster(){
+        List<String> instanceIds = getAllStorageClusterInstances();
+        instanceIds.forEach((instanceId) -> {
+            EC2InstanceOperation.terminateEc2Instance(instanceId);
+        });
+        deleteClusterDbInfo();
+    }
+    
     public static void buildNoSqlStorageCluster(int noOfNodes, String instanceType, Boolean dppScaling) throws SQLException {
         MainForm.btnBuildStorageCluster.setEnabled(false);
         String amiId=null;
@@ -702,45 +753,45 @@ public static void updateNodeTypeStatus(String instanceId) {
         return rs;
     }
 
-    public static void loadFromFileStorageClusterDetails(boolean isDPP) {
-
-        String fileName = "C:\\Code\\CassandraClusterDetails.txt";
-        if (!isDPP) {
-            MainForm.txtAreaCassandraResourcesInfo.setText("");
-            try {
-                if (new File("C:\\Code\\CassandraClusterDetails.txt").exists()) {
-                    FileReader file = new FileReader(fileName);
-                    try (BufferedReader rdr = new BufferedReader(file)) {
-                        String aLine;
-                        while ((aLine = rdr.readLine()) != null) {
-                            MainForm.txtAreaCassandraResourcesInfo.append(aLine);
-                            MainForm.txtAreaCassandraResourcesInfo.append("\n");
-                        }
-                    }
-                } else {
-                    System.out.println("File does not exist. No existing cluster info present.");
-                }
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            }
-        } else {
-            MainForm.txtAreaStorageResources.setText("");
-            try {
-                if (new File("C:\\Code\\CassandraClusterDetails.txt").exists()) {
-                    FileReader file = new FileReader(fileName);
-                    try (BufferedReader rdr = new BufferedReader(file)) {
-                        String aLine;
-                        while ((aLine = rdr.readLine()) != null) {
-                            MainForm.txtAreaStorageResources.append(aLine);
-                            MainForm.txtAreaStorageResources.append("\n");
-                        }
-                    }
-                } else {
-                    System.out.println("File does not exist. No existing cluster info present.");
-                }
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
-    }
+//    public static void loadFromFileStorageClusterDetails(boolean isDPP) {
+//
+//        String fileName = "C:\\Code\\CassandraClusterDetails.txt";
+//        if (!isDPP) {
+//            MainForm.txtAreaCassandraResourcesInfo.setText("");
+//            try {
+//                if (new File("C:\\Code\\CassandraClusterDetails.txt").exists()) {
+//                    FileReader file = new FileReader(fileName);
+//                    try (BufferedReader rdr = new BufferedReader(file)) {
+//                        String aLine;
+//                        while ((aLine = rdr.readLine()) != null) {
+//                            MainForm.txtAreaCassandraResourcesInfo.append(aLine);
+//                            MainForm.txtAreaCassandraResourcesInfo.append("\n");
+//                        }
+//                    }
+//                } else {
+//                    System.out.println("File does not exist. No existing cluster info present.");
+//                }
+//            } catch (IOException ex) {
+//                System.out.println(ex.getMessage());
+//            }
+//        } else {
+//            MainForm.txtAreaStorageResources.setText("");
+//            try {
+//                if (new File("C:\\Code\\CassandraClusterDetails.txt").exists()) {
+//                    FileReader file = new FileReader(fileName);
+//                    try (BufferedReader rdr = new BufferedReader(file)) {
+//                        String aLine;
+//                        while ((aLine = rdr.readLine()) != null) {
+//                            MainForm.txtAreaStorageResources.append(aLine);
+//                            MainForm.txtAreaStorageResources.append("\n");
+//                        }
+//                    }
+//                } else {
+//                    System.out.println("File does not exist. No existing cluster info present.");
+//                }
+//            } catch (IOException ex) {
+//                System.out.println(ex.getMessage());
+//            }
+//        }
+//    }
 }

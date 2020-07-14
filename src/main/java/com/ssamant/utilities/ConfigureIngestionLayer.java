@@ -37,6 +37,7 @@ import com.amazonaws.services.ec2.model.StartInstancesRequest;
 import com.amazonaws.services.ec2.model.StartInstancesResult;
 import com.amazonaws.services.ec2.model.StopInstancesRequest;
 import com.amazonaws.services.ec2.model.Tag;
+import com.amazonaws.services.ec2.model.TerminateInstancesRequest;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -82,7 +83,14 @@ public class ConfigureIngestionLayer {
         }
 
     }
-
+ public static void deleteIngestionCluster(){
+             List<String> instanceIds = getAllIngestionClusterInstances();
+        instanceIds.forEach((instanceId) -> {
+            EC2InstanceOperation.terminateEc2Instance(instanceId);
+        });
+        EC2InstanceOperation.terminateEc2Instance(getZkInstanceId());
+        deleteClusterDbInfo();
+ }
     public static void createZkServer(String instanceType) {
         String zkAmi = DatabaseConnection.getServiceAmi("zookeeper");
         if (zkAmi != null || !"".equals(zkAmi)) {
@@ -114,7 +122,7 @@ public class ConfigureIngestionLayer {
             if (curInstance != null) {
                 try {
                     sleep(6000);
-                    dbUpdateZkServerInfo(curInstance.getPublicDnsName());
+                    dbUpdateZkServerInfo(curInstance.getInstanceId(), curInstance.getPublicDnsName());
                     sleep(10000);
                     startZookeeperServer(curInstance.getPublicDnsName());
 
@@ -222,7 +230,7 @@ public class ConfigureIngestionLayer {
         }
     }
 
-    public static void dbUpdateZkServerInfo(String zkDnsName) {
+    public static void dbUpdateZkServerInfo(String zkInstId, String zkDnsName) {
 
         try {
             if (DatabaseConnection.con == null) {
@@ -232,10 +240,11 @@ public class ConfigureIngestionLayer {
                     Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            String query = "UPDATE ingestion_cluster_info SET zk_dnsname = ? WHERE cluster_id = ?";
+            String query = "UPDATE ingestion_cluster_info SET zk_dnsname = ?, zk_instance_id = ? WHERE cluster_id = ?";
             try (PreparedStatement update = DatabaseConnection.con.prepareStatement(query)) {
                 update.setString(1, zkDnsName);
-                update.setInt(2, 100);
+                update.setString(2, zkInstId);
+                update.setInt(3, 100);
                 update.executeUpdate();
                 update.close();
             }
@@ -300,7 +309,7 @@ public class ConfigureIngestionLayer {
             lblStopInstance.setText("");
             lblStopInstance.setText("Enter the valid instance ID.");
         }
-    }
+    }  
 
     public static void updateClusterInfoDb(String pubDns) {
         try {
@@ -681,7 +690,76 @@ public class ConfigureIngestionLayer {
         }
         return zkDns;
     }
+    public static String getZkInstanceId() {
+        String zkId= "";
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "select zk_instance_id from dpp_resources.ingestion_cluster_info where cluster_id = ?";
+            try (PreparedStatement pst = DatabaseConnection.con.prepareStatement(query)) {
+                pst.setInt(1, 100);
+                ResultSet rs = pst.executeQuery();
+                while (rs.next()) {
 
+                    zkId = rs.getString(1);
+                }
+                pst.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return zkId;
+    }
+public static List<String> getAllIngestionClusterInstances(){
+    List<String> instanceIds = new ArrayList<>();
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT instance_id FROM dpp_resources.ingestion_nodes_info";
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
+
+                    instanceIds.add(rs.getString(1));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return instanceIds;
+}
+
+public static void deleteClusterDbInfo(){
+            try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "DELETE FROM dpp_resources.ingestion_nodes_info";
+            String qry = "UPDATE dpp_resources.ingestion_cluster_info SET zk_dnsname = '', zk_instance_id = '', no_of_nodes = 0, instance_type = '', partitions_count = 0, replication_factor = 0, data_ingestion_rate = 0";
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                st.executeUpdate(query);
+                st.executeUpdate(qry);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
     /**
      * This function creates the kafka topic based on the size of the current
      * kafka cluster. We assume parition count and replication factor are equal
@@ -696,7 +774,7 @@ public class ConfigureIngestionLayer {
             brokerDns = MainForm.txtFieldInstId.getText().trim();
         }
         try {
-            jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", brokerDns, 22);
             session.connect(60000);
@@ -734,7 +812,7 @@ public class ConfigureIngestionLayer {
 
         JSch jschClient = new JSch();
         try {
-            jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             String zkDns = getZookeeperDns();
             Session session = jschClient.getSession("ubuntu", zkDns, 22);
@@ -760,7 +838,7 @@ public class ConfigureIngestionLayer {
         JSch jschClient = new JSch();
         try {
             sleep(5000);
-            jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", zkDns, 22);
             session.connect(60000);

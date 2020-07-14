@@ -63,17 +63,27 @@ import logincredentials.CloudLogin;
  * @author sunil
  */
 public class ConfigureProcessingLayer {
-    
+
     public ConfigureProcessingLayer() {
-        
+
     }
     public static String ami_id_spark = "";
-    
+
     public static List<String> buildProcessingLayerCluster(int noOfNodes, String instanceType, String ami_id, String clusterType, Boolean fromDPPScaling) {
         AmazonEC2 ec2Client = CloudLogin.getEC2Client();
         return createEC2NodeForProcessingLayer(noOfNodes, instanceType, ec2Client, ami_id, clusterType, fromDPPScaling);
     }
-    
+
+    public static void deleteProcessingCluster() {
+        List<String> instanceIds = getAllSparkClusterInstances();
+        instanceIds.forEach((instanceId) -> {
+            EC2InstanceOperation.terminateEc2Instance(instanceId);
+        });
+        EC2InstanceOperation.terminateEc2Instance(getMasterNodeId());
+        deleteClusterDbInfo();
+
+    }
+
     public static void createMasterNode(String instanceType) {
         ami_id_spark = DatabaseConnection.getServiceAmi("spark-master");
         try {
@@ -112,9 +122,8 @@ public class ConfigureProcessingLayer {
         } catch (InterruptedException ex) {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }   
-    
-    
+    }
+
     public static List<String> createEC2NodeForProcessingLayer(int noOfNodes, String instanceType, AmazonEC2 ec2Client, String amiId, String clusterType, Boolean fromDPPScaling) {
         String nodeType = "";
         String tagValue = "";
@@ -130,11 +139,11 @@ public class ConfigureProcessingLayer {
             serviceName = "spark-worker";
         }
         String imageId = DatabaseConnection.getServiceAmi(serviceName);
-        
+
         if (!"".equals(imageId)) {
             amiId = imageId;
         }
-        
+
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                 .withInstanceType(instanceType) //free -tier instance type used
@@ -143,7 +152,7 @@ public class ConfigureProcessingLayer {
                 .withSecurityGroupIds(ReadSSHKeyLocation.getSecurityGroups())
                 .withMaxCount(noOfNodes)
                 .withMinCount(1);
-        
+
         @SuppressWarnings("ThrowableResultIgnored")
         RunInstancesResult runResponse = ec2Client.runInstances(runRequest);
         // List<String> instanceIds = new ArrayList<>();
@@ -163,7 +172,7 @@ public class ConfigureProcessingLayer {
         if (noOfWorkers > 0) {
             i = noOfWorkers + 1;
         }
-        List<String> dnsNames = new ArrayList<>(); 
+        List<String> dnsNames = new ArrayList<>();
         for (Instance inst : runResponse.getReservation().getInstances()) {
             System.out.println("EC2 Instance Id: " + inst.getInstanceId());
             // instanceIds.add(inst.getInstanceId());
@@ -179,12 +188,12 @@ public class ConfigureProcessingLayer {
         }
         return dnsNames;
     }
-    
+
     public static String startInstanceForProcessingCluster(AmazonEC2 ec2Client, Instance inst, Placement az, String nodeType, Boolean fromDPPScaling) {
-        String pubDns="";
+        String pubDns = "";
         try {
             StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
-            StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);            
+            StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
             Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
             if (curInstance != null) {
                 System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
@@ -201,14 +210,14 @@ public class ConfigureProcessingLayer {
             } else {
                 System.out.println("Instances are not running.");
             }
-            
+
         } catch (InterruptedException ex) {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
             MainForm.txtAreaSparkResourcesInfo.append("Error: " + ex.getMessage());
         }
         return pubDns;
     }
-    
+
     public static void updateSparkClusterInfo(String instanceType) {
         int i = 1;
         try {
@@ -230,7 +239,7 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void dbUpdateMasterNodeInfo(String pubDns, String pubIp, String privIp, String instId) {
         try {
             if (DatabaseConnection.con == null) {
@@ -253,7 +262,7 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void dbInsertSpakInstanceDetail(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status, String nodeType, String scaleType) {
         try {
             String query = "INSERT INTO processing_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status, node_type, alloc_type)"
@@ -274,7 +283,7 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static ResultSet loadSparkClusterDetailsFromDb() {
         ResultSet rs = null;
         try {
@@ -294,7 +303,7 @@ public class ConfigureProcessingLayer {
         }
         return rs;
     }
-    
+
     public static ResultSet loadMasterNodeDetails() {
         ResultSet rs = null;
         try {
@@ -314,7 +323,7 @@ public class ConfigureProcessingLayer {
         }
         return rs;
     }
-    
+
     public static ResultSet loadCurrentSparkClusterInfo() {
         ResultSet rs = null;
         try {
@@ -333,10 +342,9 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return rs;
-        
+
     }
-    
-      
+
     public static void updateSparkRestartNodeDetails(String instanceId, String pubDns, String pubIp, String status) {
         try {
             if (DatabaseConnection.con == null) {
@@ -358,7 +366,7 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void stopSparkNode(String instanceId, Boolean isMasterNode) {
         if (instanceId != null) {
             try {
@@ -366,20 +374,20 @@ public class ConfigureProcessingLayer {
                         = () -> {
                             StopInstancesRequest request = new StopInstancesRequest()
                                     .withInstanceIds(instanceId);
-                            
+
                             return request.getDryRunRequest();
                         };
                 AmazonEC2 ec2Client = CloudLogin.getEC2Client();
                 DryRunResult dryResponse = ec2Client.dryRun(dryRequest);
-                
+
                 if (!dryResponse.isSuccessful()) {
                     System.out.printf("Failed dry run to stop instance %s", instanceId);
                     throw dryResponse.getDryRunResponse();
                 }
-                
+
                 StopInstancesRequest request = new StopInstancesRequest()
                         .withInstanceIds(instanceId);
-                
+
                 ec2Client.stopInstances(request);
                 Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, instanceId);
                 System.out.printf("Successfully stopped the instance: %s", instanceId);
@@ -405,7 +413,7 @@ public class ConfigureProcessingLayer {
             MainForm.lblStopRestartStatus.setText("Enter the valid instance ID.");
         }
     }
-    
+
     public static void updateSparkMasterNodeInfo(String instanceId, String pubDns, String pubIp, String privIp) {
         try {
             if (DatabaseConnection.con == null) {
@@ -429,7 +437,7 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void updateSparkClusterNodeRemoveInfo(String instanceType) {
         int i = 1;
         try {
@@ -452,7 +460,7 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void updateRestartedInstanceInfoSpark(String instanceId, String pubDns, String pubIp, String status) {
         try {
             if (DatabaseConnection.con == null) {
@@ -475,7 +483,7 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void restartedSparkProcessingNode(String instId, Boolean isMaster) {
         if ("".equals(instId)) {
             return;
@@ -499,9 +507,9 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureProcessingLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void updateClusterInfoDb(String masterDns, String masterPubIp) {
-        
+
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -521,7 +529,7 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static String getCurrentBrokerIds() {
         String broker_ids = null;
         try {
@@ -538,7 +546,7 @@ public class ConfigureProcessingLayer {
                 ResultSet rs = st.executeQuery();
                 int i = 0;
                 while (rs.next()) {
-                    
+
                     String brokerDns = rs.getString(1);
                     if (i == 0) {
                         broker_ids = brokerDns + ":9092";
@@ -554,7 +562,7 @@ public class ConfigureProcessingLayer {
         }
         return broker_ids;
     }
-    
+
     public static String getCurrentCassandraSeedIps() {
         String cassandraSeeds = null;
         try {
@@ -572,7 +580,7 @@ public class ConfigureProcessingLayer {
                 ResultSet rs = st.executeQuery();
                 int i = 0;
                 while (rs.next()) {
-                    
+
                     String cassSeedIp = rs.getString(1);
                     if (i == 0) {
                         cassandraSeeds = cassSeedIp;
@@ -587,9 +595,9 @@ public class ConfigureProcessingLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return cassandraSeeds;
-        
+
     }
-    
+
     public static String getMasterNodeDns(Boolean isSubmit) {
         String masterUrl = "";
         try {
@@ -617,7 +625,7 @@ public class ConfigureProcessingLayer {
         }
         return masterUrl;
     }
-    
+
     public static void configureNewlyCreatedSparkNode(String pubDnsName, String nodeType) {
         JSch jschClient = new JSch();
         if ("local".equals(nodeType)) {
@@ -672,7 +680,7 @@ public class ConfigureProcessingLayer {
             }
         }
     }
-    
+
     public static String getSparkWorkerIps(Boolean delta) {
         String allocType = "";
         if (delta) {
@@ -680,7 +688,7 @@ public class ConfigureProcessingLayer {
         } else {
             allocType = "full";
         }
-        
+
         String privIps = "";
         try {
             if (DatabaseConnection.con == null) {
@@ -697,7 +705,7 @@ public class ConfigureProcessingLayer {
                 ResultSet rs = st.executeQuery();
                 int i = 0;
                 while (rs.next()) {
-                    
+
                     String ip = rs.getString(1);
                     privIps = privIps + ip + " ";
                 }
@@ -709,7 +717,7 @@ public class ConfigureProcessingLayer {
         privIps = privIps.trim();
         return privIps;
     }
-    
+
     public static void updateMasterNode(Boolean delta) {
         String masterDns = getMasterNodeDns(true);
         String brokerId = getCurrentBrokerIds();
@@ -717,7 +725,7 @@ public class ConfigureProcessingLayer {
         String workerIps = getSparkWorkerIps(delta);
         JSch jschClient = new JSch();
         try {
-            jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", masterDns, 22);
             session.connect(60000);
@@ -733,9 +741,9 @@ public class ConfigureProcessingLayer {
         } catch (JSchException | InterruptedException ex) {
             System.out.println("Error while updating masterNode: " + ex.getMessage());
         }
-        
+
     }
-    
+
     public static Boolean configureAndRunMasterNode(String pubDnsName) {
         Boolean success = false;
         String brokerId = getCurrentBrokerIds();
@@ -743,7 +751,7 @@ public class ConfigureProcessingLayer {
         String workerIps = getSparkWorkerIps(false);
         JSch jschClient = new JSch();
         try {
-            jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
             session.connect(60000);
@@ -765,16 +773,16 @@ public class ConfigureProcessingLayer {
             session.disconnect();
             success = true;
         } catch (JSchException | InterruptedException ex) {
-            
+
         }
         return success;
     }
-    
+
     public static void submitJobToSparkCluster() {
         String masterDns = getMasterNodeDns(true);
         JSch jschClient = new JSch();
         try {
-            jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", masterDns, 22);
             session.connect(60000);
@@ -787,10 +795,10 @@ public class ConfigureProcessingLayer {
             sleep(5000);
             session.disconnect();
         } catch (JSchException | InterruptedException ex) {
-            
+
         }
     }
-    
+
     public static List<String> getWorkerInstanceIds(String limit) {
         List<String> instanceIds = new ArrayList<>();
         try {
@@ -805,15 +813,88 @@ public class ConfigureProcessingLayer {
             try (Statement st = DatabaseConnection.con.createStatement()) {
                 ResultSet rs = st.executeQuery(query);
                 while (rs.next()) {
-                    
+
                     instanceIds.add(rs.getString(1));
                 }
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return instanceIds;
     }
-    
+
+    public static String getMasterNodeId() {
+        String instanceId = "";
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT master_instance_id FROM processing_cluster_info WHERE cluster_id = ?";
+            try (PreparedStatement st = DatabaseConnection.con.prepareStatement(query)) {
+                st.setInt(1, 100);
+                ResultSet rs = st.executeQuery();
+                while (rs.next()) {
+                    instanceId = rs.getString(1);
+                }
+                st.close();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return instanceId;
+    }
+
+    public static List<String> getAllSparkClusterInstances() {
+        List<String> instanceIds = new ArrayList<>();
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "SELECT instance_id FROM dpp_resources.processing_nodes_info";
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                ResultSet rs = st.executeQuery(query);
+                while (rs.next()) {
+
+                    instanceIds.add(rs.getString(1));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return instanceIds;
+    }
+
+    public static void deleteClusterDbInfo() {
+        try {
+            if (DatabaseConnection.con == null) {
+                try {
+                    DatabaseConnection.con = DatabaseConnection.getConnection();
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            String query = "DELETE FROM dpp_resources.processing_nodes_info";
+            String qry = "UPDATE dpp_resources.processing_cluster_info SET instance_types='', no_of_nodes = 0, master_instance_id = '', master_public_dnsname = '', master_public_ip = '', master_private_ip = ''";
+            try (Statement st = DatabaseConnection.con.createStatement()) {
+                st.executeUpdate(query);
+                st.executeUpdate(qry);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
 }

@@ -30,6 +30,7 @@ import com.ssamant.utilities.ConfigureProcessingLayer;
 import com.ssamant.utilities.ConfigureStorageLayer;
 import com.ssamant.utilities.DatabaseConnection;
 import com.ssamant.utilities.UsageGuideForm;
+import java.awt.Cursor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -42,6 +43,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
+import java.util.Random;
+import javax.swing.SwingWorker;
 
 /**
  *
@@ -94,13 +97,73 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         }
     }
 
+    class Task extends SwingWorker<Void, Void> {
+
+        /*
+         * Main task. Executed in background thread.
+         */
+        @Override
+        public Void doInBackground() {
+            Random random = new Random();
+            int progress = 0;
+            //Initialize progress property.
+            setProgress(0);
+            ConfigureProcessingLayer.deleteProcessingCluster();
+            //Make random progress.
+            progress = 100;
+            setProgress(Math.min(progress, 100));
+            return null;
+        }
+
+        /*
+         * Executed in event dispatching thread
+         */
+        @Override
+        public void done() {
+            Toolkit.getDefaultToolkit().beep();
+            btnDeleteCluster.setEnabled(true);
+            txtAreaSparkResourcesInfo.setText("");
+            txtAreaSparkResourcesInfo.setText("Resources for processing cluster deleted successfully.\n");
+            setCursor(null); //turn off the wait cursor
+
+        }
+    }
+
+    class ScaleTask extends SwingWorker<Void, Void> {
+
+        /*
+         * Main task. Executed in background thread.
+         */
+        @Override
+        public Void doInBackground() {
+            Random random = new Random();
+            int progress = 0;
+            //Initialize progress property.
+            setProgress(0);
+            scaleDppResourcesFunction();
+            //Make random progress.
+            progress = 100;
+            setProgress(Math.min(progress, 100));
+            return null;
+        }
+
+        /*
+         * Executed in event dispatching thread
+         */
+        @Override
+        public void done() {
+            Toolkit.getDefaultToolkit().beep();
+            btnScaleDppResources.setEnabled(true);
+            progressBarDppScaling.setIndeterminate(false);
+            setCursor(null); //turn off the wait cursor            
+        }
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("progress".equals(evt.getPropertyName())) {
             int progress = (Integer) evt.getNewValue();
-            progressBarIngestion.setIndeterminate(false);
-            progressBarIngestion.setValue(progress);
-            txtAreaClusterInfo.append("Creating Cluster of instances for Ingestion Service...\n");
+            progressBarProcessing.setValue(progress);
         }
     }
 
@@ -281,6 +344,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         jScrollPane7 = new javax.swing.JScrollPane();
         txtAreaStorageResources = new javax.swing.JTextArea();
         btnScaleDppResources = new javax.swing.JButton();
+        progressBarDppScaling = new javax.swing.JProgressBar();
         lblErrorMsgCompResAllocation = new javax.swing.JLabel();
         btnClearAllDppLayers = new javax.swing.JButton();
         lblTotalCost = new javax.swing.JLabel();
@@ -1070,7 +1134,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(progressBarProcessing, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(progressBarProcessing, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1515,7 +1579,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1531,14 +1595,14 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnScaleDppResources, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(progressBarDppScaling, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
                     .addComponent(jScrollPane5)
                     .addComponent(jScrollPane7))
                 .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(284, 284, 284)
-                .addComponent(btnScaleDppResources, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1561,8 +1625,11 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 6, Short.MAX_VALUE)
-                .addComponent(btnScaleDppResources))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(progressBarDppScaling, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnScaleDppResources))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         lblErrorMsgCompResAllocation.setForeground(new java.awt.Color(255, 51, 51));
@@ -1584,38 +1651,36 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         panDPPLayersLayout.setHorizontalGroup(
             panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panDPPLayersLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panDPPLayersLayout.createSequentialGroup()
-                        .addContainerGap()
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnIngestion, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClearAllDppLayers, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblE2eQoS, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTotalCost, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panDPPLayersLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
                         .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnIngestion, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnClearAllDppLayers, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblE2eQoS, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblTotalCost, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 738, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblErrorMsgCompResAllocation, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panDPPLayersLayout.createSequentialGroup()
                         .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(panDPPLayersLayout.createSequentialGroup()
-                                .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(panDPPLayersLayout.createSequentialGroup()
-                                        .addGap(13, 13, 13)
-                                        .addComponent(btnProcessing, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panDPPLayersLayout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(32, 32, 32)
-                                .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panDPPLayersLayout.createSequentialGroup()
-                                        .addComponent(btnStorage, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(38, 38, 38))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panDPPLayersLayout.createSequentialGroup()
+                                .addGap(13, 13, 13)
+                                .addComponent(btnProcessing, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panDPPLayersLayout.createSequentialGroup()
                                 .addGap(18, 18, 18)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 738, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(panDPPLayersLayout.createSequentialGroup()
-                        .addGap(132, 132, 132)
-                        .addComponent(lblErrorMsgCompResAllocation, javax.swing.GroupLayout.PREFERRED_SIZE, 722, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(32, 32, 32)
+                        .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panDPPLayersLayout.createSequentialGroup()
+                                .addComponent(btnStorage, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(38, 38, 38)))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         panDPPLayersLayout.setVerticalGroup(
             panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1631,10 +1696,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(panDPPLayersLayout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(11, 11, 11))
+                .addGroup(panDPPLayersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panDPPLayersLayout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1643,8 +1705,11 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                         .addComponent(lblTotalCost)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblE2eQoS)
-                        .addGap(28, 28, 28)))
-                .addComponent(lblErrorMsgCompResAllocation, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43))
+                    .addGroup(panDPPLayersLayout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblErrorMsgCompResAllocation, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1934,15 +1999,10 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private void btnDeleteIngestionClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteIngestionClusterActionPerformed
         // TODO add your handling code here:
         isBuild = false;
-        btnDeleteIngestionCluster.setEnabled(false);
-        btnBuildIngestionCluster.setEnabled(false);
-        progressBarIngestion.setIndeterminate(true);
-        txtAreaClusterInfo.setText(null);
-        //getAllActiveBrokerIds();
-        //Stop all the broker Id one by one.
-        btnDeleteIngestionCluster.setEnabled(true);
-        btnBuildIngestionCluster.setEnabled(true);
-        progressBarIngestion.setIndeterminate(false);
+        int option = JOptionPane.showConfirmDialog(null, "Are you sure to delete the cluster?", "Delete", JOptionPane.YES_NO_OPTION);
+        if (option == 0) {
+            ConfigureIngestionLayer.deleteIngestionCluster();
+        }
     }//GEN-LAST:event_btnDeleteIngestionClusterActionPerformed
 
     private void btnClearIngestionFormDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearIngestionFormDataActionPerformed
@@ -2236,8 +2296,19 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private void btnDeleteClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteClusterActionPerformed
         // TODO add your handling code here:
         //Ask to make sure entire deletion of cluster for processing layer: to shut down all services and then instances together.
+        int option = JOptionPane.showConfirmDialog(null, "Are you sure to delete the cluster?", "Delete", JOptionPane.YES_NO_OPTION);
+        if (option == 0) {
+            //delete entire cluster
+            btnDeleteCluster.setEnabled(false);
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            Task task = new Task();
+            task.addPropertyChangeListener(this);
+            task.execute();
+            // ConfigureProcessingLayer.deleteProcessingCluster();
+        }
         //getActiveInstanceIds();
         //call stop instance method for all the instances in the cluster - strating from worker nodes to master node.
+
     }//GEN-LAST:event_btnDeleteClusterActionPerformed
 
     private void btnStartKafkaClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartKafkaClusterActionPerformed
@@ -2346,12 +2417,17 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         // TODO add your handling code here:
         clearDppLayerTabFields();
     }//GEN-LAST:event_btnClearAllDppLayersActionPerformed
-
+    /**
+     * Function to delete entire ingestion cluster resources
+     *
+     * @param evt
+     */
     private void btnDeleteStorageClusterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteStorageClusterActionPerformed
         // TODO add your handling code here:
-        //getAll the active nodes from processing_nodes_info
-        //stop all the instances one by one and update table
-        //update processing_cluster_info table as well.
+        int option = JOptionPane.showConfirmDialog(null, "Are you sure to delete the cluster?", "Delete", JOptionPane.YES_NO_OPTION);
+        if (option == 0) {
+            ConfigureStorageLayer.deleteStorageCluster();
+        }
     }//GEN-LAST:event_btnDeleteStorageClusterActionPerformed
 
     private void jMenuAboutAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuAboutAppActionPerformed
@@ -2369,19 +2445,10 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
     }//GEN-LAST:event_menuItemUsageMenuKeyPressed
 
-    private void menuItemUsageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemUsageActionPerformed
-        // TODO add your handling code here:
-        new UsageGuideForm().setVisible(true);
-    }//GEN-LAST:event_menuItemUsageActionPerformed
-    /**
-     * Function to scale the DPP resources based on the scaling strategy and
-     * obtained resources
-     *
-     * @param evt
-     */
-    @SuppressWarnings("SleepWhileInLoop")
-    private void btnScaleDppResourcesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScaleDppResourcesActionPerformed
-        // TODO add your handling code here:
+    private void scaleDppResourcesFunction() {
+        txtAreaIngestionResources.setText("");
+        txtAreaProcessingResources.setText("");
+        txtAreaStorageResources.setText("");
         if (isInitialDeployment) {
             txtAreaIngestionResources.append("Please allocate resources through Ingestion Layer module for initial deployment of service.\n");
             txtAreaProcessingResources.append("Please allocate resources through Processing Layer module for initial deployment of service.\n");
@@ -2541,7 +2608,28 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             }
             ConfigureIngestionLayer.updateCurrentWorkload(txtFieldFutureWorkload.getText().trim());
         }
-
+    }
+    private void menuItemUsageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemUsageActionPerformed
+        // TODO add your handling code here:
+        new UsageGuideForm().setVisible(true);
+    }//GEN-LAST:event_menuItemUsageActionPerformed
+    /**
+     * Function to scale the DPP resources based on the scaling strategy and
+     * obtained resources
+     *
+     * @param evt
+     */
+    @SuppressWarnings("SleepWhileInLoop")
+    private void btnScaleDppResourcesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScaleDppResourcesActionPerformed
+        // TODO add your handling code here:
+        int option = JOptionPane.showConfirmDialog(null, "Are you sure to Scale the DPP resource now?", "Confirm Action", JOptionPane.YES_NO_OPTION);
+        if (option == 0) {
+            progressBarDppScaling.setIndeterminate(true);
+            ScaleTask task = new ScaleTask();
+            task.addPropertyChangeListener(this);
+            task.execute();
+            // scaleDppResourcesFunction();           
+        }
 
     }//GEN-LAST:event_btnScaleDppResourcesActionPerformed
     public void clearDppLayerTabFields() {
@@ -2550,7 +2638,8 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         txtAreaStorageResources.setText("");
         lblErrorMsgCompResAllocation.setText("");
         btnScaleDppResources.setEnabled(false);
-
+        progressBarDppScaling.setValue(0);
+        progressBarDppScaling.setIndeterminate(false);
     }
 
     public void clearFormFieldsProcessingTab() {
@@ -2567,6 +2656,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         lblStopRestartStatus.setText("");
         lblBuildProcessingCluster.setText("");
         comboBoxNoSparkNodes.setEnabled(true);
+        progressBarProcessing.setValue(0);
     }
 
     /**
@@ -2752,6 +2842,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JPanel panProcessing;
     private javax.swing.JPanel panQoSProfile;
     private javax.swing.JPanel panStorage;
+    private javax.swing.JProgressBar progressBarDppScaling;
     private javax.swing.JProgressBar progressBarIngestion;
     private javax.swing.JProgressBar progressBarProcessing;
     public static javax.swing.JProgressBar progressBarStorage;
