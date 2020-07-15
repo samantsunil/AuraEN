@@ -47,14 +47,14 @@ public class ResourceOptimizer {
             //int[][] S1_W = new int[][]{{1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}, {1, 5, 10, 20, 30}}; //nectar 
             int[][] S1_W = new int[][]{{1, 10, 30, 31, 31, 31}, {1, 10, 30, 50, 51, 51}, {1, 10, 30, 50, 80, 90}}; //aws - t2- micro, small, medium
             //int[][] S2_W = new int[][]{{1, 5, 10, 20, 30, 40, 50, 51, 51, 51, 51, 51}, {1, 5, 10, 20, 30, 40, 50, 60, 61, 61, 61, 61}, {1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100}};
-            int[][] S2_W = new int[][]{{1, 2, 3, 4, 5, 5}, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5, 6}};
+            int[][] S2_W = new int[][]{{1, 2, 3, 4, 5, 5}, {1, 2, 3, 4, 5, 5}, {1, 2, 3, 4, 5, 6}};
             int[][] S3_W = new int[][]{{1, 5, 10, 15, 18, 19, 19}, {1, 5, 10, 15, 18, 19, 19}, {1, 5, 10, 15, 20, 25, 30}};
 
             int[][] S1_Q = new int[][]{{73, 75, 79, 5000, 5000, 5000}, {28, 35, 44, 45, 5000, 5000}, {16, 25, 31, 33, 52, 60}};
             int[][] S2_Q = new int[][]{{300, 400, 700, 900, 5000, 5000}, {300, 400, 700, 900, 5000, 5000}, {200, 400, 700, 800, 850, 900}};
             int[][] S3_Q = new int[][]{{15, 17, 20, 25, 51, 5000, 5000}, {15, 16, 18, 25, 35, 5000, 5000}, {15, 15, 16, 17, 20, 25, 40}};
             float[] price = new float[]{0.0146F, 0.0292F, 0.0584F}; //on-demand t2.micro, t2.small and t2.medium price in USD/hr
-            int delta_A = 150; //100 old based on minimum latency required in layer 2
+            int delta_A = 200; //100 old based on minimum latency required in layer 2
             int delta_B = 15; //based on minimum latency required in layer 3
             float total_cost = 0.0F;
             int aggQoS = delta_A + delta_B;
