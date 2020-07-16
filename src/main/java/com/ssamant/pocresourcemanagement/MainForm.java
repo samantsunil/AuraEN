@@ -1933,7 +1933,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         } else {
             //call resource optimizer algorithm -
             Boolean foundAllocation;
-            clearDppLayerTabFields();
+            clearFields();
             btnScaleDppResources.setEnabled(true);
             int currentWorkload = Integer.parseInt(txtFieldCurrentWorkload.getText().trim());
             int futureWorkload = Integer.parseInt(txtFieldFutureWorkload.getText().trim());
@@ -2643,10 +2643,18 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         progressBarDppScaling.setIndeterminate(false);
         txtFieldE2eLatency.setText("");
         txtFieldFutureWorkload.setText("");
-        lblTotalCost.setText("Total cost:");
-        
+        lblTotalCost.setText("Total cost:");        
         lblE2eQoS.setText("Total end-to-end latency:");
         
+    }
+    public void clearFields(){
+                txtAreaIngestionResources.setText("");
+        txtAreaProcessingResources.setText("");
+        txtAreaStorageResources.setText("");
+        lblErrorMsgCompResAllocation.setText("");
+        btnScaleDppResources.setEnabled(false);
+        progressBarDppScaling.setValue(0);
+        progressBarDppScaling.setIndeterminate(false);
     }
 
     public void clearFormFieldsProcessingTab() {
