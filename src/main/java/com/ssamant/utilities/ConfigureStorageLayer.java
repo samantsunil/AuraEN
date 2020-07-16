@@ -325,7 +325,7 @@ public class ConfigureStorageLayer {
             channel1.setErrStream(System.err);
             channel1.connect(60000);
             readInputStreamFromSshSession(channel1);
-            sleep(5000);
+            sleep(10000);
             if (!isNewNode && "".equals(seedIp)) {
                 String command2 = "sudo bash createKeyspaceTables.sh"; //command to create keyspace and tables for the seed node.           
                 ChannelExec channel2 = (ChannelExec) session.openChannel("exec");

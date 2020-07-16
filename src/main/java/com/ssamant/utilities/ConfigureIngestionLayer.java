@@ -37,7 +37,6 @@ import com.amazonaws.services.ec2.model.StartInstancesRequest;
 import com.amazonaws.services.ec2.model.StartInstancesResult;
 import com.amazonaws.services.ec2.model.StopInstancesRequest;
 import com.amazonaws.services.ec2.model.Tag;
-import com.amazonaws.services.ec2.model.TerminateInstancesRequest;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -72,7 +71,7 @@ public class ConfigureIngestionLayer {
 
     }
     public static String amiId = null;
-    public static String zkDnsName = "ec2-13-211-235-35.ap-southeast-2.compute.amazonaws.com";
+    public static String zkDnsName = "";
 
     public static void buildIngestionLayerCluster(int noOfBrokers, String instType) {
         try {
@@ -123,7 +122,7 @@ public class ConfigureIngestionLayer {
                 try {
                     sleep(6000);
                     dbUpdateZkServerInfo(curInstance.getInstanceId(), curInstance.getPublicDnsName());
-                    sleep(10000);
+                    sleep(20000);
                     startZookeeperServer(curInstance.getPublicDnsName());
 
                 } catch (InterruptedException ex) {
