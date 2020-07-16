@@ -32,7 +32,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.ssamant.pocresourcemanagement.MainARM</mainClass>
+                  <mainClass>com.ssamant.pocresourcemanagement.LoginForm</mainClass>
                 </transformer>
               </transformers>
             </configuration>
