@@ -40,28 +40,23 @@ public class EC2InstanceOperation {
     
      public static void terminateEc2Instance(String instanceId){
             if (instanceId != null) {
-                try {
-                    DryRunSupportedRequest<TerminateInstancesRequest> dryRequest
-                            = () -> {
-                                TerminateInstancesRequest request = new TerminateInstancesRequest()
-                                        .withInstanceIds(instanceId);
-                                
-                                return request.getDryRunRequest();
-                            };
-                    AmazonEC2 ec2Client = CloudLogin.getEC2Client();
-                    DryRunResult dryResponse = ec2Client.dryRun(dryRequest);
-                    
-                    if (!dryResponse.isSuccessful()) {
-                        System.out.printf("Failed dry run to terminate instance %s", instanceId);
-                        throw dryResponse.getDryRunResponse();
-                    }
-                    TerminateInstancesRequest request = new TerminateInstancesRequest()
-                            .withInstanceIds(instanceId);
-                    ec2Client.terminateInstances(request);
-                    waitForRunningState(ec2Client, instanceId);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
+                DryRunSupportedRequest<TerminateInstancesRequest> dryRequest
+                        = () -> {
+                            TerminateInstancesRequest request = new TerminateInstancesRequest()
+                                    .withInstanceIds(instanceId);
+                            
+                            return request.getDryRunRequest();
+                        };
+                AmazonEC2 ec2Client = CloudLogin.getEC2Client();
+                DryRunResult dryResponse = ec2Client.dryRun(dryRequest);
+                if (!dryResponse.isSuccessful()) {
+                    System.out.printf("Failed dry run to terminate instance %s", instanceId);
+                    throw dryResponse.getDryRunResponse();
                 }
+                TerminateInstancesRequest request = new TerminateInstancesRequest()
+                        .withInstanceIds(instanceId);
+                ec2Client.terminateInstances(request);
+                //waitForRunningState(ec2Client, instanceId);
             }
             else {
                 System.out.println("Instance does not exist or invalid instance id.");
