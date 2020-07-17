@@ -2197,6 +2197,10 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
     private void btnViewQoSProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewQoSProfileActionPerformed
         //load qos profile from database;
+        if(tblSustainableQoSProfile.getRowCount()>0){
+            return;
+        }
+            
         try {
             if (DatabaseConnection.con == null) {
                 try {
