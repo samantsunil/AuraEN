@@ -91,8 +91,8 @@ public class ConfigureProcessingLayer {
             RunInstancesRequest runRequest = new RunInstancesRequest()
                     .withImageId(ami_id_spark)
                     .withInstanceType(instanceType) //free -tier instance type used
-                    .withKeyName(ReadSSHKeyLocation.getSshKeyName()) //keypair name
-                    .withSecurityGroupIds(ReadSSHKeyLocation.getSecurityGroups())
+                    .withKeyName(GetPropertyFileKeyValues.getSshKeyName()) //keypair name
+                    .withSecurityGroupIds(GetPropertyFileKeyValues.getSecurityGroups())
                     .withMaxCount(1)
                     .withMinCount(1);
             RunInstancesResult runResponse = ec2Client.runInstances(runRequest);
@@ -147,9 +147,9 @@ public class ConfigureProcessingLayer {
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                 .withInstanceType(instanceType) //free -tier instance type used
-                .withKeyName(ReadSSHKeyLocation.getSshKeyName()) //keypair name
+                .withKeyName(GetPropertyFileKeyValues.getSshKeyName()) //keypair name
                 //.withSecurityGroupIds("sg-66130614", "sg-03dcfd207ba24daae") 
-                .withSecurityGroupIds(ReadSSHKeyLocation.getSecurityGroups())
+                .withSecurityGroupIds(GetPropertyFileKeyValues.getSecurityGroups())
                 .withMaxCount(noOfNodes)
                 .withMinCount(1);
 
@@ -725,7 +725,7 @@ public class ConfigureProcessingLayer {
         String workerIps = getSparkWorkerIps(delta);
         JSch jschClient = new JSch();
         try {
-            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
+            jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", masterDns, 22);
             session.connect(60000);
@@ -751,7 +751,7 @@ public class ConfigureProcessingLayer {
         String workerIps = getSparkWorkerIps(false);
         JSch jschClient = new JSch();
         try {
-            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
+            jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
             session.connect(60000);
@@ -782,7 +782,7 @@ public class ConfigureProcessingLayer {
         String masterDns = getMasterNodeDns(true);
         JSch jschClient = new JSch();
         try {
-            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
+            jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", masterDns, 22);
             session.connect(60000);

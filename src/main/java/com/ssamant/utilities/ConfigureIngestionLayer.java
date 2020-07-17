@@ -97,8 +97,8 @@ public class ConfigureIngestionLayer {
             RunInstancesRequest runRequest = new RunInstancesRequest()
                     .withImageId(zkAmi) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                     .withInstanceType(instanceType) //free -tier instance type t2.micro
-                    .withKeyName(ReadSSHKeyLocation.getSshKeyName()) //keypair name
-                    .withSecurityGroupIds(ReadSSHKeyLocation.getSecurityGroups())
+                    .withKeyName(GetPropertyFileKeyValues.getSshKeyName()) //keypair name
+                    .withSecurityGroupIds(GetPropertyFileKeyValues.getSecurityGroups())
                     .withMaxCount(1)
                     .withMinCount(1);
             RunInstancesResult runResponse = ec2Client.runInstances(runRequest);
@@ -144,8 +144,8 @@ public class ConfigureIngestionLayer {
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                 .withInstanceType(instType) //free -tier instance type t2.micro
-                .withKeyName(ReadSSHKeyLocation.getSshKeyName()) //keypair name
-                .withSecurityGroupIds(ReadSSHKeyLocation.getSecurityGroups())
+                .withKeyName(GetPropertyFileKeyValues.getSshKeyName()) //keypair name
+                .withSecurityGroupIds(GetPropertyFileKeyValues.getSecurityGroups())
                 .withMaxCount(noOfBrokers)
                 .withMinCount(1);
 
@@ -581,7 +581,7 @@ public class ConfigureIngestionLayer {
         try {
             //jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
             sleep(5000);
-             jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation());
+             jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
             session.connect(60000);
@@ -775,7 +775,7 @@ public static void deleteClusterDbInfo(){
             brokerDns = MainForm.txtFieldInstId.getText().trim();
         }
         try {
-            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
+            jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", brokerDns, 22);
             session.connect(60000);
@@ -813,7 +813,7 @@ public static void deleteClusterDbInfo(){
 
         JSch jschClient = new JSch();
         try {
-            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
+            jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             String zkDns = getZookeeperDns();
             Session session = jschClient.getSession("ubuntu", zkDns, 22);
@@ -839,7 +839,7 @@ public static void deleteClusterDbInfo(){
         JSch jschClient = new JSch();
         try {
             sleep(5000);
-            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation()); //ssh key location .pem file
+            jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", zkDns, 22);
             session.connect(60000);

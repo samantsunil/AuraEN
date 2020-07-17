@@ -2545,12 +2545,11 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jScrollPane10" alignment="0" pref="1111" max="32767" attributes="0"/>
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <Component id="btnViewQoSProfile" min="-2" pref="145" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="btnUpdateQoSProfile" min="-2" pref="145" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane11" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -2560,15 +2559,18 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane10" min="-2" pref="202" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
-                      <Component id="jScrollPane11" min="-2" pref="217" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jScrollPane10" min="-2" pref="216" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnViewQoSProfile" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnUpdateQoSProfile" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                              <Component id="btnViewQoSProfile" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnUpdateQoSProfile" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace pref="107" max="32767" attributes="0"/>
+                      <EmptySpace pref="326" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -2584,71 +2586,15 @@
                 <Component class="javax.swing.JTable" name="tblSustainableQoSProfile">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="5" rowCount="9">
-                        <Column editable="true" title="Service Name" type="java.lang.String">
-                          <Data value="Kafka"/>
-                          <Data value="Kafka"/>
-                          <Data value="Kafka"/>
-                          <Data value="Spark"/>
-                          <Data value="Spark"/>
-                          <Data value="Spark"/>
-                          <Data value="Cassandra"/>
-                          <Data value="Cassandra"/>
-                          <Data value="Cassandra"/>
-                        </Column>
-                        <Column editable="true" title="Instance Type" type="java.lang.String">
-                          <Data value="t2.micro"/>
-                          <Data value="t2.small"/>
-                          <Data value="t2.medium"/>
-                          <Data value="t2.micro"/>
-                          <Data value="t2.small"/>
-                          <Data value="t2.medium"/>
-                          <Data value="t2.micro"/>
-                          <Data value="t2.small"/>
-                          <Data value="t2.medium"/>
-                        </Column>
-                        <Column editable="true" title="Input Workload(X1000/sec)" type="java.lang.Object">
-                          <Data value="1, 10, 30"/>
-                          <Data value="1, 10, 30, 50"/>
-                          <Data value="1, 10, 30, 50, 80, 90"/>
-                          <Data value="1, 2, 3, 4"/>
-                          <Data value="1, 2, 3, 4"/>
-                          <Data value="1, 2, 3, 4, 5, 6"/>
-                          <Data value="1, 5, 10, 15, 18"/>
-                          <Data value="1, 5, 10, 15, 18"/>
-                          <Data value="1, 5, 10, 15, 20, 25, 30"/>
-                        </Column>
-                        <Column editable="true" title="Sustainable Workload(X1000/sec)" type="java.lang.Object">
-                          <Data value="1, 20, 30"/>
-                          <Data value="1, 10, 30, 50"/>
-                          <Data value="1, 10, 30, 50, 80, 90"/>
-                          <Data value="1, 2, 3, 4"/>
-                          <Data value="1, 2, 3, 4"/>
-                          <Data value="1, 2, 3, 4, 5, 6"/>
-                          <Data value="1, 5, 10, 15, 18"/>
-                          <Data value="1, 5, 10, 15, 18"/>
-                          <Data value="1, 5, 10, 15, 20, 25, 30"/>
-                        </Column>
-                        <Column editable="true" title="Sustainable Latency(ms)" type="java.lang.Object">
-                          <Data value="73, 75, 79"/>
-                          <Data value="28, 35, 44, 45"/>
-                          <Data value="16, 25, 31, 33, 52, 60"/>
-                          <Data value="300, 400, 700, 900"/>
-                          <Data value="300, 400, 700, 900"/>
-                          <Data value="200, 400, 700, 800, 850, 900"/>
-                          <Data value="15, 17, 20, 25, 51"/>
-                          <Data value="15, 16, 18, 25, 35"/>
-                          <Data value="15, 15, 16, 17, 20, 25, 40"/>
-                        </Column>
+                      <Table columnCount="4" rowCount="0">
+                        <Column editable="true" title="Service Name" type="java.lang.String"/>
+                        <Column editable="true" title="Instance Type" type="java.lang.String"/>
+                        <Column editable="true" title="Sustainable Workload(X1000/sec)" type="java.lang.String"/>
+                        <Column editable="true" title="Sustainable Latency(ms)" type="java.lang.String"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0">
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                          <Title/>
-                          <Editor/>
-                          <Renderer/>
-                        </Column>
                         <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                           <Title/>
                           <Editor/>
@@ -2691,22 +2637,6 @@
                 <Property name="text" type="java.lang.String" value="Update QoS Profile"/>
               </Properties>
             </Component>
-            <Container class="javax.swing.JScrollPane" name="jScrollPane11">
-              <AuxValues>
-                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-              </AuxValues>
-
-              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-              <SubComponents>
-                <Component class="javax.swing.JTextArea" name="txtAreaSustainabelQoSInfo">
-                  <Properties>
-                    <Property name="columns" type="int" value="20"/>
-                    <Property name="lineWrap" type="boolean" value="true"/>
-                    <Property name="rows" type="int" value="5"/>
-                  </Properties>
-                </Component>
-              </SubComponents>
-            </Container>
           </SubComponents>
         </Container>
       </SubComponents>

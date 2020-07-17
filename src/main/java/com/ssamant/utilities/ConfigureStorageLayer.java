@@ -269,7 +269,7 @@ public class ConfigureStorageLayer {
         String msg = null;
         try {
             sleep(5000);
-            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation());
+            jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
             session.connect(60000);
@@ -301,7 +301,7 @@ public class ConfigureStorageLayer {
         String hostId = "";
         //String seedIp = "172.31.34.236";
         try {
-            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation());
+            jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
             session.connect(60000);
@@ -462,8 +462,8 @@ public static void updateNodeTypeStatus(String instanceId) {
         RunInstancesRequest runRequest = new RunInstancesRequest()
                 .withImageId(amiId) //img id for ubuntu machine image, can be replaced with AMI image built using snapshot
                 .withInstanceType(instanceType) //free -tier instance type used
-                .withKeyName(ReadSSHKeyLocation.getSshKeyName()) //keypair name
-                .withSecurityGroupIds(ReadSSHKeyLocation.getSecurityGroups())
+                .withKeyName(GetPropertyFileKeyValues.getSshKeyName()) //keypair name
+                .withSecurityGroupIds(GetPropertyFileKeyValues.getSecurityGroups())
                 .withMaxCount(noOfNodes)
                 .withMinCount(1);
 
@@ -535,7 +535,7 @@ public static void updateNodeTypeStatus(String instanceId) {
         //String seedIp = "172.31.34.236";
         try {
             //jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
-            jschClient.addIdentity(ReadSSHKeyLocation.getSshKeyLocation());
+            jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDns, 22);
             session.connect(60000);

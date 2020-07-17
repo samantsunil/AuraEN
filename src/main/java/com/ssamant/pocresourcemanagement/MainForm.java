@@ -44,7 +44,10 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import java.util.Random;
+import java.util.Vector;
 import javax.swing.SwingWorker;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -353,8 +356,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         tblSustainableQoSProfile = new javax.swing.JTable();
         btnViewQoSProfile = new javax.swing.JButton();
         btnUpdateQoSProfile = new javax.swing.JButton();
-        jScrollPane11 = new javax.swing.JScrollPane();
-        txtAreaSustainabelQoSInfo = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuAboutApp = new javax.swing.JMenu();
         menuItemUsage = new javax.swing.JMenuItem();
@@ -1717,22 +1718,14 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         tblSustainableQoSProfile.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Kafka", "t2.micro", "1, 10, 30", "1, 20, 30", "73, 75, 79"},
-                {"Kafka", "t2.small", "1, 10, 30, 50", "1, 10, 30, 50", "28, 35, 44, 45"},
-                {"Kafka", "t2.medium", "1, 10, 30, 50, 80, 90", "1, 10, 30, 50, 80, 90", "16, 25, 31, 33, 52, 60"},
-                {"Spark", "t2.micro", "1, 2, 3, 4", "1, 2, 3, 4", "300, 400, 700, 900"},
-                {"Spark", "t2.small", "1, 2, 3, 4", "1, 2, 3, 4", "300, 400, 700, 900"},
-                {"Spark", "t2.medium", "1, 2, 3, 4, 5, 6", "1, 2, 3, 4, 5, 6", "200, 400, 700, 800, 850, 900"},
-                {"Cassandra", "t2.micro", "1, 5, 10, 15, 18", "1, 5, 10, 15, 18", "15, 17, 20, 25, 51"},
-                {"Cassandra", "t2.small", "1, 5, 10, 15, 18", "1, 5, 10, 15, 18", "15, 16, 18, 25, 35"},
-                {"Cassandra", "t2.medium", "1, 5, 10, 15, 20, 25, 30", "1, 5, 10, 15, 20, 25, 30", "15, 15, 16, 17, 20, 25, 40"}
+
             },
             new String [] {
-                "Service Name", "Instance Type", "Input Workload(X1000/sec)", "Sustainable Workload(X1000/sec)", "Sustainable Latency(ms)"
+                "Service Name", "Instance Type", "Sustainable Workload(X1000/sec)", "Sustainable Latency(ms)"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1750,11 +1743,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         btnUpdateQoSProfile.setText("Update QoS Profile");
 
-        txtAreaSustainabelQoSInfo.setColumns(20);
-        txtAreaSustainabelQoSInfo.setLineWrap(true);
-        txtAreaSustainabelQoSInfo.setRows(5);
-        jScrollPane11.setViewportView(txtAreaSustainabelQoSInfo);
-
         javax.swing.GroupLayout panQoSProfileLayout = new javax.swing.GroupLayout(panQoSProfile);
         panQoSProfile.setLayout(panQoSProfileLayout);
         panQoSProfileLayout.setHorizontalGroup(
@@ -1765,22 +1753,22 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     .addGroup(panQoSProfileLayout.createSequentialGroup()
                         .addComponent(btnViewQoSProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnUpdateQoSProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane11, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addComponent(btnUpdateQoSProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         panQoSProfileLayout.setVerticalGroup(
             panQoSProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panQoSProfileLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11)
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(panQoSProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnViewQoSProfile)
-                    .addComponent(btnUpdateQoSProfile))
-                .addContainerGap(107, Short.MAX_VALUE))
+                    .addGroup(panQoSProfileLayout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(btnViewQoSProfile))
+                    .addGroup(panQoSProfileLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnUpdateQoSProfile)))
+                .addContainerGap(326, Short.MAX_VALUE))
         );
 
         dppLayersTab.addTab("View QoS Profile", panQoSProfile);
@@ -2220,11 +2208,24 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             String query = "SELECT * FROM sustainable_qos_profile";
             try (Statement st = DatabaseConnection.con.createStatement()) {
                 ResultSet rs = st.executeQuery(query);
+                //tblSustainableQoSProfile
+                int columnCount = tblSustainableQoSProfile.getColumnCount();
+                Vector<Vector<String>> data=new Vector<>();             
+                Vector<String> columns = new Vector<>();
+                
+            for (int column = 0; column <columnCount; column++) {
+                columns.add(tblSustainableQoSProfile.getColumnName(column));                
+            }
+                tblSustainableQoSProfile.setAutoCreateColumnsFromModel(false);
+                DefaultTableModel model = new DefaultTableModel(data,columns);
+                tblSustainableQoSProfile.setModel(model);                
                 while (rs.next()) {
-                    String serviceName = rs.getString("service_name");
-                    String instanceType = rs.getString("instance_type");
-                    String jsonData = rs.getString("input_qos_values");
-                    txtAreaSustainabelQoSInfo.append("Service: " + serviceName + ", Instance Type: " + instanceType + ", [sus. workload: sus. latency]" + jsonData + ".\n");
+                    Vector<String> newRow = new Vector<>();
+                    for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                        newRow.add(rs.getString(columnIndex));
+                    }                   
+                    model.addRow(newRow);                                       
+                    
                 }
             }
         } catch (SQLException ex) {
@@ -2643,12 +2644,13 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         progressBarDppScaling.setIndeterminate(false);
         txtFieldE2eLatency.setText("");
         txtFieldFutureWorkload.setText("");
-        lblTotalCost.setText("Total cost:");        
+        lblTotalCost.setText("Total cost:");
         lblE2eQoS.setText("Total end-to-end latency:");
-        
+
     }
-    public void clearFields(){
-                txtAreaIngestionResources.setText("");
+
+    public void clearFields() {
+        txtAreaIngestionResources.setText("");
         txtAreaProcessingResources.setText("");
         txtAreaStorageResources.setText("");
         lblErrorMsgCompResAllocation.setText("");
@@ -2824,7 +2826,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
-    private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -2872,7 +2873,6 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     public static javax.swing.JTextArea txtAreaSparkResourcesInfo;
     private javax.swing.JTextArea txtAreaStorageDetails;
     public static javax.swing.JTextArea txtAreaStorageResources;
-    private javax.swing.JTextArea txtAreaSustainabelQoSInfo;
     private javax.swing.JTextField txtFieldCurrentWorkload;
     private javax.swing.JTextField txtFieldDnsName;
     private javax.swing.JTextField txtFieldDnsNameConfigure;

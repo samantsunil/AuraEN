@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  *
  * @author Sunil
  */
-public class ReadSSHKeyLocation {
+public class GetPropertyFileKeyValues {
 
     public static String getSshKeyLocation() {
         Properties prop = null;
@@ -43,7 +43,7 @@ public class ReadSSHKeyLocation {
             prop = PropertyFileReader.readPropertyFile();
             sshKeyLoc = prop.getProperty("com.ssamant.utilities.ssh.keylocation");
         } catch (Exception ex) {
-            Logger.getLogger(ReadSSHKeyLocation.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GetPropertyFileKeyValues.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return sshKeyLoc;
@@ -56,7 +56,7 @@ public class ReadSSHKeyLocation {
             prop = PropertyFileReader.readPropertyFile();
             sshKeyName = prop.getProperty("com.ssamant.utilities.ssh.key");
         } catch (Exception ex) {
-            Logger.getLogger(ReadSSHKeyLocation.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GetPropertyFileKeyValues.class.getName()).log(Level.SEVERE, null, ex);
         }
         return sshKeyName;
     }
@@ -74,8 +74,51 @@ public class ReadSSHKeyLocation {
             secGroupIds = Arrays.asList(secGroups);
 
         } catch (Exception ex) {
-            Logger.getLogger(ReadSSHKeyLocation.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GetPropertyFileKeyValues.class.getName()).log(Level.SEVERE, null, ex);
         }
         return secGroupIds;
+    }
+
+    public static Float[] getInstancePrice() {
+        Properties prop = null;
+        String instancePrices = "";
+        String[] instPrices = null;
+        Float[] instPriceArray = null;
+        try {
+            prop = PropertyFileReader.readPropertyFile();
+            instancePrices = prop.getProperty("com.ssamant.pocresourcemanagement.instanceprices");
+
+            instPrices = instancePrices.split(",");
+            instPriceArray = Arrays.stream(instPrices).map(Float::valueOf).toArray(Float[]::new);
+            //secGroupIds = Arrays.asList(instPrices);
+
+        } catch (Exception ex) {
+            Logger.getLogger(GetPropertyFileKeyValues.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return instPriceArray;
+    }
+
+    public static int getDeltaMinAQoS() {
+        Properties prop = null;
+        String temp = "";
+        try {
+            prop = PropertyFileReader.readPropertyFile();
+            temp = prop.getProperty("com.ssamant.pocresourcemanagement.deltaminA");
+        } catch (Exception ex) {
+            Logger.getLogger(GetPropertyFileKeyValues.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Integer.parseInt(temp);
+    }
+
+    public static int getDeltaMinBQoS() {
+        Properties prop = null;
+        String temp = "";
+        try {
+            prop = PropertyFileReader.readPropertyFile();
+            temp = prop.getProperty("com.ssamant.pocresourcemanagement.deltaminB");
+        } catch (Exception ex) {
+            Logger.getLogger(GetPropertyFileKeyValues.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Integer.parseInt(temp);
     }
 }
