@@ -25,6 +25,8 @@ package com.ssamant.pocresourcemanagement;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.net.URL;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -48,7 +50,9 @@ public class LoginForm extends javax.swing.JFrame {
     private void setWindowSize() {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
-        
+        URL url = getClass().getResource("/croodap.png");
+        ImageIcon imgicon = new ImageIcon(url);
+        this.setIconImage(imgicon.getImage());
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
