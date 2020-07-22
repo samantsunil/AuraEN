@@ -35,6 +35,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import static java.lang.Thread.sleep;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -45,6 +46,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import java.util.Random;
 import java.util.Vector;
+import javax.swing.ImageIcon;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -89,6 +91,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
     private void setWindowSize() {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+                URL url = getClass().getResource("/croodap.png");
+        ImageIcon imgicon = new ImageIcon(url);
+        this.setIconImage(imgicon.getImage());
     }
 
     private void setCurrentWorkload() {
@@ -362,7 +367,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         menuItemAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Resource Management Framework [Data Processing Pipeline]");
+        setTitle("CROODaP: DPP's Cloud Resource Manager");
         setIconImages(null);
         setName("mainForm"); // NOI18N
         setSize(new java.awt.Dimension(0, 0));
