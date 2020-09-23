@@ -34,7 +34,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value="CROODaP: DPP&apos;s Cloud Resource Manager"/>
+    <Property name="title" type="java.lang.String" value="AuraEN"/>
     <Property name="iconImages" type="java.util.List" editor="org.netbeans.modules.form.ComponentChooserEditor">
       <ComponentRef name="null"/>
     </Property>

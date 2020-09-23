@@ -367,7 +367,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
         menuItemAbout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("CROODaP: DPP's Cloud Resource Manager");
+        setTitle("AuraEN");
         setIconImages(null);
         setName("mainForm"); // NOI18N
         setSize(new java.awt.Dimension(0, 0));
