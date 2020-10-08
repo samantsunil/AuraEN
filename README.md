@@ -1,9 +1,9 @@
 # Cloud Resource Management for Data Processing Pipeline.
 This project is developed as a proof-of-concept implementation for my PhD thesis [ref: Samant, Sunil Singh, et al. "Towards End-to-End QoS and Cost-Aware Resource Scaling in Cloud-Based IoT Data Processing Pipelines." 2018 IEEE International Conference on Services Computing (SCC). IEEE, 2018.]
 The implementation is based on the following architecture of the resource management framework, and the code includes the implementation for the components directly interacting with the 'Resource Orchestrator' including the resource orchestrator itself:
-![arch-rmf](https://user-images.githubusercontent.com/6667076/93007963-99b54900-f5b2-11ea-847c-b4e71fd1e5e2.png)
+!![AuraEN](https://user-images.githubusercontent.com/6667076/95416372-48646380-097e-11eb-93e8-0d587be2ac25.png)
 ## Building the project
-The project depends on following tools and technologies for building:
+The project requires following tools and technologies for building:
 - JDK 1.8
 - Maven 3.6.3 \
 In addition, for testing the resource management on AWS cloud it requires following components:
