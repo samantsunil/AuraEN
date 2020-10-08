@@ -45,10 +45,15 @@ public class ResourceOptimizer {
 
         try {
             String e2eResourceAllocation = "";           
-            int[][] S1_W = new int[][]{{1, 10, 30, 31, 31, 31}, {1, 10, 30, 50, 51, 51}, {1, 10, 30, 50, 80, 90}}; //aws - t2- micro, small, medium
+            int[][] S1_W = new int[][]{{1000, 10000, 30000, 30001, 30001, 30001}, 
+                {1000, 10000, 30000, 50000, 50001, 50001}, 
+                {1000, 10000, 30000, 50000, 80000, 90000}}; //aws - t2- micro, small, medium
              
-            int[][] S2_W = new int[][]{{1, 2, 3, 4, 5, 5}, {1, 2, 3, 4, 5, 5}, {1, 2, 3, 4, 5, 6}};
-            int[][] S3_W = new int[][]{{1, 5, 10, 15, 18, 19, 19}, {1, 5, 10, 15, 18, 19, 19}, {1, 5, 10, 15, 20, 25, 30}};
+            int[][] S2_W = new int[][]{{1000, 2000, 3000, 40000, 5000, 5000}, 
+                {1000, 2000, 3000, 4000, 5000, 5000}, {1000, 2000, 3000, 4000, 5000, 6000}};
+            int[][] S3_W = new int[][]{{1000, 5000, 10000, 15000, 18000, 19000, 19000},
+                {1000, 5000, 10000, 15000, 18000, 19000, 19000}, 
+                {1000, 5000, 10000, 15000, 20000, 25000, 30000}};
 
             int[][] S1_Q = new int[][]{{73, 75, 79, 5000, 5000, 5000}, {28, 35, 44, 45, 5000, 5000}, {16, 25, 31, 33, 52, 60}};
             int[][] S2_Q = new int[][]{{300, 400, 700, 900, 5000, 5000}, {300, 400, 700, 900, 5000, 5000}, {200, 400, 700, 800, 850, 900}};
@@ -304,15 +309,15 @@ public class ResourceOptimizer {
                 }
 
             }
-            System.out.println("Total cost: " + String.valueOf(total_cost));
-            System.out.println("total end-to-end QoS: " + String.valueOf(aggQoS));
+           // System.out.println("Total cost: " + String.valueOf(total_cost));
+            //System.out.println("total end-to-end QoS: " + String.valueOf(aggQoS));
             MainForm.lblTotalCost.setText("");
             MainForm.lblTotalCost.setText("Total cost: " + String.valueOf(total_cost));
             MainForm.lblE2eQoS.setText("");
             MainForm.lblE2eQoS.setText("Total end-to-end latency:" + String.valueOf(aggQoS));
             success = true;
 
-        } catch (Exception ex) {
+        } catch (NumberFormatException ex) {
             success = false;
 
         }
