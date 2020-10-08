@@ -3,7 +3,7 @@ This project is developed as a proof-of-concept implementation for my PhD thesis
 The implementation is based on the following architecture of the resource management framework, and the code includes the implementation for the components directly interacting with the 'Resource Orchestrator' including the resource orchestrator itself:
 ![arch-rmf](https://user-images.githubusercontent.com/6667076/93007963-99b54900-f5b2-11ea-847c-b4e71fd1e5e2.png)
 ## Building the project
-The project depends on following tools and technologies for building:
+The project requires following tools and technologies for building:
 - JDK 1.8
 - Maven 3.6.3 \
 In addition, for testing the resource management on AWS cloud it requires following components:
