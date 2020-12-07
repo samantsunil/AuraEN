@@ -26,6 +26,7 @@ package com.ssamant.utilities;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.model.CreateTagsRequest;
 import com.amazonaws.services.ec2.model.CreateTagsResult;
+import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DryRunResult;
 import com.amazonaws.services.ec2.model.DryRunSupportedRequest;
 import com.amazonaws.services.ec2.model.Instance;
@@ -109,7 +110,8 @@ public class ConfigureProcessingLayer {
                 MainForm.txtAreaSparkResourcesInfo.append("--------Spark Master Node Info-----------------\n");
                 MainForm.txtAreaSparkResourcesInfo.append("Public DNS: " + curInstance.getPublicDnsName() + ", Public IP: " + curInstance.getPublicIpAddress() + ", Private IP: " + curInstance.getPrivateIpAddress() + ", Instance Id: " + curInstance.getInstanceId() + ".\n");
                 sleep(2000);
-                Boolean success = configureAndRunMasterNode(curInstance.getPublicDnsName());
+                Boolean success;
+                success = configureAndRunMasterNode(curInstance.getPublicDnsName());
                 if (success) {
                     MainForm.txtAreaSparkResourcesInfo.append("----------------------------\n");
                     MainForm.txtAreaSparkResourcesInfo.append("Spark Cluster Running... accessible at: www." + curInstance.getPublicDnsName() + ":8080\n");
@@ -385,7 +387,10 @@ public class ConfigureProcessingLayer {
                         .withInstanceIds(instanceId);
 
                 ec2Client.stopInstances(request);
-                Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, instanceId);
+                //Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, instanceId);
+                DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(instanceId);
+                Thread.sleep(3);
+                Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
                 System.out.printf("Successfully stopped the instance: %s", instanceId);
                 //lblInstanceStopMsg.setText("Successfully stop the instance: " + instanceId + ".");
                 if (curInstance != null) {
@@ -758,7 +763,7 @@ public class ConfigureProcessingLayer {
             channel.setErrStream(System.err);
             channel.connect(5000);
             readInputStreamFromSshSession(channel);
-            sleep(2000);
+            sleep(1000);
             String cmd = "sudo bash startSparkCluster.sh";         //check to make sure ingestion and storage services are running before executing this script.
             ChannelExec chnl = (ChannelExec) session.openChannel("exec");
             chnl.setCommand(cmd);
