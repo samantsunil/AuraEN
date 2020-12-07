@@ -293,7 +293,7 @@ public class ConfigureStorageLayer {
         }
     }
 
-    public static String configureNoSqlServerNode(String pubDnsName, Boolean isNewNode, String seedIp, String InstanceId) throws IOException {
+    public static String configureNoSqlServerNode(String pubDnsName, Boolean isNonSeedNode, String seedIp, String InstanceId) throws IOException {
         JSch jschClient = new JSch();
         String hostId = "";
         //String seedIp = "172.31.34.236";
@@ -303,9 +303,9 @@ public class ConfigureStorageLayer {
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
             session.connect(10000);
             String command = "";
-            if (isNewNode && !"".equals(seedIp)) {
+            if (isNonSeedNode && !"".equals(seedIp)) {
                 updateNodeTypeStatus(InstanceId);
-                sleep(5000);
+                sleep(1000);
                 command = "sudo service cassandra stop;sudo bash clearCassandraLogs.sh;sudo bash configureCassandraNewNode.sh " + seedIp;
             } else {
                 command = "sudo service cassandra stop;sudo bash configureCassandraNode.sh;sudo bash clearCassandraLogs.sh";
@@ -313,7 +313,7 @@ public class ConfigureStorageLayer {
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect(5000);
+            channel.connect(3000);
             readInputStreamFromSshSession(channel);
             sleep(1000);
             String command1 = "sudo bash restartCassandra.sh"; //command to start new cassandra node
@@ -323,22 +323,21 @@ public class ConfigureStorageLayer {
             channel1.connect(5000);
             readInputStreamFromSshSession(channel1);
             sleep(2000);
-            if (!isNewNode && "".equals(seedIp)) {
+            //if seed node is created for the first time then creates new keyspace and tables
+            if (!isNonSeedNode && "".equals(seedIp)) {
                 String command2 = "sudo bash createKeyspaceTables.sh"; //command to create keyspace and tables for the seed node.           
                 ChannelExec channel2 = (ChannelExec) session.openChannel("exec");
                 channel2.setCommand(command2);
                 channel2.setErrStream(System.err);
                 channel2.connect(5000);
-                readInputStreamFromSshSession(channel2);
-                sleep(1000);
+                readInputStreamFromSshSession(channel2);                
             }
             String command3 = "sudo bash returnNodeHostId.sh"; 
             ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
             channel3.setCommand(command3);
             channel3.setErrStream(System.err);
             channel3.connect(5000);
-            hostId = readInputStreamFromSshSession(channel3);
-            sleep(1000);
+            hostId = readInputStreamFromSshSession(channel3);            
             session.disconnect();
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());

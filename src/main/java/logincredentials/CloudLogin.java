@@ -58,7 +58,7 @@ public class CloudLogin {
         try {
             ec2Client = AmazonEC2ClientBuilder.standard()
                     .withCredentials(new AWSStaticCredentialsProvider(CloudLogin.getAWSCredentials()))
-                    .withRegion(Regions.AP_SOUTHEAST_2)
+                    .withRegion(Regions.AP_SOUTHEAST_2) //region is fixed.\
                     .build();
         } catch (Exception ex) {
             System.out.printf("Error in instance creation: " + ex.getMessage());
