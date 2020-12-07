@@ -43,10 +43,6 @@ import com.jcraft.jsch.Session;
 import com.ssamant.pocresourcemanagement.MainForm;
 import static com.ssamant.utilities.ConfigureIngestionLayer.readInputStreamFromSshSession;
 import static com.ssamant.utilities.DatabaseConnection.getConnection;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import static java.lang.Thread.sleep;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -112,7 +108,7 @@ public class ConfigureProcessingLayer {
                 dbUpdateMasterNodeInfo(curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getInstanceId());
                 MainForm.txtAreaSparkResourcesInfo.append("--------Spark Master Node Info-----------------\n");
                 MainForm.txtAreaSparkResourcesInfo.append("Public DNS: " + curInstance.getPublicDnsName() + ", Public IP: " + curInstance.getPublicIpAddress() + ", Private IP: " + curInstance.getPrivateIpAddress() + ", Instance Id: " + curInstance.getInstanceId() + ".\n");
-                sleep(5000);
+                sleep(2000);
                 Boolean success = configureAndRunMasterNode(curInstance.getPublicDnsName());
                 if (success) {
                     MainForm.txtAreaSparkResourcesInfo.append("----------------------------\n");
@@ -635,22 +631,22 @@ public class ConfigureProcessingLayer {
                 jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
                 JSch.setConfig("StrictHostKeyChecking", "no");
                 Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-                session.connect(60000);
+                session.connect(10000);
                 //run commands
                 String command = "sudo bash updateConfigParamsSpark.sh " + brokerId + " " + cassandraSeedIp + "";  //script file must be available in the instance home directory
                 ChannelExec channel = (ChannelExec) session.openChannel("exec");
                 channel.setCommand(command);
                 channel.setErrStream(System.err);
-                channel.connect(60000);
+                channel.connect(5000);
                 readInputStreamFromSshSession(channel);
-                sleep(5000);
+                sleep(2000);
                 String cmd = "sudo bash runSparkApp.sh";         //check to make sure ingestion and storage services are running before executing this script.
                 ChannelExec chnl = (ChannelExec) session.openChannel("exec");
                 chnl.setCommand(cmd);
                 chnl.setErrStream(System.err);
-                chnl.connect(60000);
+                chnl.connect(5000);
                 readInputStreamFromSshSession(chnl);
-                sleep(5000);
+                sleep(2000);
                 session.disconnect();
             } catch (JSchException | InterruptedException ex) {
                 System.out.println(ex.getMessage());
@@ -665,15 +661,15 @@ public class ConfigureProcessingLayer {
                 jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
                 JSch.setConfig("StrictHostKeyChecking", "no");
                 Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-                session.connect(60000);
+                session.connect(10000);
                 //run commands
                 String command = "sudo bash startWorker.sh " + masterUrl;         //script file must be available in the instance home directory
                 ChannelExec channel = (ChannelExec) session.openChannel("exec");
                 channel.setCommand(command);
                 channel.setErrStream(System.err);
-                channel.connect(60000);
+                channel.connect(5000);
                 readInputStreamFromSshSession(channel);
-                sleep(5000);
+                sleep(1000);
                 session.disconnect();
             } catch (JSchException | InterruptedException ex) {
                 System.out.println(ex.getMessage());
@@ -728,15 +724,15 @@ public class ConfigureProcessingLayer {
             jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", masterDns, 22);
-            session.connect(60000);
+            session.connect(10000);
             //run commands
             String command = "sudo bash upd8SparkClusterConfig.sh " + brokerId + " " + cassandraSeedIp + " " + workerIps;         //script file must be available in the instance home directory
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect(60000);
+            channel.connect(5000);
             readInputStreamFromSshSession(channel);
-            sleep(5000);
+            sleep(1000);
             session.disconnect();
         } catch (JSchException | InterruptedException ex) {
             System.out.println("Error while updating masterNode: " + ex.getMessage());
@@ -754,22 +750,22 @@ public class ConfigureProcessingLayer {
             jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-            session.connect(60000);
+            session.connect(10000);
             //run commands
             String command = "sudo bash upd8SparkClusterConfig.sh " + brokerId + " " + cassandraSeedIp + " " + workerIps;         //script file must be available in the instance home directory
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect(60000);
+            channel.connect(5000);
             readInputStreamFromSshSession(channel);
-            sleep(5000);
+            sleep(2000);
             String cmd = "sudo bash startSparkCluster.sh";         //check to make sure ingestion and storage services are running before executing this script.
             ChannelExec chnl = (ChannelExec) session.openChannel("exec");
             chnl.setCommand(cmd);
             chnl.setErrStream(System.err);
-            chnl.connect(60000);
+            chnl.connect(5000);
             readInputStreamFromSshSession(chnl);
-            sleep(5000);
+            sleep(1000);
             session.disconnect();
             success = true;
         } catch (JSchException | InterruptedException ex) {
@@ -785,14 +781,14 @@ public class ConfigureProcessingLayer {
             jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", masterDns, 22);
-            session.connect(60000);
+            session.connect(10000);
             String cmd = "sudo bash runSparkAppCluster.sh";         //check to make sure ingestion and storage services are running before executing this script.
             ChannelExec chnl = (ChannelExec) session.openChannel("exec");
             chnl.setCommand(cmd);
             chnl.setErrStream(System.err);
-            chnl.connect(60000);
+            chnl.connect(5000);
             readInputStreamFromSshSession(chnl);
-            sleep(5000);
+            sleep(1000);
             session.disconnect();
         } catch (JSchException | InterruptedException ex) {
 

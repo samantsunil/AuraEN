@@ -43,9 +43,6 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.ssamant.pocresourcemanagement.MainForm;
 import static com.ssamant.utilities.DatabaseConnection.getConnection;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.Thread.sleep;
@@ -219,7 +216,7 @@ public class ConfigureStorageLayer {
             }
 
             if (!completed) {
-                Thread.sleep(5000);
+                Thread.sleep(2000);
             }
         }
         System.out.println(status);
@@ -272,12 +269,12 @@ public class ConfigureStorageLayer {
             jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-            session.connect(60000);
+            session.connect(10000);
             String command = "sudo bash shutDownCassandraNode.sh";
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect(60000);
+            channel.connect(5000);
             try {
                 msg = readInputStreamFromSshSession(channel);
                 MainForm.lblInstanceStatus.setText(msg);
@@ -285,7 +282,7 @@ public class ConfigureStorageLayer {
                 Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                sleep(5000);
+                sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -304,11 +301,11 @@ public class ConfigureStorageLayer {
             jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-            session.connect(60000);
+            session.connect(10000);
             String command = "";
             if (isNewNode && !"".equals(seedIp)) {
                 updateNodeTypeStatus(InstanceId);
-                sleep(10000);
+                sleep(5000);
                 command = "sudo service cassandra stop;sudo bash clearCassandraLogs.sh;sudo bash configureCassandraNewNode.sh " + seedIp;
             } else {
                 command = "sudo service cassandra stop;sudo bash configureCassandraNode.sh;sudo bash clearCassandraLogs.sh";
@@ -316,32 +313,32 @@ public class ConfigureStorageLayer {
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect(60000);
+            channel.connect(5000);
             readInputStreamFromSshSession(channel);
-            sleep(5000);
+            sleep(1000);
             String command1 = "sudo bash restartCassandra.sh"; //command to start new cassandra node
             ChannelExec channel1 = (ChannelExec) session.openChannel("exec");
             channel1.setCommand(command1);
             channel1.setErrStream(System.err);
-            channel1.connect(60000);
+            channel1.connect(5000);
             readInputStreamFromSshSession(channel1);
-            sleep(10000);
+            sleep(2000);
             if (!isNewNode && "".equals(seedIp)) {
                 String command2 = "sudo bash createKeyspaceTables.sh"; //command to create keyspace and tables for the seed node.           
                 ChannelExec channel2 = (ChannelExec) session.openChannel("exec");
                 channel2.setCommand(command2);
                 channel2.setErrStream(System.err);
-                channel2.connect(60000);
+                channel2.connect(5000);
                 readInputStreamFromSshSession(channel2);
-                sleep(5000);
+                sleep(1000);
             }
             String command3 = "sudo bash returnNodeHostId.sh"; 
             ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
             channel3.setCommand(command3);
             channel3.setErrStream(System.err);
-            channel3.connect(60000);
+            channel3.connect(5000);
             hostId = readInputStreamFromSshSession(channel3);
-            sleep(5000);
+            sleep(1000);
             session.disconnect();
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());
@@ -538,42 +535,42 @@ public static void updateNodeTypeStatus(String instanceId) {
             jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDns, 22);
-            session.connect(60000);
+            session.connect(10000);
             
             String command = "sudo service cassandra stop;sudo bash clearCassandraLogs.sh;sudo bash configureCassandraNewNode.sh " + seedIp;
              
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect(60000);
+            channel.connect(5000);
             try {
                 readInputStreamFromSshSession(channel);
             } catch (IOException ex) {
                 Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            sleep(5000);
+            sleep(1000);
             String command1 = "sudo bash restartCassandra.sh"; //command to start new cassandra node
             ChannelExec channel1 = (ChannelExec) session.openChannel("exec");
             channel1.setCommand(command1);
             channel1.setErrStream(System.err);
-            channel1.connect(60000);
+            channel1.connect(5000);
             try {
                 readInputStreamFromSshSession(channel1);
             } catch (IOException ex) {
                 Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            sleep(5000);
+            sleep(1000);
             String command3 = "sudo bash returnNodeHostId.sh"; 
             ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
             channel3.setCommand(command3);
             channel3.setErrStream(System.err);
-            channel3.connect(60000);
+            channel3.connect(5000);
             try {
                 hostId = readInputStreamFromSshSession(channel3);
             } catch (IOException ex) {
                 Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            sleep(5000);
+            sleep(1000);
             session.disconnect();
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());

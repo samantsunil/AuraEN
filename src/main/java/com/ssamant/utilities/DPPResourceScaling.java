@@ -23,12 +23,6 @@
  */
 package com.ssamant.utilities;
 
-import static com.ssamant.pocresourcemanagement.MainForm.txtAreaSparkResourcesInfo;
-import java.awt.Toolkit;
-import java.beans.PropertyChangeEvent;
-import java.util.Random;
-import javax.swing.SwingWorker;
-
 /**
  *
  * @author Sunil

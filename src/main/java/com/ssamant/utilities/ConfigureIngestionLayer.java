@@ -120,7 +120,7 @@ public class ConfigureIngestionLayer {
             }
             if (curInstance != null) {
                 try {
-                    sleep(6000);
+                    sleep(2000);
                     dbUpdateZkServerInfo(curInstance.getInstanceId(), curInstance.getPublicDnsName());
                     sleep(20000);
                     startZookeeperServer(curInstance.getPublicDnsName());
@@ -218,7 +218,7 @@ public class ConfigureIngestionLayer {
             try {
                 dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName(), brokerId);
                 updateIngestionClusterInfo(curInstance.getInstanceType());
-                sleep(10000);
+                sleep(2000);
                 String brokId = Integer.toString(brokerId - 1);
                 configureNewlyCreatedBroker(curInstance.getPublicDnsName(), brokId);
             } catch (SQLException ex) {
@@ -580,25 +580,25 @@ public class ConfigureIngestionLayer {
         JSch jschClient = new JSch();
         try {
             //jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
-            sleep(5000);
-             jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation());
+            sleep(1000);
+            jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
-            session.connect(60000);
+            session.connect(10000);
             String command = "sudo bash configNewBroker.sh " + newBrokerId + " " + getZookeeperDns();
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect(60000);
+            channel.connect(10000);
             readInputStreamFromSshSession(channel);
-            sleep(5000);
+            sleep(1000);
             String command1 = "sudo bash restartKafkaService.sh"; //command to start new kafka broker
             ChannelExec channel1 = (ChannelExec) session.openChannel("exec");
             channel1.setCommand(command1);
             channel1.setErrStream(System.err);
-            channel1.connect(60000);
+            channel1.connect(10000);
             readInputStreamFromSshSession(channel1);
-            sleep(5000);
+            sleep(1000);
             session.disconnect();
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());
@@ -778,24 +778,24 @@ public static void deleteClusterDbInfo(){
             jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", brokerDns, 22);
-            session.connect(60000);
+            session.connect(10000);
             //run commands
             deleteTopicFromZookeeper();
-            sleep(5000);
+            sleep(2000);
             String cmd = "sudo bash configKafkaTopic.sh 1 " + partitionsCount + " 1 1 " + getZookeeperDns() + ":2181"; //command to configure kafka topic before starting the cluster - based on no of kafka nodes.
             ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
             channel3.setCommand(cmd);
             channel3.setErrStream(System.err);
-            channel3.connect(60000);
+            channel3.connect(10000);
             readInputStreamFromSshSession(channel3);
-            sleep(5000);
+            sleep(2000);
             String cmd1 = "sudo bash createTopic.sh"; //command to create new kafka topic with new partitions and replication factor.
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(cmd1);
             channel.setErrStream(System.err);
-            channel.connect(60000);
+            channel.connect(10000);
             readInputStreamFromSshSession(channel);
-            sleep(3000);
+            sleep(2000);
             session.disconnect();
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());
@@ -817,15 +817,15 @@ public static void deleteClusterDbInfo(){
             JSch.setConfig("StrictHostKeyChecking", "no");
             String zkDns = getZookeeperDns();
             Session session = jschClient.getSession("ubuntu", zkDns, 22);
-            session.connect(60000);
+            session.connect(10000);
             //run commands
             String command = "sudo bash deleteTopicsZk.sh";         //script file must be available on the instance home directory
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect(60000);
+            channel.connect(5000);
             readInputStreamFromSshSession(channel);
-            sleep(5000);
+            sleep(2000);
             session.disconnect();
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());
@@ -842,15 +842,15 @@ public static void deleteClusterDbInfo(){
             jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation()); //ssh key location .pem file
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", zkDns, 22);
-            session.connect(60000);
+            session.connect(10000);
             //run commands
             String command = "sudo bash runZookeeperService.sh";         //script file must be available on the instance home directory
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
-            channel.connect(60000);
+            channel.connect(5000);
             readInputStreamFromSshSession(channel);
-            sleep(5000);
+            sleep(1000);
             session.disconnect();
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());
@@ -915,7 +915,7 @@ public static void deleteClusterDbInfo(){
             }
 
             if (!completed) {
-                Thread.sleep(5000);
+                Thread.sleep(2000);
             }
         }
         System.out.println(status);

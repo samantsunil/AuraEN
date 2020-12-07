@@ -27,9 +27,6 @@ import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.model.DryRunResult;
 import com.amazonaws.services.ec2.model.DryRunSupportedRequest;
 import com.amazonaws.services.ec2.model.TerminateInstancesRequest;
-import static com.ssamant.utilities.ConfigureIngestionLayer.waitForRunningState;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import logincredentials.CloudLogin;
 
 /**
