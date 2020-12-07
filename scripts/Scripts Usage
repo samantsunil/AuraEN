@@ -1,0 +1,4 @@
+The scripts provided must be stored into corresponsing service AMIs. For example, scripts in Kafka folder must be installed in AMI for kafka, 
+scripts in Spark folder must be installed in AMIs for spark master and spark worker node,
+scripts in Cassandra folder must be installed in AMI for cassandra, and
+scripts in zookeeper folder must be installed in AMI for Zookeeper.
