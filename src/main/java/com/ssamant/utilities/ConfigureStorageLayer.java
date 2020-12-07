@@ -90,7 +90,10 @@ public class ConfigureStorageLayer {
                         .withInstanceIds(instanceId);
 
                 ec2Client.stopInstances(request);
-                Instance curInstance = waitForRunningState(ec2Client, instanceId);
+                //Instance curInstance = waitForRunningState(ec2Client, instanceId);
+                DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(instanceId);
+                Thread.sleep(3);
+                Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
                 System.out.printf("Successfully stopped the instance: %s", instanceId);
                 if (curInstance != null) {
                     MainForm.lblInstanceStatus.setText("");
@@ -216,7 +219,7 @@ public class ConfigureStorageLayer {
             }
 
             if (!completed) {
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             }
         }
         System.out.println(status);

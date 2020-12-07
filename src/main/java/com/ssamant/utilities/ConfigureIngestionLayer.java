@@ -121,8 +121,7 @@ public class ConfigureIngestionLayer {
             if (curInstance != null) {
                 try {
                     sleep(2000);
-                    dbUpdateZkServerInfo(curInstance.getInstanceId(), curInstance.getPublicDnsName());
-                    sleep(20000);
+                    dbUpdateZkServerInfo(curInstance.getInstanceId(), curInstance.getPublicDnsName());                    
                     startZookeeperServer(curInstance.getPublicDnsName());
 
                 } catch (InterruptedException ex) {
@@ -217,8 +216,7 @@ public class ConfigureIngestionLayer {
             txtAreaClusterInfo.append("-------------------------------------------------------------------------------------------------------\n");
             try {
                 dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName(), brokerId);
-                updateIngestionClusterInfo(curInstance.getInstanceType());
-                sleep(2000);
+                updateIngestionClusterInfo(curInstance.getInstanceType());                
                 String brokId = Integer.toString(brokerId - 1);
                 configureNewlyCreatedBroker(curInstance.getPublicDnsName(), brokId);
             } catch (SQLException ex) {
@@ -289,7 +287,10 @@ public class ConfigureIngestionLayer {
                     .withInstanceIds(instanceId);
 
             ec2Client.stopInstances(request);
-            Instance curInstance = waitForRunningState(ec2Client, instanceId);
+            //Instance curInstance = waitForRunningState(ec2Client, instanceId);
+            DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(instanceId);
+            Thread.sleep(3);
+            Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
             System.out.printf("Successfully stop instance: %s", instanceId);
             //lblInstanceStopMsg.setText("Successfully stop the instance: " + instanceId + ".");
             if (curInstance != null) {
