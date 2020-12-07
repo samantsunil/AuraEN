@@ -92,9 +92,9 @@ public class ConfigureStorageLayer {
                 ec2Client.stopInstances(request);
                 //Instance curInstance = waitForRunningState(ec2Client, instanceId);
                 DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(instanceId);
-                Thread.sleep(2000);
+                Thread.sleep(5000);
                 Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
-                Thread.sleep(1000);
+                
                 System.out.printf("Successfully stopped the instance: %s", instanceId);
                 if (curInstance != null) {
                     MainForm.lblInstanceStatus.setText("");
@@ -509,11 +509,11 @@ public class ConfigureStorageLayer {
     public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, Boolean dppScaling) throws InterruptedException, SQLException {
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
-        //Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
-        DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
-        Thread.sleep(2000);
-        Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
-        Thread.sleep(1000);
+        Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
+        //DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
+       // Thread.sleep(2000);
+        //Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+        //Thread.sleep(1000);
         if (curInstance != null) {
             System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
             //MainForm.txtAreaCassandraResourcesInfo.append("Successfully created the following ec2 instances for the Cassandra Cluster:\n");

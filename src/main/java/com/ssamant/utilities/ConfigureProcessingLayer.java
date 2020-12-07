@@ -104,10 +104,10 @@ public class ConfigureProcessingLayer {
             StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
             StartInstancesResult result;
             result = ec2Client.startInstances(startInstancesRequest);
-            //Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
-            DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
-            Thread.sleep(2000);
-            Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+            Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
+            //DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
+            //Thread.sleep(2000);
+            //Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
             Thread.sleep(2000);
             if (curInstance != null) {
                 System.out.println("successfully created master node for the spark cluster.");
@@ -197,10 +197,10 @@ public class ConfigureProcessingLayer {
         try {
             StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
             StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
-            //Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
-            DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
-            Thread.sleep(4);
-            Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+            Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
+            //DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
+            //Thread.sleep(4);
+            //Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
 
             if (curInstance != null) {
                 System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
@@ -398,7 +398,7 @@ public class ConfigureProcessingLayer {
                 ec2Client.stopInstances(request);
                 //Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, instanceId);
                 DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(instanceId);
-                Thread.sleep(3);
+                Thread.sleep(5000);
                 Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
                 System.out.printf("Successfully stopped the instance: %s", instanceId);
                 //lblInstanceStopMsg.setText("Successfully stop the instance: " + instanceId + ".");
@@ -503,10 +503,10 @@ public class ConfigureProcessingLayer {
             //WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
             StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(instId);
             StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
-            //Instance inst = ConfigureIngestionLayer.waitForRunningState(ec2Client, instId);
-            DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(instId);
-            Thread.sleep(4);
-            Instance inst = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+            Instance inst = ConfigureIngestionLayer.waitForRunningState(ec2Client, instId);
+            //DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(instId);
+            //Thread.sleep(4);
+            //Instance inst = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
             if (inst != null) {
                 MainForm.lblStopRestartStatus.setText("Instance with Id: " + instId + " starts running successfully.");
                 if (!isMaster) {

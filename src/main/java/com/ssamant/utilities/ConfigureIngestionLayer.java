@@ -46,6 +46,7 @@ import static com.ssamant.pocresourcemanagement.MainForm.lblInstanceStopMsg;
 import static com.ssamant.pocresourcemanagement.MainForm.lblStartedInstance;
 import static com.ssamant.pocresourcemanagement.MainForm.lblStopInstance;
 import static com.ssamant.pocresourcemanagement.MainForm.txtAreaClusterInfo;
+import static com.ssamant.utilities.DatabaseConnection.con;
 import static com.ssamant.utilities.DatabaseConnection.getConnection;
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,11 +117,11 @@ public class ConfigureIngestionLayer {
             StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
             Instance curInstance = null;
             try {
-                //curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
-                DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
-                Thread.sleep(2000);
-                curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
-                Thread.sleep(5000);
+                curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
+                //DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
+                //Thread.sleep(2000);
+                //curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+                //Thread.sleep(5000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -217,11 +218,11 @@ public class ConfigureIngestionLayer {
     public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, int brokerId) throws InterruptedException {
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
-        //Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
-        DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
+        Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
+        //DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
         
-        Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
-        Thread.sleep(6000);
+        //Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+        //Thread.sleep(6000);
         if (curInstance != null) {
             System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
             txtAreaClusterInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP:" + curInstance.getPublicIpAddress()
@@ -302,7 +303,7 @@ public class ConfigureIngestionLayer {
             ec2Client.stopInstances(request);
             //Instance curInstance = waitForRunningState(ec2Client, instanceId);
             DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(instanceId);
-            Thread.sleep(3);
+            Thread.sleep(5000);
             Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
             System.out.printf("Successfully stop instance: %s", instanceId);
             //lblInstanceStopMsg.setText("Successfully stop the instance: " + instanceId + ".");
@@ -545,8 +546,9 @@ public class ConfigureIngestionLayer {
                     Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            
             String query = "SELECT data_ingestion_rate FROM ingestion_cluster_info LIMIT 1";
-            try (Statement st = DatabaseConnection.con.createStatement()) {
+            try (Statement st = con.createStatement()) {
                 ResultSet rs = st.executeQuery(query);
                 while (rs.next()) {
 
