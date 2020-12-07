@@ -102,8 +102,12 @@ public class ConfigureProcessingLayer {
                     .withTags(tag);
             CreateTagsResult tag_response = ec2Client.createTags(createTagsRequest);
             StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
-            StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
-            Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
+            StartInstancesResult result;
+            result = ec2Client.startInstances(startInstancesRequest);
+            //Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
+            DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
+            Thread.sleep(4);
+            Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
             if (curInstance != null) {
                 System.out.println("successfully created master node for the spark cluster.");
                 dbUpdateMasterNodeInfo(curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getInstanceId());
@@ -192,7 +196,11 @@ public class ConfigureProcessingLayer {
         try {
             StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
             StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
-            Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
+            //Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
+            DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
+            Thread.sleep(4);
+            Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+
             if (curInstance != null) {
                 System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
                 // MainForm.txtAreaSparkResourcesInfo.append("Successfully created the following ec2 instances for the Spark Cluster:\n");
@@ -494,7 +502,10 @@ public class ConfigureProcessingLayer {
             //WriteFile data = new WriteFile("C:\\Code\\KafkaClusterDetails.txt", true);
             StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(instId);
             StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
-            Instance inst = ConfigureIngestionLayer.waitForRunningState(ec2Client, instId);
+            //Instance inst = ConfigureIngestionLayer.waitForRunningState(ec2Client, instId);
+            DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(instId);
+            Thread.sleep(4);
+            Instance inst = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
             if (inst != null) {
                 MainForm.lblStopRestartStatus.setText("Instance with Id: " + instId + " starts running successfully.");
                 if (!isMaster) {
@@ -633,7 +644,7 @@ public class ConfigureProcessingLayer {
             String brokerId = getCurrentBrokerIds();
             String cassandraSeedIp = getCurrentCassandraSeedIps();
             try {
-                jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file
+                jschClient.addIdentity("C:\\Code\\mySSHkey.pem"); //ssh key location .pem file --- should be configurable
                 JSch.setConfig("StrictHostKeyChecking", "no");
                 Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
                 session.connect(10000);
@@ -659,7 +670,7 @@ public class ConfigureProcessingLayer {
         } else {
             String masterUrl = getMasterNodeDns(false);
             if (masterUrl == null || "".equals(masterUrl)) {
-                System.out.println("Please create and then start the master node first!");
+                System.out.println("Please launch the master node first!");
                 return;
             }
             try {
@@ -674,7 +685,7 @@ public class ConfigureProcessingLayer {
                 channel.setErrStream(System.err);
                 channel.connect(5000);
                 readInputStreamFromSshSession(channel);
-                sleep(1000);
+                sleep(2000);
                 session.disconnect();
             } catch (JSchException | InterruptedException ex) {
                 System.out.println(ex.getMessage());
@@ -737,7 +748,7 @@ public class ConfigureProcessingLayer {
             channel.setErrStream(System.err);
             channel.connect(5000);
             readInputStreamFromSshSession(channel);
-            sleep(1000);
+            sleep(5000);
             session.disconnect();
         } catch (JSchException | InterruptedException ex) {
             System.out.println("Error while updating masterNode: " + ex.getMessage());
@@ -763,14 +774,14 @@ public class ConfigureProcessingLayer {
             channel.setErrStream(System.err);
             channel.connect(5000);
             readInputStreamFromSshSession(channel);
-            sleep(1000);
+            sleep(3000);
             String cmd = "sudo bash startSparkCluster.sh";         //check to make sure ingestion and storage services are running before executing this script.
             ChannelExec chnl = (ChannelExec) session.openChannel("exec");
             chnl.setCommand(cmd);
             chnl.setErrStream(System.err);
             chnl.connect(5000);
             readInputStreamFromSshSession(chnl);
-            sleep(1000);
+            sleep(5000);
             session.disconnect();
             success = true;
         } catch (JSchException | InterruptedException ex) {
@@ -793,7 +804,7 @@ public class ConfigureProcessingLayer {
             chnl.setErrStream(System.err);
             chnl.connect(5000);
             readInputStreamFromSshSession(chnl);
-            sleep(1000);
+            sleep(10000);
             session.disconnect();
         } catch (JSchException | InterruptedException ex) {
 
