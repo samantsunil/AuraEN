@@ -106,14 +106,15 @@ public class ConfigureProcessingLayer {
             result = ec2Client.startInstances(startInstancesRequest);
             //Instance curInstance = ConfigureStorageLayer.waitForRunningState(ec2Client, inst.getInstanceId());
             DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
-            Thread.sleep(4);
+            Thread.sleep(2000);
             Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+            Thread.sleep(2000);
             if (curInstance != null) {
                 System.out.println("successfully created master node for the spark cluster.");
                 dbUpdateMasterNodeInfo(curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getInstanceId());
                 MainForm.txtAreaSparkResourcesInfo.append("--------Spark Master Node Info-----------------\n");
                 MainForm.txtAreaSparkResourcesInfo.append("Public DNS: " + curInstance.getPublicDnsName() + ", Public IP: " + curInstance.getPublicIpAddress() + ", Private IP: " + curInstance.getPrivateIpAddress() + ", Instance Id: " + curInstance.getInstanceId() + ".\n");
-                sleep(2000);
+                
                 Boolean success;
                 success = configureAndRunMasterNode(curInstance.getPublicDnsName());
                 if (success) {

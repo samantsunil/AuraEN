@@ -85,15 +85,16 @@ public class ConfigureStorageLayer {
                 }
 
                 stopCassandraNode(dnsName); //call to remove the node as decommission from the cluster and then stop the service on the node.
-                sleep(5000);
+                //sleep(5000);
                 StopInstancesRequest request = new StopInstancesRequest()
                         .withInstanceIds(instanceId);
 
                 ec2Client.stopInstances(request);
                 //Instance curInstance = waitForRunningState(ec2Client, instanceId);
                 DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(instanceId);
-                Thread.sleep(3);
+                Thread.sleep(2000);
                 Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+                Thread.sleep(1000);
                 System.out.printf("Successfully stopped the instance: %s", instanceId);
                 if (curInstance != null) {
                     MainForm.lblInstanceStatus.setText("");
@@ -268,7 +269,7 @@ public class ConfigureStorageLayer {
         JSch jschClient = new JSch();
         String msg = null;
         try {
-            sleep(5000);
+            //sleep(5000);
             jschClient.addIdentity(GetPropertyFileKeyValues.getSshKeyLocation());
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDnsName, 22);
@@ -284,15 +285,8 @@ public class ConfigureStorageLayer {
             } catch (InterruptedException ex) {
                 Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            try {
-                sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-            }
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -308,7 +302,7 @@ public class ConfigureStorageLayer {
             String command = "";
             if (isNonSeedNode && !"".equals(seedIp)) {
                 updateNodeTypeStatus(InstanceId);
-                sleep(1000);
+                //sleep(1000);
                 command = "sudo service cassandra stop;sudo bash clearCassandraLogs.sh;sudo bash configureCassandraNewNode.sh " + seedIp;
             } else {
                 command = "sudo service cassandra stop;sudo bash configureCassandraNode.sh;sudo bash clearCassandraLogs.sh";
@@ -318,14 +312,14 @@ public class ConfigureStorageLayer {
             channel.setErrStream(System.err);
             channel.connect(3000);
             readInputStreamFromSshSession(channel);
-            sleep(1000);
+            Thread.sleep(3000);
             String command1 = "sudo bash restartCassandra.sh"; //command to start new cassandra node
             ChannelExec channel1 = (ChannelExec) session.openChannel("exec");
             channel1.setCommand(command1);
             channel1.setErrStream(System.err);
             channel1.connect(5000);
             readInputStreamFromSshSession(channel1);
-            sleep(2000);
+            Thread.sleep(3000);
             //if seed node is created for the first time then creates new keyspace and tables
             if (!isNonSeedNode && "".equals(seedIp)) {
                 String command2 = "sudo bash createKeyspaceTables.sh"; //command to create keyspace and tables for the seed node.           
@@ -333,14 +327,15 @@ public class ConfigureStorageLayer {
                 channel2.setCommand(command2);
                 channel2.setErrStream(System.err);
                 channel2.connect(5000);
-                readInputStreamFromSshSession(channel2);                
+                readInputStreamFromSshSession(channel2);
             }
-            String command3 = "sudo bash returnNodeHostId.sh"; 
+            String command3 = "sudo bash returnNodeHostId.sh";
             ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
             channel3.setCommand(command3);
             channel3.setErrStream(System.err);
             channel3.connect(5000);
-            hostId = readInputStreamFromSshSession(channel3);            
+            hostId = readInputStreamFromSshSession(channel3);
+            Thread.sleep(3000);
             session.disconnect();
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());
@@ -352,8 +347,9 @@ public class ConfigureStorageLayer {
         }
         return hostId;
     }
-public static void updateNodeTypeStatus(String instanceId) {
-           try {
+
+    public static void updateNodeTypeStatus(String instanceId) {
+        try {
             if (DatabaseConnection.con == null) {
                 try {
                     DatabaseConnection.con = getConnection();
@@ -369,8 +365,9 @@ public static void updateNodeTypeStatus(String instanceId) {
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-}
+        }
+    }
+
     public static void updateCassandraNodeHostId(String hostId, String instanceId) {
         try {
             if (DatabaseConnection.con == null) {
@@ -390,8 +387,9 @@ public static void updateNodeTypeStatus(String instanceId) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public static List<String> getAllStorageClusterInstances(){
-                List<String> instanceIds = new ArrayList<>();
+
+    public static List<String> getAllStorageClusterInstances() {
+        List<String> instanceIds = new ArrayList<>();
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -414,8 +412,9 @@ public static void updateNodeTypeStatus(String instanceId) {
 
         return instanceIds;
     }
-    public static void deleteClusterDbInfo(){
-                try {
+
+    public static void deleteClusterDbInfo() {
+        try {
             if (DatabaseConnection.con == null) {
                 try {
                     DatabaseConnection.con = DatabaseConnection.getConnection();
@@ -426,30 +425,31 @@ public static void updateNodeTypeStatus(String instanceId) {
             String query = "DELETE FROM dpp_resources.storage_nodes_info";
             String qry = "UPDATE dpp_resources.storage_cluster_info SET instance_types='', no_of_nodes = 0";
             try (Statement st = DatabaseConnection.con.createStatement()) {
-                st.executeUpdate(query);  
+                st.executeUpdate(query);
                 st.executeUpdate(qry);
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public static void deleteStorageCluster(){
+
+    public static void deleteStorageCluster() {
         List<String> instanceIds = getAllStorageClusterInstances();
         instanceIds.forEach((instanceId) -> {
             EC2InstanceOperation.terminateEc2Instance(instanceId);
         });
         deleteClusterDbInfo();
     }
-    
+
     public static void buildNoSqlStorageCluster(int noOfNodes, String instanceType, Boolean dppScaling) throws SQLException {
         MainForm.btnBuildStorageCluster.setEnabled(false);
-        String amiId=null;
+        String amiId = null;
         amiId = DatabaseConnection.getServiceAmi("cassandra");
-        if("".equals(amiId) || amiId ==null){
+        if ("".equals(amiId) || amiId == null) {
             return;
         }
-         
+
         AmazonEC2 ec2Client = CloudLogin.getEC2Client();
         createEC2Instances(ec2Client, amiId, instanceType, noOfNodes, dppScaling);
         MainForm.btnBuildStorageCluster.setEnabled(true);
@@ -479,11 +479,11 @@ public static void updateNodeTypeStatus(String instanceId) {
         }
         int i = 1;
         int nodeCount = DatabaseConnection.getCurrentInstanceCount("storage");
-        if(nodeCount==0){
-            i=1;
+        if (nodeCount == 0) {
+            i = 1;
         }
-        if(nodeCount>0){
-            i = nodeCount +1;
+        if (nodeCount > 0) {
+            i = nodeCount + 1;
         }
         for (Instance inst : runResponse.getReservation().getInstances()) {
             try {
@@ -509,7 +509,11 @@ public static void updateNodeTypeStatus(String instanceId) {
     public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, Boolean dppScaling) throws InterruptedException, SQLException {
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
-        Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
+        //Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
+        DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
+        Thread.sleep(2000);
+        Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+        Thread.sleep(1000);
         if (curInstance != null) {
             System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
             //MainForm.txtAreaCassandraResourcesInfo.append("Successfully created the following ec2 instances for the Cassandra Cluster:\n");
@@ -519,18 +523,19 @@ public static void updateNodeTypeStatus(String instanceId) {
             //        + ", PublicIP: " + curInstance.getPublicIpAddress() + ", PrivateIP: " + curInstance.getPrivateIpAddress() + ", Status: " + curInstance.getState().getName() + ".");
             dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getPrivateIpAddress(), curInstance.getState().getName(), "", dppScaling);
             updateStorageClusterAddNodeInfo(curInstance.getInstanceType());
-            if(dppScaling){
+            if (dppScaling) {
                 configureNoSqlNonSeedNode(curInstance.getPublicDnsName(), curInstance.getInstanceId());
             }
         } else {
             System.out.println("Instances are not running.");
         }
     }
-    public static void configureNoSqlNonSeedNode(String pubDns, String instanceId) throws InterruptedException{
+
+    public static void configureNoSqlNonSeedNode(String pubDns, String instanceId) throws InterruptedException {
         JSch jschClient = new JSch();
         String seedIp = getSeedIpForNewNode();
         String hostId = "";
-        sleep(15000);
+        //sleep(15000);
         //String seedIp = "172.31.34.236";
         try {
             //jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
@@ -538,9 +543,9 @@ public static void updateNodeTypeStatus(String instanceId) {
             JSch.setConfig("StrictHostKeyChecking", "no");
             Session session = jschClient.getSession("ubuntu", pubDns, 22);
             session.connect(10000);
-            
+
             String command = "sudo service cassandra stop;sudo bash clearCassandraLogs.sh;sudo bash configureCassandraNewNode.sh " + seedIp;
-             
+
             ChannelExec channel = (ChannelExec) session.openChannel("exec");
             channel.setCommand(command);
             channel.setErrStream(System.err);
@@ -550,7 +555,7 @@ public static void updateNodeTypeStatus(String instanceId) {
             } catch (IOException ex) {
                 Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            sleep(1000);
+            Thread.sleep(5000);
             String command1 = "sudo bash restartCassandra.sh"; //command to start new cassandra node
             ChannelExec channel1 = (ChannelExec) session.openChannel("exec");
             channel1.setCommand(command1);
@@ -561,8 +566,8 @@ public static void updateNodeTypeStatus(String instanceId) {
             } catch (IOException ex) {
                 Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            sleep(1000);
-            String command3 = "sudo bash returnNodeHostId.sh"; 
+            Thread.sleep(3000);
+            String command3 = "sudo bash returnNodeHostId.sh";
             ChannelExec channel3 = (ChannelExec) session.openChannel("exec");
             channel3.setCommand(command3);
             channel3.setErrStream(System.err);
@@ -572,7 +577,7 @@ public static void updateNodeTypeStatus(String instanceId) {
             } catch (IOException ex) {
                 Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
-            sleep(1000);
+            Thread.sleep(3000);
             session.disconnect();
         } catch (JSchException ex) {
             System.out.println(ex.getMessage());
@@ -582,10 +587,11 @@ public static void updateNodeTypeStatus(String instanceId) {
         if (!"".equals(hostId)) {
             updateCassandraNodeHostId(hostId, instanceId);
         }
-        
+
     }
+
     public static List<String> getPubDnsName(String limit) {
-      List<String> pubDns = new ArrayList<>();
+        List<String> pubDns = new ArrayList<>();
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -606,10 +612,11 @@ public static void updateNodeTypeStatus(String instanceId) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return pubDns;  
+        return pubDns;
     }
-    public static List<String> getNonSeedNodesInstanceIds(String limit){
-         List<String> instanceIds = new ArrayList<>();
+
+    public static List<String> getNonSeedNodesInstanceIds(String limit) {
+        List<String> instanceIds = new ArrayList<>();
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -631,10 +638,10 @@ public static void updateNodeTypeStatus(String instanceId) {
         }
 
         return instanceIds;
-    
+
     }
 
-    public static String getSeedIpForNewNode(){
+    public static String getSeedIpForNewNode() {
         String cassandraSeeds = null;
         try {
             if (DatabaseConnection.con == null) {
@@ -667,6 +674,7 @@ public static void updateNodeTypeStatus(String instanceId) {
         }
         return cassandraSeeds;
     }
+
     public static void updateStorageClusterAddNodeInfo(String instanceType) {
         int i = 1;
         try {
@@ -692,11 +700,10 @@ public static void updateNodeTypeStatus(String instanceId) {
 
     public static void dbInsertInstanceInfo(String instanceId, String instanceType, String az, String pubDnsName, String publicIp, String privateIp, String status, String nodeHostId, Boolean dppScaling) throws SQLException {
         String node_type = null;
-        if(dppScaling){
+        if (dppScaling) {
             node_type = "non-seed";
-        }
-        else {
-           node_type = "seed"; 
+        } else {
+            node_type = "seed";
         }
         String query = "INSERT INTO storage_nodes_info (instance_id, instance_type, availability_zone, public_dnsname, public_ip, private_ip, status, node_hostId, node_type)"
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";

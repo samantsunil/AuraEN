@@ -82,14 +82,16 @@ public class ConfigureIngestionLayer {
         }
 
     }
- public static void deleteIngestionCluster(){
-             List<String> instanceIds = getAllIngestionClusterInstances();
+
+    public static void deleteIngestionCluster() {
+        List<String> instanceIds = getAllIngestionClusterInstances();
         instanceIds.forEach((instanceId) -> {
             EC2InstanceOperation.terminateEc2Instance(instanceId);
         });
         EC2InstanceOperation.terminateEc2Instance(getZkInstanceId());
         deleteClusterDbInfo();
- }
+    }
+
     public static void createZkServer(String instanceType) {
         String zkAmi = DatabaseConnection.getServiceAmi("zookeeper");
         if (zkAmi != null || !"".equals(zkAmi)) {
@@ -114,14 +116,18 @@ public class ConfigureIngestionLayer {
             StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
             Instance curInstance = null;
             try {
-                curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
+                //curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
+                DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
+                Thread.sleep(2000);
+                curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+                Thread.sleep(5000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ConfigureIngestionLayer.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (curInstance != null) {
                 try {
                     sleep(2000);
-                    dbUpdateZkServerInfo(curInstance.getInstanceId(), curInstance.getPublicDnsName());                    
+                    dbUpdateZkServerInfo(curInstance.getInstanceId(), curInstance.getPublicDnsName());
                     startZookeeperServer(curInstance.getPublicDnsName());
 
                 } catch (InterruptedException ex) {
@@ -160,9 +166,9 @@ public class ConfigureIngestionLayer {
             }
         }
         int i = 1;
-        int latestBrokerId=getLatestBrokerId();        
-        if(latestBrokerId>=0){
-            i=latestBrokerId+2;
+        int latestBrokerId = getLatestBrokerId();
+        if (latestBrokerId >= 0) {
+            i = latestBrokerId + 2;
         }
         for (Instance inst : runResponse.getReservation().getInstances()) {
             System.out.println("EC2 Instance Id: " + inst.getInstanceId());
@@ -178,8 +184,9 @@ public class ConfigureIngestionLayer {
             i++;
         }
     }
-   public static int getLatestBrokerId(){
-         List<Integer> brokerIds = new ArrayList<>();
+
+    public static int getLatestBrokerId() {
+        List<Integer> brokerIds = new ArrayList<>();
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -200,23 +207,29 @@ public class ConfigureIngestionLayer {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
         Collections.sort(brokerIds);
-        if(!brokerIds.isEmpty()){
-        return brokerIds.get(brokerIds.size()-1);}
-        else
+        if (!brokerIds.isEmpty()) {
+            return brokerIds.get(brokerIds.size() - 1);
+        } else {
             return -1;
-   }
+        }
+    }
+
     public static void startEC2Instance(AmazonEC2 ec2Client, Instance inst, Placement az, int brokerId) throws InterruptedException {
         StartInstancesRequest startInstancesRequest = new StartInstancesRequest().withInstanceIds(inst.getInstanceId());
         StartInstancesResult result = ec2Client.startInstances(startInstancesRequest);
-        Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
+        //Instance curInstance = waitForRunningState(ec2Client, inst.getInstanceId());
+        DescribeInstancesRequest rqst = new DescribeInstancesRequest().withInstanceIds(inst.getInstanceId());
+        
+        Instance curInstance = ec2Client.describeInstances(rqst).getReservations().get(0).getInstances().get(0);
+        Thread.sleep(6000);
         if (curInstance != null) {
             System.out.printf("Successfully started EC2 instance %s based on type %s", curInstance.getInstanceId(), curInstance.getInstanceType());
             txtAreaClusterInfo.append("InstanceID: " + curInstance.getInstanceId() + " , InstanceType: " + curInstance.getInstanceType() + ", AZ: ." + az.getAvailabilityZone() + ", PublicDNSName: " + curInstance.getPublicDnsName() + ", PublicIP:" + curInstance.getPublicIpAddress()
-                    + ", InstanceStatus: " + curInstance.getState().getName() + ", BrokerId: " + (brokerId-1) + ".\n");
+                    + ", InstanceStatus: " + curInstance.getState().getName() + ", BrokerId: " + (brokerId - 1) + ".\n");
             txtAreaClusterInfo.append("-------------------------------------------------------------------------------------------------------\n");
             try {
                 dbInsertInstanceInfo(curInstance.getInstanceId(), curInstance.getInstanceType(), az.getAvailabilityZone(), curInstance.getPublicDnsName(), curInstance.getPublicIpAddress(), curInstance.getState().getName(), brokerId);
-                updateIngestionClusterInfo(curInstance.getInstanceType());                
+                updateIngestionClusterInfo(curInstance.getInstanceType());
                 String brokId = Integer.toString(brokerId - 1);
                 configureNewlyCreatedBroker(curInstance.getPublicDnsName(), brokId);
             } catch (SQLException ex) {
@@ -309,7 +322,7 @@ public class ConfigureIngestionLayer {
             lblStopInstance.setText("");
             lblStopInstance.setText("Enter the valid instance ID.");
         }
-    }  
+    }
 
     public static void updateClusterInfoDb(String pubDns) {
         try {
@@ -545,7 +558,8 @@ public class ConfigureIngestionLayer {
         }
         return dataIngestionRate;
     }
-    public static void updateCurrentWorkload(String workload){
+
+    public static void updateCurrentWorkload(String workload) {
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -563,9 +577,9 @@ public class ConfigureIngestionLayer {
             }
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
     }
-    
+
     /**
      * This function configures the server.properties for new kafka broker and
      * starts the server [assumes that zookeeper server is up and running]
@@ -577,7 +591,7 @@ public class ConfigureIngestionLayer {
         if ("".equals(newBrokerId)) {
             newBrokerId = "0";
         }
-        
+
         JSch jschClient = new JSch();
         try {
             //jschClient.addIdentity("C:\\Code\\mySSHkey.pem");
@@ -642,8 +656,9 @@ public class ConfigureIngestionLayer {
         }
         return brokerDns;
     }
-    public static List<String> getBrokerInstanceIds(String limit){
-                 List<String> instanceIds = new ArrayList<>();
+
+    public static List<String> getBrokerInstanceIds(String limit) {
+        List<String> instanceIds = new ArrayList<>();
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -663,7 +678,7 @@ public class ConfigureIngestionLayer {
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return instanceIds;
     }
 
@@ -692,8 +707,9 @@ public class ConfigureIngestionLayer {
         }
         return zkDns;
     }
+
     public static String getZkInstanceId() {
-        String zkId= "";
+        String zkId = "";
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -717,8 +733,9 @@ public class ConfigureIngestionLayer {
         }
         return zkId;
     }
-public static List<String> getAllIngestionClusterInstances(){
-    List<String> instanceIds = new ArrayList<>();
+
+    public static List<String> getAllIngestionClusterInstances() {
+        List<String> instanceIds = new ArrayList<>();
         try {
             if (DatabaseConnection.con == null) {
                 try {
@@ -740,10 +757,10 @@ public static List<String> getAllIngestionClusterInstances(){
         }
 
         return instanceIds;
-}
+    }
 
-public static void deleteClusterDbInfo(){
-            try {
+    public static void deleteClusterDbInfo() {
+        try {
             if (DatabaseConnection.con == null) {
                 try {
                     DatabaseConnection.con = DatabaseConnection.getConnection();
@@ -761,7 +778,8 @@ public static void deleteClusterDbInfo(){
         } catch (SQLException ex) {
             Logger.getLogger(ConfigureStorageLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
-}
+    }
+
     /**
      * This function creates the kafka topic based on the size of the current
      * kafka cluster. We assume parition count and replication factor are equal
