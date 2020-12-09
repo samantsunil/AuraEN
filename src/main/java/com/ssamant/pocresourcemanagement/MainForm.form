@@ -310,24 +310,26 @@
                               </Group>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="jLabel12" alignment="0" min="-2" pref="121" max="-2" attributes="0"/>
-                                              <Component id="jLabel41" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
-                                              <Component id="jLabel11" alignment="0" min="-2" pref="141" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
-                                      </Group>
                                       <Group type="102" attributes="0">
                                           <Component id="jLabel27" max="32767" attributes="0"/>
                                           <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                                       </Group>
+                                      <Group type="102" attributes="0">
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="jLabel41" alignment="0" min="-2" pref="98" max="-2" attributes="0"/>
+                                              <Component id="jLabel11" alignment="0" min="-2" pref="141" max="-2" attributes="0"/>
+                                              <Component id="jLabel12" alignment="0" min="-2" pref="190" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace max="32767" attributes="0"/>
+                                      </Group>
                                   </Group>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="txtFieldCurrentWorkload" max="32767" attributes="0"/>
-                                      <Component id="txtFieldFutureWorkload" max="32767" attributes="0"/>
-                                      <Component id="comboBoxScalingStrategy" pref="177" max="32767" attributes="0"/>
-                                      <Component id="txtFieldE2eLatency" max="32767" attributes="0"/>
+                                      <Component id="comboBoxScalingStrategy" pref="140" max="32767" attributes="0"/>
+                                      <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="txtFieldE2eLatency" alignment="1" pref="119" max="32767" attributes="0"/>
+                                          <Component id="txtFieldFutureWorkload" alignment="1" max="32767" attributes="0"/>
+                                          <Component id="txtFieldCurrentWorkload" alignment="1" max="32767" attributes="0"/>
+                                      </Group>
                                   </Group>
                               </Group>
                           </Group>
@@ -368,7 +370,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="jLabel11">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Future Workload [DIR]:"/>
+                    <Property name="text" type="java.lang.String" value="Future Workload (ds/sec):"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtFieldFutureWorkload">
@@ -385,12 +387,12 @@
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel12">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="End-to-end Latency:"/>
+                    <Property name="text" type="java.lang.String" value="End-to-end Latency (milliseconds):"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel27">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Current Workload:"/>
+                    <Property name="text" type="java.lang.String" value="Current Workload (ds/sec):"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtFieldCurrentWorkload">
@@ -603,7 +605,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="lblTotalCost">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Total cost:"/>
+                <Property name="text" type="java.lang.String" value="Total cost($/hr):"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -611,7 +613,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="lblE2eQoS">
               <Properties>
-                <Property name="text" type="java.lang.String" value="End-to-end Latency:"/>
+                <Property name="text" type="java.lang.String" value="End-to-end Latency(ms):"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>

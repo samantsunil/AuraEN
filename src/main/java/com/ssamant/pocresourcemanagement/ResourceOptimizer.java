@@ -312,9 +312,9 @@ public class ResourceOptimizer {
            // System.out.println("Total cost: " + String.valueOf(total_cost));
             //System.out.println("total end-to-end QoS: " + String.valueOf(aggQoS));
             MainForm.lblTotalCost.setText("");
-            MainForm.lblTotalCost.setText("Total cost: " + String.valueOf(total_cost));
+            MainForm.lblTotalCost.setText("Total cost($/hr): " + String.valueOf(total_cost));
             MainForm.lblE2eQoS.setText("");
-            MainForm.lblE2eQoS.setText("Total end-to-end latency:" + String.valueOf(aggQoS));
+            MainForm.lblE2eQoS.setText("Total end-to-end latency(ms):" + String.valueOf(aggQoS));
             success = true;
 
         } catch (NumberFormatException ex) {

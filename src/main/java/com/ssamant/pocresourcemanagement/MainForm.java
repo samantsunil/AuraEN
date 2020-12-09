@@ -428,7 +428,7 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 0, 51)));
 
-        jLabel11.setText("Future Workload [DIR]:");
+        jLabel11.setText("Future Workload (ds/sec):");
 
         btnComputeDPPResAllocation.setText("Compute Resource Allocation");
         btnComputeDPPResAllocation.addActionListener(new java.awt.event.ActionListener() {
@@ -437,9 +437,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             }
         });
 
-        jLabel12.setText("End-to-end Latency:");
+        jLabel12.setText("End-to-end Latency (milliseconds):");
 
-        jLabel27.setText("Current Workload:");
+        jLabel27.setText("Current Workload (ds/sec):");
 
         txtFieldCurrentWorkload.setEditable(false);
 
@@ -460,19 +460,20 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(11, 11, 11))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(26, 26, 26)))
+                                .addGap(26, 26, 26))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtFieldCurrentWorkload)
-                            .addComponent(txtFieldFutureWorkload)
-                            .addComponent(comboBoxScalingStrategy, 0, 177, Short.MAX_VALUE)
-                            .addComponent(txtFieldE2eLatency))))
+                            .addComponent(comboBoxScalingStrategy, 0, 140, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtFieldE2eLatency, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                                .addComponent(txtFieldFutureWorkload, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(txtFieldCurrentWorkload, javax.swing.GroupLayout.Alignment.TRAILING)))))
                 .addGap(14, 14, 14))
         );
         jPanel1Layout.setVerticalGroup(
@@ -593,9 +594,9 @@ public class MainForm extends javax.swing.JFrame implements PropertyChangeListen
             }
         });
 
-        lblTotalCost.setText("Total cost:");
+        lblTotalCost.setText("Total cost($/hr):");
 
-        lblE2eQoS.setText("End-to-end Latency:");
+        lblE2eQoS.setText("End-to-end Latency(ms):");
 
         javax.swing.GroupLayout panDPPLayersLayout = new javax.swing.GroupLayout(panDPPLayers);
         panDPPLayers.setLayout(panDPPLayersLayout);
