@@ -780,9 +780,9 @@ public class ConfigureProcessingLayer {
             ChannelExec chnl = (ChannelExec) session.openChannel("exec");
             chnl.setCommand(cmd);
             chnl.setErrStream(System.err);
-            chnl.connect(5000);
+            chnl.connect(10000);
             readInputStreamFromSshSession(chnl);
-            sleep(5000);
+            sleep(8000);
             session.disconnect();
             success = true;
         } catch (JSchException | InterruptedException ex) {
@@ -805,7 +805,7 @@ public class ConfigureProcessingLayer {
             chnl.setErrStream(System.err);
             chnl.connect(5000);
             readInputStreamFromSshSession(chnl);
-            sleep(10000);
+            sleep(5000);
             session.disconnect();
         } catch (JSchException | InterruptedException ex) {
 

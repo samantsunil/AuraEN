@@ -107,9 +107,9 @@
                           <Component id="jScrollPane2" min="-2" pref="334" max="-2" attributes="0"/>
                           <Component id="btnIngestion" min="-2" pref="320" max="-2" attributes="0"/>
                           <Component id="btnClearAllDppLayers" alignment="0" min="-2" pref="118" max="-2" attributes="0"/>
-                          <Component id="lblE2eQoS" alignment="0" min="-2" pref="176" max="-2" attributes="0"/>
-                          <Component id="lblTotalCost" alignment="0" min="-2" pref="223" max="-2" attributes="0"/>
                           <Component id="jPanel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblTotalCost" alignment="0" min="-2" pref="284" max="-2" attributes="0"/>
+                          <Component id="lblE2eQoS" alignment="0" min="-2" pref="299" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
